@@ -10,6 +10,7 @@ class BaseTestCase(TestCase):
     """
     def create_app(self):
         app.config.from_object('family_foto.config.TestConfiguration')
+        # pylint: disable=attribute-defined-outside-init, invalid-name
         self.db = db
         return app
 
