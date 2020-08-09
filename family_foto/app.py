@@ -47,6 +47,9 @@ def login():
 
 @app.route('/logout', methods=['GET'])
 def logout():
+    """
+    Logs the current user out and redirects to index.
+    """
     logout_user()
     return redirect(url_for('index'))
 
