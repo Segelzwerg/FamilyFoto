@@ -19,11 +19,22 @@ login_manager.init_app(app)
 
 @app.route('/')
 def index():
+    """
+    Launches the index page.
+    """
     return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Launches the login page.
+    It redirects to index if an user already logged in or invalid user credentials.
+    Otherwise launches login page.
+
+    :return:
+    :rtype:
+    """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
@@ -38,7 +49,12 @@ def login():
 
 
 @login_manager.user_loader
-def load_user(user_id):
+def load_user(user_id: int):
+    """
+    Loads a user from the database.
+    :param user_id:
+    :return: An user if exists.
+    """
     return User.query.get(int(user_id))
 
 
