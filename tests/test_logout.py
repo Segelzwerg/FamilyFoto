@@ -20,5 +20,6 @@ class LogoutTestCase(BaseTestCase):
                                         follow_redirects=True)
             self.client.get('/logout')
 
-            self.assertTrue(current_user.is_anonymous, msg=f'user <{current_user.username}> is '
+            username = current_user.username if not current_user.is_anonymous else 'anonymous'
+            self.assertTrue(current_user.is_anonymous, msg=f'user <{username}> is '
                                                            f'still logged in')
