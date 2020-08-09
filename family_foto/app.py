@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, flash, render_template
-from flask_login import LoginManager, current_user, login_user
+from flask_login import LoginManager, current_user, login_user, logout_user
 
 from family_foto.config import Config
 from family_foto.forms.login_form import LoginForm
@@ -31,9 +31,6 @@ def login():
     Launches the login page.
     It redirects to index if an user already logged in or invalid user credentials.
     Otherwise launches login page.
-
-    :return:
-    :rtype:
     """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -46,6 +43,12 @@ def login():
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 
 @login_manager.user_loader
