@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ user.username }}!</h1>
+    <h1>Hi
+        {% if user is defined %}
+            ,{{ user.username }}
+        {% else %}
+            there
+        {% endif %}
+        !
+    </h1>
 {% endblock %}
