@@ -7,6 +7,9 @@ from tests.base_test_case import BaseTestCase
 
 
 class LoginTestCase(BaseTestCase):
+    """
+    Tests the login functionality.
+    """
     def setUp(self):
         super().setUp()
         user = User(username='marcel')
@@ -15,11 +18,17 @@ class LoginTestCase(BaseTestCase):
         self.db.session.commit()
 
     def test_login_page_is_available(self):
+        """
+        Checks if the login page can be reached. 
+        """
         with app.test_client() as client:
             response = client.get('/login')
             self.assertTrue(status.is_success(response.status_code))
 
     def test_login(self):
+        """
+        Checks if the login work with correct credentials.
+        """
         with self.client:
             response = self.client.post('/login',
                                         data={'username': 'marcel',
@@ -30,6 +39,9 @@ class LoginTestCase(BaseTestCase):
             self.assertFalse(current_user.is_anonymous)
 
     def test_login_fails(self):
+        """
+        Checks that the login fails with wrong credentials.
+        """
         with self.client:
             response = self.client.post('/login',
                                         data={'username': 'marcel',

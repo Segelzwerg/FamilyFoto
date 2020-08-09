@@ -5,6 +5,9 @@ from family_foto.models import db
 
 
 class BaseTestCase(TestCase):
+    """
+    Basic Test Case that setups the flask app with a db.
+    """
     def create_app(self):
         app.config.from_object('family_foto.config.TestConfiguration')
         self.db = db
