@@ -36,7 +36,7 @@ jobs:
           
       - name: Python Pylint Github Action
         run: |
-          pylint --rcfile=.pylintrc -j 2 family_foto
+          python3 -m pylint --rcfile=.pylintrc -j 2 family_foto
           
       - name: Python Pytest with Coverage
         run: |
