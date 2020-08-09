@@ -1,4 +1,5 @@
 Flask~=1.1.2
+flask_api
 flask_login
 flask_sqlalchemy
 flask_wtf
