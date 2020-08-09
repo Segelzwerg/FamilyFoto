@@ -6,7 +6,7 @@ from family_foto.forms.login_form import LoginForm
 from family_foto.models import db
 from family_foto.models.user import User
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates')
 app.config.from_object(Config)
 
 db.init_app(app)
