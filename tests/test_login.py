@@ -10,6 +10,7 @@ class LoginTestCase(BaseTestCase):
     """
     Tests the login functionality.
     """
+
     def setUp(self):
         super().setUp()
         user = User(username='marcel')
@@ -19,7 +20,7 @@ class LoginTestCase(BaseTestCase):
 
     def test_login_page_is_available(self):
         """
-        Checks if the login page can be reached. 
+        Checks if the login page can be reached.
         """
         with app.test_client() as client:
             response = client.get('/login')
