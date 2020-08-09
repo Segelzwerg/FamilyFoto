@@ -13,6 +13,7 @@ class LoginTestCase(BaseTestCase):
         user.set_password('1234')
         self.db.session.add(user)
         self.db.session.commit()
+
     def test_login_page_is_available(self):
         with app.test_client() as client:
             response = client.get('/login')
