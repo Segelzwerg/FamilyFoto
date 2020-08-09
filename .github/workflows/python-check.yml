@@ -40,7 +40,7 @@ jobs:
           
       - name: Python Pytest with Coverage
         run: |
-          python -m pytest --cov=./family_foto --cov-report=xml
+          python3 -m pytest --cov=./family_foto --cov-report=xml
       - name: Upload to codecoverage
         uses: codecov/codecov-action@v1.0.6
         with:
