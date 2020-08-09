@@ -19,4 +19,13 @@ class LoginTestCase(BaseTestCase):
                                         follow_redirects=True)
             self.assertTrue(status.is_success(response.status_code))
             self.assertEqual(current_user.username, 'marcel')
-            self.assertFalse(current_user.is_anonymous())
+            self.assertFalse(current_user.is_anonymous)
+
+    def test_login_fails(self):
+        with self.client:
+            response = self.client.post('/login',
+                                        data={'username': 'marcel',
+                                              'password': '12345'},
+                                        follow_redirects=True)
+            self.assertTrue(status.is_success(response.status_code))
+            self.assertTrue(current_user.is_anonymous)
