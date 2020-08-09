@@ -2,6 +2,7 @@ Flask~=1.1.2
 flask_api
 flask_login
 flask_sqlalchemy
+flask_testing
 flask_wtf
 Werkzeug~=1.0.1
 WTForms~=2.3.3
