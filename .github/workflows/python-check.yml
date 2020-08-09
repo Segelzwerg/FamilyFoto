@@ -36,11 +36,12 @@ jobs:
           
       - name: Python Pylint Github Action
         run: |
-          python3 -m pylint --rcfile=.pylintrc -j 2 family_foto
+          python3 -m pylint --version
+          python3 -m pylint --load-plugins pylint_flask_sqlalchemy --rcfile=.pylintrc -j 2 family_foto tests
           
       - name: Python Pytest with Coverage
         run: |
-          pytest --cov=./family_foto --cov-report=xml
+          python3 -m pytest --cov=./family_foto --cov-report=xml
       - name: Upload to codecoverage
         uses: codecov/codecov-action@v1
         with:
