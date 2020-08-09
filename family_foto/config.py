@@ -4,6 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
+    # pylint: disable=too-few-public-methods
     """
     Flask configuration.
     """
