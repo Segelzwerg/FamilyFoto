@@ -3,8 +3,8 @@ from flask_login import LoginManager, current_user, login_user
 
 from family_foto.config import Config
 from family_foto.forms.login_form import LoginForm
-from models import db
-from models import User
+from family_foto.models import db
+from family_foto.models.user import User
 
 app = Flask(__name__)
 app.config.from_object(Config)
