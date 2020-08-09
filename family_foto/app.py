@@ -1,9 +1,12 @@
-from flask import Flask, redirect, url_for, flash, render_template
-from flask_login import LoginManager, current_user, login_user, logout_user
+from flask import Flask, redirect, url_for, flash, render_template, request
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+from flask_uploads import UploadSet, IMAGES
 
 from family_foto.config import Config
 from family_foto.forms.login_form import LoginForm
+from family_foto.forms.upload_form import UploadForm
 from family_foto.models import db
+from family_foto.models.photo import Photo
 from family_foto.models.user import User
 
 app = Flask(__name__, template_folder='../templates')
@@ -15,6 +18,8 @@ db.create_all()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+photos = UploadSet('photos', IMAGES)
 
 
 @app.route('/')
@@ -52,6 +57,22 @@ def logout():
     """
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+@login_required
+def upload():
+    """
+    Uploads a photo or with no passed on renders uploads view.
+    """
+    if 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        rec = Photo(filename=filename, user=current_user.id)
+        rec.store()
+        flash("Photo saved.")
+        return redirect(url_for('show', id=rec.id))
+    form = UploadForm()
+    return render_template('upload.html', form=form)
 
 
 @login_manager.user_loader
