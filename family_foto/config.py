@@ -17,7 +17,7 @@ class Config:
 class TestConfiguration:
     # pylint: disable=too-few-public-methods
     """
-    Flask test configuartion.
+    Flask test configuration.
     """
     TESTING = True
     WTF_CSRF_ENABLED = False
