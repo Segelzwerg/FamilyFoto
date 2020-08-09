@@ -1,10 +1,10 @@
 from flask import Flask, redirect, url_for, flash, render_template
 from flask_login import LoginManager, current_user, login_user
 
-from config import Config
-from forms.login_form import LoginForm
+from family_foto.config import Config
+from family_foto.forms.login_form import LoginForm
 from models import db
-from models.user import User
+from models import User
 
 app = Flask(__name__)
 app.config.from_object(Config)
