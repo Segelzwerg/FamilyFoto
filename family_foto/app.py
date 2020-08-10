@@ -121,7 +121,7 @@ def upload():
             db.session.commit()
             log.info(f'{current_user.username} uploaded {filename}')
     form = UploadForm()
-    return render_template('upload.html', form=form)
+    return render_template('upload.html', form=form, user=current_user, title='Upload')
 
 
 @login_manager.user_loader
