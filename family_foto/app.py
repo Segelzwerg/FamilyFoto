@@ -66,11 +66,12 @@ add_user('admin', 'admin')
 
 
 @app.route('/')
+@app.route('/index')
 def index():
     """
     Launches the index page.
     """
-    return render_template('index.html')
+    return render_template('index.html', user=current_user)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -120,7 +121,7 @@ def upload():
             db.session.commit()
             log.info(f'{current_user.username} uploaded {filename}')
     form = UploadForm()
-    return render_template('upload.html', form=form)
+    return render_template('upload.html', form=form, user=current_user, title='Upload')
 
 
 @login_manager.user_loader

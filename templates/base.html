@@ -9,7 +9,11 @@
     {% endif %}
 </head>
 <body>
-<div>FamilyFoto: <a href="/index">Home</a></div>
+<div>FamilyFoto: <a href="/index">Home</a>
+    {% if user is defined %}
+        User:{{ user.username }}
+    {% endif %}
+</div>
 <hr>
 {% block content %}{% endblock %}
 </body>
