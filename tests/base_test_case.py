@@ -12,16 +12,17 @@ class BaseTestCase(TestCase):
     """
 
     def create_app(self):
-        app.config.from_object('family_foto.config.TestConfiguration')
-
+        app.config['WTF_CSRF_ENABLED'] = False
         return app
 
     def setUp(self):
         db.create_all()
-        user = User(username='marcel')
-        user.set_password('1234')
-        db.session.add(user)
-        db.session.commit()
+        exists = User.query.filter_by(username='marcel').first()
+        if not exists:
+            user = User(username='marcel')
+            user.set_password('1234')
+            db.session.add(user)
+            db.session.commit()
 
     def tearDown(self):
         db.session.remove()

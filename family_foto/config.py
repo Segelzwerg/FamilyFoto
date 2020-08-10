@@ -3,8 +3,16 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-class Config:
-    # pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods
+
+class BaseConfig:
+    """
+    Basic configurations with all configuration have in common.
+    """
+    UPLOADED_PHOTOS_DEST = './photos'
+
+
+class Config(BaseConfig):
     """
     Flask configuration.
     """
@@ -14,15 +22,14 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
-class TestConfiguration:
-    # pylint: disable=too-few-public-methods
+class TestConfiguration(BaseConfig):
     """
     Flask test configuration.
     """
     TESTING = True
     WTF_CSRF_ENABLED = False
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # + join(_cwd, 'testing.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test.db')
 
     # Since we want our unit tests to run quickly
     # we turn this down - the hashing is still done

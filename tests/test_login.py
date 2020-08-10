@@ -1,7 +1,6 @@
 from flask_api import status
 from flask_login import current_user
 
-from family_foto.app import app
 from tests.base_test_case import BaseTestCase
 
 
@@ -14,8 +13,8 @@ class LoginTestCase(BaseTestCase):
         """
         Checks if the login page can be reached.
         """
-        with app.test_client() as client:
-            response = client.get('/login')
+        with self.client:
+            response = self.client.get('/login')
             self.assertTrue(status.is_success(response.status_code))
 
     def test_login(self):
@@ -27,7 +26,7 @@ class LoginTestCase(BaseTestCase):
                                         data={'username': 'marcel',
                                               'password': '1234'},
                                         follow_redirects=True)
-            self.assertTrue(status.is_success(response.status_code))
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertEqual(current_user.username, 'marcel')
             self.assertFalse(current_user.is_anonymous)
 
