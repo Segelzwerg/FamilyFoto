@@ -37,7 +37,8 @@ jobs:
       - name: Python Pylint Github Action
         run: |
           python3 -m pylint --version
-          python3 -m pylint --load-plugins pylint_flask pylint_flask_sqlalchemy --rcfile=.pylintrc -j 2 family_foto tests
+          python3 -m pylint --load-plugins pylint_flask, pylint_flask_sqlalchemy --rcfile=
+          .pylintrc -j 2 family_foto tests
           
       - name: Python Pytest with Coverage
         run: |
