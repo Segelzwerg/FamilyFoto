@@ -1,5 +1,6 @@
 from logging.config import dictConfig
 
+from flask.logging import create_logger
 from werkzeug.datastructures import FileStorage
 from flask import Flask, redirect, url_for, flash, render_template, request
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
@@ -40,6 +41,8 @@ login_manager.init_app(app)
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 
+log = create_logger(app)
+
 
 @app.route('/')
 def index():
@@ -62,10 +65,10 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            app.logger.info(f'{form.username.data} failed to log in', )
+            log.info(f'{form.username.data} failed to log in', )
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        app.logger.info(f'{user.username} logged in successfully')
+        log.info(f'{user.username} logged in successfully')
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
 
@@ -77,7 +80,7 @@ def logout():
     """
     user = current_user
     logout_user()
-    app.logger.info(f'{user.username} logged out.')
+    log.info(f'{user.username} logged out.')
     return redirect(url_for('index'))
 
 
@@ -94,7 +97,7 @@ def upload():
             photo = Photo(filename=filename, user=current_user.id)
             db.session.add(photo)
             db.session.commit()
-            app.logger.info(f'{current_user.username} uploaded {filename}')
+            log.info(f'{current_user.username} uploaded {filename}')
     form = UploadForm()
     return render_template('upload.html', form=form)
 
