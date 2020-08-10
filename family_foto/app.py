@@ -45,7 +45,7 @@ configure_uploads(app, photos)
 log = create_logger(app)
 
 
-def add_user(username:str, password:str) -> None:
+def add_user(username: str, password: str) -> None:
     """
     This registers an user.
     :param username: name of the user
