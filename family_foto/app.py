@@ -66,11 +66,12 @@ add_user('admin', 'admin')
 
 
 @app.route('/')
+@app.route('/index')
 def index():
     """
     Launches the index page.
     """
-    return render_template('index.html')
+    return render_template('index.html', user=current_user)
 
 
 @app.route('/login', methods=['GET', 'POST'])
