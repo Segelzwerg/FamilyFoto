@@ -1,3 +1,5 @@
+from logging.config import dictConfig
+
 from werkzeug.datastructures import FileStorage
 from flask import Flask, redirect, url_for, flash, render_template, request
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
@@ -8,6 +10,22 @@ from family_foto.forms.upload_form import UploadForm
 from family_foto.models import db
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('family_foto.config.Config')
@@ -44,9 +62,10 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            app.logger.info(f'{form.username.data} failed to log in', )
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
+        app.logger.info(f'{user.username} logged in successfully')
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
 
@@ -56,7 +75,9 @@ def logout():
     """
     Logs the current user out and redirects to index.
     """
+    user = current_user
     logout_user()
+    app.logger.info(f'{user.username} logged out.')
     return redirect(url_for('index'))
 
 
@@ -73,7 +94,7 @@ def upload():
             photo = Photo(filename=filename, user=current_user.id)
             db.session.add(photo)
             db.session.commit()
-            flash(f"{filename} saved.")
+            app.logger.info(f'{current_user.username} uploaded {filename}')
     form = UploadForm()
     return render_template('upload.html', form=form)
 
