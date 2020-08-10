@@ -66,7 +66,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            log.info(f'{form.username.data} failed to log in')
+            log.warning(f'{form.username.data} failed to log in')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         log.info(f'{user.username} logged in successfully')
