@@ -2,7 +2,6 @@ from flask_testing import TestCase
 
 from family_foto.app import app, add_user
 from family_foto.models import db
-from family_foto.models.user import User
 
 
 # pylint: disable=invalid-name
