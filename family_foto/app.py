@@ -1,5 +1,7 @@
+import os
 from logging.config import dictConfig
 
+from flask_migrate import Migrate
 from werkzeug.datastructures import FileStorage
 
 from flask import Flask, redirect, url_for, render_template, request
@@ -34,7 +36,10 @@ app.config.from_object('family_foto.config.Config')
 
 db.init_app(app)
 db.app = app
-db.create_all()
+if os.path.exists('../app.db'):
+    Migrate(app, db)
+else:
+    db.create_all()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
