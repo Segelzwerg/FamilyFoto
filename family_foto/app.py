@@ -1,7 +1,7 @@
+from werkzeug.datastructures import FileStorage
 from flask import Flask, redirect, url_for, flash, render_template, request
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
-from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.upload_form import UploadForm
