@@ -1,7 +1,6 @@
 from flask_testing import TestCase
 
 from family_foto.app import app
-from family_foto.config import TestConfiguration
 from family_foto.models import db
 from family_foto.models.user import User
 

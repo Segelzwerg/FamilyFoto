@@ -3,7 +3,6 @@ from flask_login import LoginManager, current_user, login_user, logout_user, log
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug.datastructures import FileStorage
 
-from family_foto.config import Config
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.models import db
