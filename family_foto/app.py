@@ -45,6 +45,26 @@ configure_uploads(app, photos)
 log = create_logger(app)
 
 
+def add_user(username: str, password: str) -> None:
+    """
+    This registers an user.
+    :param username: name of the user
+    :param password: plain text password
+    """
+    user = User(username=username)
+    user.set_password(password)
+    exists = User.query.filter_by(username=username).first()
+    if exists:
+        log.warning(f'{user.username} already exists.')
+        return
+    db.session.add(user)
+    db.session.commit()
+    log.info(f'{user.username} registered.')
+
+
+add_user('admin', 'admin')
+
+
 @app.route('/')
 def index():
     """
