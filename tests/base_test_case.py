@@ -1,6 +1,6 @@
 from flask_testing import TestCase
 
-from family_foto.app import app
+from family_foto.app import app, add_user
 from family_foto.models import db
 from family_foto.models.user import User
 
@@ -17,12 +17,7 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         db.create_all()
-        exists = User.query.filter_by(username='marcel').first()
-        if not exists:
-            user = User(username='marcel')
-            user.set_password('1234')
-            db.session.add(user)
-            db.session.commit()
+        add_user('marcel', '1234')
 
     def tearDown(self):
         db.session.remove()
