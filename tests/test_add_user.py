@@ -4,6 +4,9 @@ from tests.base_test_case import BaseTestCase
 
 
 class AddUserTestCase(BaseTestCase):
+    """
+    Test case for adding users.
+    """
     def test_add_user(self):
         """
         Tests if a new user can be added.
@@ -15,6 +18,9 @@ class AddUserTestCase(BaseTestCase):
             self.assertIn('lea', [user.username for user in User.query.all()])
 
     def test_duplicate_user(self):
+        """
+        Tests that a user can be added only once.
+        """
         with self.client:
             self.assertNotIn('lea', [user.username for user in User.query.all()])
 
