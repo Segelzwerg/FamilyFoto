@@ -79,9 +79,9 @@ def logout():
     """
     Logs the current user out and redirects to index.
     """
-    user = current_user
+    username = current_user.username
     logout_user()
-    log.info(f'{user.username} logged out.')
+    log.info(f'{username} logged out.')
     return redirect(url_for('index'))
 
 
