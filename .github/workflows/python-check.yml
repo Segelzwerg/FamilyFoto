@@ -30,6 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          python --version
           python3 --version
           python3 -m pip install --upgrade pip setuptools
           python3 -m pip install -r requirements.txt
