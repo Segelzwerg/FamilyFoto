@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, flash, render_template, request
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from flask_uploads import UploadSet, IMAGES
+from flask_uploads import UploadSet, IMAGES, configure_uploads
+from werkzeug.datastructures import FileStorage
 
 from family_foto.config import Config
 from family_foto.forms.login_form import LoginForm
@@ -10,7 +11,7 @@ from family_foto.models.photo import Photo
 from family_foto.models.user import User
 
 app = Flask(__name__, template_folder='../templates')
-app.config.from_object(Config)
+app.config.from_object('family_foto.config.Config')
 
 db.init_app(app)
 db.app = app
@@ -20,6 +21,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 photos = UploadSet('photos', IMAGES)
+configure_uploads(app, photos)
 
 
 @app.route('/')
@@ -65,12 +67,14 @@ def upload():
     """
     Uploads a photo or with no passed on renders uploads view.
     """
-    if 'photo' in request.files:
-        filename = photos.save(request.files['photo'])
-        rec = Photo(filename=filename, user=current_user.id)
-        rec.store()
-        flash("Photo saved.")
-        return redirect(url_for('show', id=rec.id))
+    if 'file' in request.files:
+        file: FileStorage = request.files['file']
+        if 'image' in file.content_type:
+            filename = photos.save(file)
+            photo = Photo(filename=filename, user=current_user.id)
+            db.session.add(photo)
+            db.session.commit()
+            flash(f"{filename} saved.")
     form = UploadForm()
     return render_template('upload.html', form=form)
 
