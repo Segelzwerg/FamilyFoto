@@ -115,7 +115,7 @@ def upload():
         file: FileStorage = request.files['file']
         if 'image' in file.content_type:
             filename = photos.save(file)
-            photo = Photo(filename=filename, user=current_user.id)
+            photo = Photo(filename=filename, user=current_user.id, url=photos.url(filename))
             db.session.add(photo)
             db.session.commit()
             log.info(f'{current_user.username} uploaded {filename}')
@@ -137,8 +137,7 @@ def gallery():
     Shows all pictures requested
     """
     user_photos = current_user.get_photos()
-    urls = [photos.url(photo.filename) for photo in user_photos]
-    return render_template('gallery.html', url=photos.url, photos=urls)
+    return render_template('gallery.html', photos=user_photos)
 
 
 @login_manager.user_loader
