@@ -1,11 +1,10 @@
 from logging.config import dictConfig
 
-from werkzeug.datastructures import FileStorage
-
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, send_from_directory
 from flask.logging import create_logger
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
+from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.upload_form import UploadForm
@@ -102,7 +101,7 @@ def logout():
     """
     username = current_user.username
     logout_user()
-    log.info(f'{username} logged out.')
+    log.info(f'{username} logged   out.')
     return redirect(url_for('index'))
 
 
@@ -122,6 +121,24 @@ def upload():
             log.info(f'{current_user.username} uploaded {filename}')
     form = UploadForm()
     return render_template('upload.html', form=form, user=current_user, title='Upload')
+
+
+@app.route('/_uploads/photos/<filename>')
+@login_required
+def uploaded_file(filename):
+    return send_from_directory('../photos',
+                               filename)
+
+
+@app.route('/gallery', methods=['GET'])
+@login_required
+def gallery():
+    """
+    Shows all pictures requested
+    """
+    user_photos = current_user.get_photos()
+    urls = [photos.url(photo.filename) for photo in user_photos]
+    return render_template('gallery.html', url=photos.url, photos=urls)
 
 
 @login_manager.user_loader
