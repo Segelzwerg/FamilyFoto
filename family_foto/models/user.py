@@ -33,7 +33,7 @@ class User(UserMixin, db.Model):
 
     def get_photos(self):
         """
-        Gets all photos from this user,
+        Gets all photos from this user.
         :return: List of photo objects.
         """
         return User.query.filter_by(id=self.id).first().photos
