@@ -15,3 +15,7 @@ class Photo(db.Model):
     url = db.Column(db.String(128), unique=True)
     upload_date = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.Column(db.Integer, ForeignKey('user.id'))
+
+    @property
+    def path(self):
+        return f'./photos/{self.filename}'
