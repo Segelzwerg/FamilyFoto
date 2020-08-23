@@ -37,4 +37,3 @@ class User(UserMixin, db.Model):
         :return: List of photo objects.
         """
         return User.query.filter_by(id=self.id).first().photos
-
