@@ -43,7 +43,7 @@ jobs:
       - name: Python Pytest with Coverage
         run: |
           cd tests
-          python3 -m pytest --cov=./family_foto --cov-report=xml
+          python3 -m pytest --cov=../family_foto --cov-report=xml
           cd ..
       - name: Upload to codecoverage
         uses: codecov/codecov-action@v1
