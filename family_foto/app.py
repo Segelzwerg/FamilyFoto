@@ -1,3 +1,4 @@
+import os
 from logging.config import dictConfig
 
 import flask_resize
@@ -104,7 +105,7 @@ def logout():
     """
     username = current_user.username
     logout_user()
-    log.info(f'{username} logged   out.')
+    log.info(f'{username} logged out.')
     return redirect(url_for('index'))
 
 
@@ -126,6 +127,7 @@ def upload():
     return render_template('upload.html', form=form, user=current_user, title='Upload')
 
 
+@app.route('/photo/<filename>')
 @app.route('/_uploads/photos/<filename>')
 @login_required
 def uploaded_file(filename):
@@ -133,7 +135,7 @@ def uploaded_file(filename):
     Returns path of the original photo.
     :param filename: name of the file
     """
-    return send_from_directory('../photos',
+    return send_from_directory(os.path.join('..', app.config['UPLOADED_PHOTOS_DEST']),
                                filename)
 
 
