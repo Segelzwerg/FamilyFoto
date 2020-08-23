@@ -23,7 +23,6 @@ class Config(BaseConfig):
                               'sqlite:///' + os.path.join(basedir, '../app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-
 class TestConfiguration(BaseConfig):
     """
     Flask test configuration.
@@ -37,3 +36,5 @@ class TestConfiguration(BaseConfig):
     # we turn this down - the hashing is still done
     # but the time-consuming part is left out.
     HASH_ROUNDS = 1
+
+    UPLOADED_PHOTOS_DEST = './tests/photos'
