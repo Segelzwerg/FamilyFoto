@@ -71,6 +71,9 @@ class GalleryTestCase(BaseTestCase):
         self.assertNotIn(other_photo, photos)
 
     def test_get_original_photo(self):
+        """
+        Tests if original photo can be retrieved.
+        """
         file = dict(
             file=(BytesIO(b'my file contents'), "foto.jpg"),
         )
