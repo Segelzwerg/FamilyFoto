@@ -129,6 +129,10 @@ def upload():
 @app.route('/_uploads/photos/<filename>')
 @login_required
 def uploaded_file(filename):
+    """
+    Returns path of the original photo.
+    :param filename: name of the file
+    """
     return send_from_directory('../photos',
                                filename)
 
@@ -136,6 +140,10 @@ def uploaded_file(filename):
 @app.route('/resized-images/<filename>')
 @login_required
 def resized_photo(filename):
+    """
+    Returns the path resized image.
+    :param filename: name of the resized photo
+    """
     return send_from_directory('../resized-images',
                                filename)
 

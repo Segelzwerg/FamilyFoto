@@ -14,6 +14,9 @@ PHOTOS_SAVE_PATH = './photos'
 
 
 class GalleryTestCase(BaseTestCase):
+    """
+    Testcase for the gallery display.
+    """
     def setUp(self):
         super().setUp()
         self.patcher = patch('flask_login.utils._get_user')

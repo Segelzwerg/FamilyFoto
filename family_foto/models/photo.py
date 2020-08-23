@@ -18,4 +18,7 @@ class Photo(db.Model):
 
     @property
     def path(self):
+        """
+        Path of the photo on the server.
+        """
         return f'./photos/{self.filename}'
