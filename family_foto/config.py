@@ -31,7 +31,7 @@ class TestConfiguration(BaseConfig):
     TESTING = True
     WTF_CSRF_ENABLED = False
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, '../test.db')
 
     # Since we want our unit tests to run quickly
     # we turn this down - the hashing is still done
