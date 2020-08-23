@@ -31,6 +31,13 @@ class GalleryTestCase(BaseTestCase):
         self.patcher.stop()
         super().tearDown()
 
+    def test_gallery_route(self):
+        """
+        Tests if the gallery route is working.
+        """
+        response = self.client.get('/gallery')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
     def test_get_all_photos_from_user(self):
         """
         Tests that gets all photos from an user.
