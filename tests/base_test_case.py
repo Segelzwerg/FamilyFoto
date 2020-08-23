@@ -25,4 +25,5 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
-        os.remove('../test.db')
+        if os.path.exists('../test.db'):
+            os.remove('../test.db')
