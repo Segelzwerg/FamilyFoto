@@ -1,5 +1,8 @@
+import os
+
 from flask_testing import TestCase
 
+from family_foto import config
 from family_foto.app import app, add_user
 from family_foto.models import db
 
@@ -11,6 +14,7 @@ class BaseTestCase(TestCase):
     """
 
     def create_app(self):
+        app.config.from_object(config.TestConfiguration)
         app.config['WTF_CSRF_ENABLED'] = False
         return app
 
@@ -21,3 +25,4 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+        os.remove('../test.db')
