@@ -1,4 +1,3 @@
-import os
 from logging.config import dictConfig
 
 import flask_resize
