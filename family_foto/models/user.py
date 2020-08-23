@@ -30,3 +30,10 @@ class User(UserMixin, db.Model):
         :return: boolean if the hash code does match
         """
         return check_password_hash(self.password_hash, password)
+
+    def get_photos(self):
+        """
+        Gets all photos from this user.
+        :return: List of photo objects.
+        """
+        return User.query.filter_by(id=self.id).first().photos

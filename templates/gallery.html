@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Gallery </h1>
+    {% for photo in photos %}
+        <img src="{{ photo.path|resize('200x200') }}" alt={{ photo.filename }}>
+    {% endfor %}
+
+{% endblock %}

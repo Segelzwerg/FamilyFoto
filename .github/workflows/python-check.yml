@@ -42,10 +42,12 @@ jobs:
           
       - name: Python Pytest with Coverage
         run: |
-          python3 -m pytest --cov=./family_foto --cov-report=xml
+          cd tests
+          python3 -m pytest --cov=../family_foto --cov-report=xml
+          cd ..
       - name: Upload to codecoverage
         uses: codecov/codecov-action@v1
         with:
-          file: ./coverage.xml
+          file: ./tests/coverage.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
