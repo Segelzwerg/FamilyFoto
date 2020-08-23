@@ -135,8 +135,8 @@ def uploaded_file(filename):
     Returns path of the original photo.
     :param filename: name of the file
     """
-    return send_from_directory(os.path.join('..', app.config['UPLOADED_PHOTOS_DEST']),
-                               filename)
+    log.info(f'{current_user.username} requested {app.config["UPLOADED_PHOTOS_DEST"]}/{filename}')
+    return send_from_directory(f'../{app.config["UPLOADED_PHOTOS_DEST"]}', filename)
 
 
 @app.route('/resized-images/<filename>')
@@ -146,6 +146,7 @@ def resized_photo(filename):
     Returns the path resized image.
     :param filename: name of the resized photo
     """
+    log.info(f'{current_user.username} requested /resized-images/{filename}')
     return send_from_directory('../resized-images',
                                filename)
 
