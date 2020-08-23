@@ -1,5 +1,6 @@
 from logging.config import dictConfig
 
+import flask_resize
 from flask import Flask, redirect, url_for, render_template, request, send_from_directory
 from flask.logging import create_logger
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
@@ -40,6 +41,8 @@ login_manager.init_app(app)
 
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
+
+resize = flask_resize.Resize(app)
 
 log = create_logger(app)
 
@@ -127,6 +130,13 @@ def upload():
 @login_required
 def uploaded_file(filename):
     return send_from_directory('../photos',
+                               filename)
+
+
+@app.route('/resized-images/<filename>')
+@login_required
+def resized_photo(filename):
+    return send_from_directory('../resized-images',
                                filename)
 
 
