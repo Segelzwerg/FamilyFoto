@@ -60,7 +60,7 @@ def add_user(username: str, password: str) -> Optional[User]:
     exists = User.query.filter_by(username=username).first()
     if exists:
         log.warning(f'{user.username} already exists.')
-        return None
+        return exists
 
     settings = UserSettings(user_id=user.id)
     user.settings = settings
