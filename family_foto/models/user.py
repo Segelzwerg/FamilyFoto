@@ -1,3 +1,5 @@
+from typing import List, Union
+
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -41,8 +43,16 @@ class User(UserMixin, db.Model):
         """
         return User.query.filter_by(id=self.id).first().photos
 
-    def share_all_with(self, other_user):
+    def share_all_with(self, other_users: Union['User', List['User']]) -> None:
+        """
+        Share all photos with users
+        :param other_users: the user/s all photos will be shared with
+        :type other_users: Union of a single user or a list of users
+        """
         settings: UserSettings = UserSettings.query.get(self.id)
         if not settings:
             raise AttributeError(f'There are no user settings for the user with the id: {self.id}')
-        settings.share_all_photos_with(other_user)
+        if not isinstance(other_users, tuple):
+            other_users = [other_users]
+        for other_user in other_users:
+            settings.share_all_photos_with(other_user)
