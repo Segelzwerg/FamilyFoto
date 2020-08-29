@@ -1,35 +1,18 @@
-from logging.config import dictConfig
 from typing import Optional
 
 import flask_resize
 from flask import Flask, redirect, url_for, render_template, request, send_from_directory
-from flask.logging import create_logger
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.upload_form import UploadForm
+from family_foto.logger import log
 from family_foto.models import *
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
-
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi']
-    }
-})
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('family_foto.config.Config')
@@ -45,8 +28,6 @@ photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 
 resize = flask_resize.Resize(app)
-
-log = create_logger(app)
 
 
 def add_user(username: str, password: str) -> Optional[User]:
