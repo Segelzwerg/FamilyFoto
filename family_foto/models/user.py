@@ -49,10 +49,9 @@ class User(UserMixin, db.Model):
         :param other_users: the user/s all photos will be shared with
         :type other_users: Union of a single user or a list of users
         """
-        settings: UserSettings = UserSettings.query.get(self.id)
-        if not settings:
+        if not self.settings:
             raise AttributeError(f'There are no user settings for the user with the id: {self.id}')
-        if not isinstance(other_users, tuple):
+        if not isinstance(other_users, list):
             other_users = [other_users]
         for other_user in other_users:
-            settings.share_all_photos_with(other_user)
+            self.settings.share_all_photos_with(other_user)
