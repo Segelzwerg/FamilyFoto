@@ -1,4 +1,5 @@
 from logging.config import dictConfig
+from typing import Optional
 
 import flask_resize
 from flask import Flask, redirect, url_for, render_template, request, send_from_directory
@@ -9,9 +10,10 @@ from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.upload_form import UploadForm
-from family_foto.models import db
+from family_foto.models import *
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
+from family_foto.models.user_settings import UserSettings
 
 dictConfig({
     'version': 1,
@@ -47,7 +49,7 @@ resize = flask_resize.Resize(app)
 log = create_logger(app)
 
 
-def add_user(username: str, password: str) -> None:
+def add_user(username: str, password: str) -> Optional[User]:
     """
     This registers an user.
     :param username: name of the user
@@ -58,7 +60,12 @@ def add_user(username: str, password: str) -> None:
     exists = User.query.filter_by(username=username).first()
     if exists:
         log.warning(f'{user.username} already exists.')
-        return
+        return None
+
+    settings = UserSettings(user_id=user.id)
+    user.settings = settings
+
+    db.session.add(settings)
     db.session.add(user)
     db.session.commit()
     log.info(f'{user.username} registered.')
