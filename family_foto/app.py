@@ -69,6 +69,7 @@ def add_user(username: str, password: str) -> Optional[User]:
     db.session.add(user)
     db.session.commit()
     log.info(f'{user.username} registered.')
+    return user
 
 
 add_user('admin', 'admin')
