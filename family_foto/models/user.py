@@ -5,7 +5,6 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from family_foto.models import db
-from family_foto.models.user_settings import UserSettings
 
 
 class User(UserMixin, db.Model):
