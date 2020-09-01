@@ -4,6 +4,7 @@ import flask_resize
 from flask import Flask, redirect, url_for, render_template, request, send_from_directory
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
+from sqlalchemy import desc
 from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
@@ -162,7 +163,7 @@ def settings():
             'share_with')]
         log.info(f'{current_user} requests to share photos with {users_share_with}')
         current_user.share_all_with(users_share_with)
-    form.share_with.choices = [[user.id, user.username] for user in User.query.all()]
+    form.share_with.choices = User.all_user_asc()
     return render_template('user-settings.html',
                            form=form,
                            settings=current_user.settings)
