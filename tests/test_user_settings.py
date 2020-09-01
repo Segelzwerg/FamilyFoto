@@ -13,9 +13,6 @@ class UserSettingsTestCase(BaseTestCase):
         super().setUp()
         self.user = add_user('settings_user', 'settings')
 
-    def tearDown(self):
-        super().tearDown()
-
     def test_relation(self):
         """
         Tests if the id are set correctly.
