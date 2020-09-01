@@ -1,5 +1,3 @@
-from typing import Optional
-
 import flask_resize
 from flask import Flask, redirect, url_for, render_template, request, send_from_directory
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
@@ -31,7 +29,7 @@ configure_uploads(app, photos)
 resize = flask_resize.Resize(app)
 
 
-def add_user(username: str, password: str) -> Optional[User]:
+def add_user(username: str, password: str) -> User:
     """
     This registers an user.
     :param username: name of the user
