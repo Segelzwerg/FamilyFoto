@@ -8,6 +8,7 @@ from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.upload_form import UploadForm
+from family_foto.forms.user_settings_form import UserSettingsForm
 from family_foto.logger import log
 from family_foto.models import *
 from family_foto.models.photo import Photo
@@ -147,6 +148,24 @@ def gallery():
     """
     user_photos = current_user.get_photos()
     return render_template('gallery.html', photos=user_photos)
+
+
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    """
+    Handles all user settings requests.
+    """
+    form = UserSettingsForm()
+    if request.form.get('share_with'):
+        users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
+            'share_with')]
+        log.info(f'{current_user} requests to share photos with {users_share_with}')
+        current_user.share_all_with(users_share_with)
+    form.share_with.choices = [[user.id, user.username] for user in User.query.all()]
+    return render_template('user-settings.html',
+                           form=form,
+                           settings=current_user.settings)
 
 
 @login_manager.user_loader
