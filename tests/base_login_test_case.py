@@ -16,5 +16,6 @@ class BaseLoginTestCase(BaseTestCase):
                                                    username='marcel')
 
     def tearDown(self):
-        self.patcher.stop()
+        if self.patcher is not None:
+            self.patcher.stop()
         super().tearDown()
