@@ -54,3 +54,11 @@ class User(UserMixin, db.Model):
             other_users = [other_users]
         for other_user in other_users:
             self.settings.share_all_photos_with(other_user)
+
+    @staticmethod
+    def all_user_asc():
+        """
+        Retrieves all users from the database and returns them in ascending order.
+        """
+        return sorted([[user.id, user.username] for user in User.query.all()],
+                      key=lambda user: user[1])
