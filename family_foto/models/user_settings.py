@@ -26,7 +26,7 @@ class UserSettings(db.Model):
         :type other_user: User
         """
         if other_user is None:
-            raise AttributeError(f'other_user must not be None.')
+            raise AttributeError('other_user must not be None.')
         if self.user_id is None:
             raise ValueError(f'{self} must have an user_id, but was None.')
         self.share_all.append(other_user)

@@ -4,14 +4,13 @@ import flask_resize
 from flask import Flask, redirect, url_for, render_template, request, send_from_directory
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
-from sqlalchemy import desc
 from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.forms.user_settings_form import UserSettingsForm
 from family_foto.logger import log
-from family_foto.models import *
+from family_foto.models import db
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
@@ -45,10 +44,10 @@ def add_user(username: str, password: str) -> Optional[User]:
         log.warning(f'{user.username} already exists.')
         return exists
 
-    settings = UserSettings(user_id=user.id)
-    user.settings = settings
+    user_settings = UserSettings(user_id=user.id)
+    user.settings = user_settings
 
-    db.session.add(settings)
+    db.session.add(user_settings)
     db.session.add(user)
     db.session.commit()
     log.info(f'{user.username} registered.')

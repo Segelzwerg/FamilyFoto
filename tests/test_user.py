@@ -4,6 +4,9 @@ from tests.base_test_case import BaseTestCase
 
 
 class UserTestCases(BaseTestCase):
+    """
+    Test the behaviour of the User Entity.
+    """
     def test_all_user_asc(self):
         """
         Tests all users are returned in ascending order.

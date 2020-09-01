@@ -1,6 +1,5 @@
 import os
 
-from flask_sqlalchemy import SQLAlchemy
 from flask_testing import TestCase
 
 from family_foto import config
@@ -37,6 +36,9 @@ class BaseTestCase(TestCase):
             os.remove('../test.db')
 
     def test_setup(self):
+        """
+        Tests the test database is clean before each test.
+        """
         user = User.query.filter_by(username='marcel').first()
         settings = UserSettings.query.filter_by(user_id=user.id).first()
 
