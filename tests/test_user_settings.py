@@ -49,3 +49,12 @@ class UserSettingsTestCase(BaseTestCase):
         """
         with self.assertRaises(AttributeError):
             self.user.share_all_with(None)
+
+    def test_unshare(self):
+        """
+        Tests if user can revoke sharing.
+        """
+        other_user = add_user('other_user', '1234')
+        self.user.share_all_with(other_user)
+        self.user.share_all_with([])
+        self.assertNotIn(other_user, self.user.settings.share_all)
