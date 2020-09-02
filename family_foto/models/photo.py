@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from PIL import Image
 from sqlalchemy import ForeignKey
 
 from family_foto.models import db
@@ -22,3 +23,11 @@ class Photo(db.Model):
         Path of the photo on the server.
         """
         return f'./photos/{self.filename}'
+
+    @property
+    def meta(self):
+        """
+        Meta data of the photo.
+        """
+        image = Image.open(self.path)
+        return image.getexif()
