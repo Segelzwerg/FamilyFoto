@@ -1,5 +1,6 @@
 from flask_api import status
 
+from family_foto.app import add_user
 from tests.base_login_test_case import BaseLoginTestCase
 
 
@@ -22,3 +23,9 @@ class RouteSettingsTestCase(BaseLoginTestCase):
         self.patcher.stop()
         response = self.client.get('/settings')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+    def test_request_sharing_with(self):
+        other_user = add_user('share_with_user', '123')
+        print(f'{other_user.id}')
+        response = self.client.post('/settings', data=dict(share_with=[other_user.id]))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
