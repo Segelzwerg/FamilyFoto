@@ -25,6 +25,9 @@ class RouteSettingsTestCase(BaseLoginTestCase):
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
     def test_request_sharing_with(self):
+        """
+        The post part of sharing photos of the settings route.
+        """
         other_user = add_user('share_with_user', '123')
         print(f'{other_user.id}')
         response = self.client.post('/settings', data=dict(share_with=[other_user.id]))
