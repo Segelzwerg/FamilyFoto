@@ -68,6 +68,8 @@ class GalleryTestCase(BaseLoginTestCase):
         """
         other_user = add_user('sharer', 'sharing')
         other_photo = Photo(filename='other-photo.jpg', user=other_user.id)
+        db.session.add(other_photo)
+        db.session.commit()
         other_user.share_all_with(current_user)
         photos = current_user.get_photos()
         self.assertIn(other_photo, photos)
