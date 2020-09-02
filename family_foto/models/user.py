@@ -50,7 +50,7 @@ class User(UserMixin, db.Model):
 
     def share_all_with(self, other_users: Union['User', List['User']]) -> None:
         """
-        Share all photos with users
+        Share all photos with users. It also revokes user privileges if not in list.
         :param other_users: the user/s all photos will be shared with
         :type other_users: Union of a single user or a list of users
         """
@@ -60,6 +60,9 @@ class User(UserMixin, db.Model):
             other_users = [other_users]
         for other_user in other_users:
             self.settings.share_all_photos_with(other_user)
+        revoked_users = [user for user in self.settings.share_all if user not in other_users]
+        for revoked_user in revoked_users:
+            self.settings.revoke_sharing(revoked_user)
 
     @staticmethod
     def all_user_asc():
