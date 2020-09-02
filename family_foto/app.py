@@ -160,7 +160,10 @@ def settings():
             'share_with')]
         log.info(f'{current_user} requests to share photos with {users_share_with}')
         current_user.share_all_with(users_share_with)
+        db.session.commit()
     form.share_with.choices = User.all_user_asc()
+    form.share_with.data = [str(other_user_id) for
+                            other_user_id in [current_user.settings.share_all_id]]
     return render_template('user-settings.html',
                            user=current_user,
                            form=form)
