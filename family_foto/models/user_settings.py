@@ -27,7 +27,5 @@ class UserSettings(db.Model):
         """
         if other_user is None:
             raise AttributeError('other_user must not be None.')
-        if self.user_id is None:
-            raise ValueError(f'{self} must have an user_id, but was None.')
         self.share_all.append(other_user)
         log.info(f'{self.user} shares photos with {other_user}.')
