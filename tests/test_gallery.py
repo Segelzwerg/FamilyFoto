@@ -1,34 +1,26 @@
 import os
 from io import BytesIO
 from shutil import rmtree
-from unittest.mock import patch
 
 from flask_api import status
 from flask_login import current_user
 
+from family_foto.app import add_user
 from family_foto.models import db
 from family_foto.models.photo import Photo
-from family_foto.models.user import User
-from tests.base_test_case import BaseTestCase
+from tests.base_login_test_case import BaseLoginTestCase
 
 PHOTOS_SAVE_PATH = './photos'
 
 
-class GalleryTestCase(BaseTestCase):
+class GalleryTestCase(BaseLoginTestCase):
     """
     Testcase for the gallery display.
     """
-    def setUp(self):
-        super().setUp()
-        self.patcher = patch('flask_login.utils._get_user')
-        self.mock_current_user = self.patcher.start()
-        self.mock_current_user.return_value = User(id=1,
-                                                   username='marcel')
 
     def tearDown(self):
         if os.path.exists(PHOTOS_SAVE_PATH):
             rmtree(PHOTOS_SAVE_PATH)
-        self.patcher.stop()
         super().tearDown()
 
     def test_gallery_route(self):
@@ -69,6 +61,18 @@ class GalleryTestCase(BaseTestCase):
         all_photos = Photo.query.all()
         self.assertIn(other_photo, all_photos)
         self.assertNotIn(other_photo, photos)
+
+    def test_show_shared(self):
+        """
+        Tests if an user can see photos that others shared with him/her/it.
+        """
+        other_user = add_user('sharer', 'sharing')
+        other_photo = Photo(filename='other-photo.jpg', user=other_user.id)
+        db.session.add(other_photo)
+        db.session.commit()
+        other_user.share_all_with(current_user)
+        photos = current_user.get_photos()
+        self.assertIn(other_photo, photos)
 
     def test_get_original_photo(self):
         """
