@@ -1,33 +1,17 @@
-from logging.config import dictConfig
-
 import flask_resize
 from flask import Flask, redirect, url_for, render_template, request, send_from_directory
-from flask.logging import create_logger
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.upload_form import UploadForm
+from family_foto.forms.user_settings_form import UserSettingsForm
+from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
-
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi']
-    }
-})
+from family_foto.models.user_settings import UserSettings
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('family_foto.config.Config')
@@ -44,10 +28,8 @@ configure_uploads(app, photos)
 
 resize = flask_resize.Resize(app)
 
-log = create_logger(app)
 
-
-def add_user(username: str, password: str) -> None:
+def add_user(username: str, password: str) -> User:
     """
     This registers an user.
     :param username: name of the user
@@ -58,10 +40,16 @@ def add_user(username: str, password: str) -> None:
     exists = User.query.filter_by(username=username).first()
     if exists:
         log.warning(f'{user.username} already exists.')
-        return
+        return exists
+
+    user_settings = UserSettings(user_id=user.id)
+    user.settings = user_settings
+
+    db.session.add(user_settings)
     db.session.add(user)
     db.session.commit()
     log.info(f'{user.username} registered.')
+    return user
 
 
 add_user('admin', 'admin')
@@ -158,6 +146,24 @@ def gallery():
     """
     user_photos = current_user.get_photos()
     return render_template('gallery.html', photos=user_photos)
+
+
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    """
+    Handles all user settings requests.
+    """
+    form = UserSettingsForm()
+    if request.form.get('share_with'):
+        users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
+            'share_with')]
+        log.info(f'{current_user} requests to share photos with {users_share_with}')
+        current_user.share_all_with(users_share_with)
+    form.share_with.choices = User.all_user_asc()
+    return render_template('user-settings.html',
+                           form=form,
+                           settings=current_user.settings)
 
 
 @login_manager.user_loader
