@@ -42,3 +42,10 @@ class UserSettingsTestCase(BaseTestCase):
         settings = UserSettings.query.get(self.user.id)
 
         self.assertListEqual(user_list, settings.share_all)
+
+    def test_none_share(self):
+        """
+        This tests that an error is raised with sharing a none user.
+        """
+        with self.assertRaises(AttributeError):
+            self.user.share_all_with(None)
