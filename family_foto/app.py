@@ -162,8 +162,8 @@ def settings():
         current_user.share_all_with(users_share_with)
     form.share_with.choices = User.all_user_asc()
     return render_template('user-settings.html',
-                           form=form,
-                           settings=current_user.settings)
+                           user=current_user,
+                           form=form)
 
 
 @login_manager.user_loader
