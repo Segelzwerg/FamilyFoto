@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from family_foto.models import db
+from family_foto.models.user_settings import UserSettings
 
 
 class User(UserMixin, db.Model):
@@ -40,7 +41,12 @@ class User(UserMixin, db.Model):
         Gets all photos from this user.
         :return: List of photo objects.
         """
-        return User.query.filter_by(id=self.id).first().photos
+        user_photos = User.query.filter_by(id=self.id).first().photos
+        user_shared = UserSettings.query.filter(
+            UserSettings.share_all.any(User.id == self.id)).all()
+        for user in user_shared:
+            user_photos.extend(User.query.filter_by(id=user.id).first().photos)
+        return user_photos
 
     def share_all_with(self, other_users: Union['User', List['User']]) -> None:
         """
