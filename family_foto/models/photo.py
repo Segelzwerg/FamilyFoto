@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from PIL import Image
+from PIL import Image, ExifTags
 from sqlalchemy import ForeignKey
 
 from family_foto.models import db
@@ -29,5 +29,19 @@ class Photo(db.Model):
         """
         Meta data of the photo.
         """
-        image = Image.open(self.path)
-        return image.getexif()
+        with Image.open(self.path) as image:
+            exif = {ExifTags.TAGS[k]: v for k, v in image.getexif().items() if k in
+                    ExifTags.TAGS}
+            exif = {k: self._replace_empty(v) for k, v in exif.items()}
+
+        return exif
+
+    @staticmethod
+    def _replace_empty(value: bytes):
+        """
+        Tries to replace '\x00'
+        """
+        try:
+            value = str(value).replace('\x00', '')
+        finally:
+            return str(value)
