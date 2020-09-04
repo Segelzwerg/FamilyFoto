@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Image View </h1>
+    <a href="{{ photo.url }}">
+        <img src="{{ photo.resize(400, 400) }}" alt={{ photo.filename }}>
+    </a>
+    <div class="table-title">
+        <table class="table-fill">
+            <thead>
+            <tr>
+                <th>Meta Tag</th>
+                <th>Meta Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tag, value in photo.meta.items() %}
+                <tr class="{{ loop.cycle('odd', 'even') }}">
+                    {% set rowloop = loop %}
+                    <td id="cell-{{ rowloop.index }}-{{ loop.index }}">{{ tag }}</td>
+                    <td id="cell-{{ rowloop.index }}-{{ loop.index }}">{{ value }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
