@@ -1,17 +1,16 @@
 import os
-from shutil import copyfile, rmtree
 
 import pytest
 from werkzeug.datastructures import FileStorage
 
 from family_foto.models.photo import Photo
-from tests.base_test_case import BaseTestCase
+from tests.BasePhotoTestCase import BasePhotoTestCase
 
 PHOTOS_SAVE_PATH = './photos'
 RESIZED_SAVE_PATH = './resized-images'
 
 
-class PhotoTestCase(BaseTestCase):
+class PhotoTestCase(BasePhotoTestCase):
     """
     Tests the functionality of the Photo Entity.
     """
@@ -21,20 +20,6 @@ class PhotoTestCase(BaseTestCase):
         file_path = 'data/example-image.jpg'
         file = open(file_path, 'rb')
         return FileStorage(stream=file, filename=file_path, content_type='image')
-
-    def setUp(self):
-        super(PhotoTestCase, self).setUp()
-        if not os.path.exists('./photos'):
-            os.mkdir(PHOTOS_SAVE_PATH)
-        if os.path.exists(RESIZED_SAVE_PATH):
-            rmtree(RESIZED_SAVE_PATH)
-        copyfile('./data/example.jpg', f'{PHOTOS_SAVE_PATH}/example.jpg')
-        self.photo = Photo(filename='example.jpg', url='/photos/example.jpg')
-
-    def tearDown(self):
-        if os.path.exists(PHOTOS_SAVE_PATH):
-            rmtree(PHOTOS_SAVE_PATH)
-        super().tearDown()
 
     def test_path(self):
         """
