@@ -3,8 +3,8 @@
 {% block content %}
     <h1>Gallery </h1>
     {% for photo in photos %}
-        <a href="{{ photo.url }}">
-            <img src="{{ photo.path|resize('200x200') }}" alt={{ photo.filename }}>
+        <a href="{{ photo.image_view }}">
+            <img src="{{ photo.resize(200,200) }}" alt={{ photo.filename }}>
         </a>
     {% endfor %}
 
