@@ -1,4 +1,3 @@
-import flask_resize
 from flask import Flask, redirect, url_for, render_template, request, send_from_directory
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
@@ -25,8 +24,6 @@ login_manager.init_app(app)
 
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
-
-resize = flask_resize.Resize(app)
 
 
 def add_user(username: str, password: str) -> User:
