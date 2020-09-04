@@ -21,6 +21,13 @@ class PhotoTestCase(BaseTestCase):
         file = open(file_path, 'rb')
         return FileStorage(stream=file, filename=file_path, content_type='image')
 
+    def setUp(self):
+        super(PhotoTestCase, self).setUp()
+        if not os.path.exists('./photos'):
+            os.mkdir(PHOTOS_SAVE_PATH)
+        copyfile('./data/example.jpg', f'{PHOTOS_SAVE_PATH}/example.jpg')
+        self.photo = Photo(filename='example.jpg', url='/photos/example.jpg')
+
     def tearDown(self):
         if os.path.exists(PHOTOS_SAVE_PATH):
             rmtree(PHOTOS_SAVE_PATH)
@@ -38,11 +45,6 @@ class PhotoTestCase(BaseTestCase):
         """
         Test the meta data property.
         """
-        if not os.path.exists('./photos'):
-            os.mkdir(PHOTOS_SAVE_PATH)
-        copyfile('./data/example.jpg', f'{PHOTOS_SAVE_PATH}/example.jpg')
-        photo = Photo(filename='example.jpg', url='/photos/example.jpg')
-
         expected_dict = dict(DateTime='2020:08:18 12:44:08',
                              ExifImageWidth='4208',
                              ExifImageHeight='3120',
@@ -52,8 +54,22 @@ class PhotoTestCase(BaseTestCase):
                              ISOSpeedRatings='113',
                              Make='BullittGroupLimited',
                              Model='S41')
-        test_status, test_message = self._test_meta(expected_dict, photo.meta)
+        test_status, test_message = self._test_meta(expected_dict, self.photo.meta)
         self.assertTrue(test_status, msg=test_message)
+
+    def test_height(self):
+        """
+        Tests the height property.
+        """
+        height = self.photo.height
+        self.assertEqual(3120, height)
+
+    def test_width(self):
+        """
+        Tests the width property.
+        """
+        width = self.photo.width
+        self.assertEqual(4208, width)
 
     @staticmethod
     def _test_meta(expected_dict, meta):
