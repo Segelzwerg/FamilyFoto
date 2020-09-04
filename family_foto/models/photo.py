@@ -5,6 +5,7 @@ from PIL import Image, ExifTags
 from sqlalchemy import ForeignKey
 
 from family_foto.models import db
+from family_foto.resize import resize
 
 
 class Photo(db.Model):
@@ -58,6 +59,16 @@ class Photo(db.Model):
     @property
     def width(self):
         return int(self.meta['ExifImageWidth'])
+
+    def resize(self, width: int, height: int):
+        """
+        Returns the url for resized photo.
+        :param width: the new width
+        :param height: the new height
+        """
+        resized_url = resize(self.path, f'{width}x{height}')
+        resized_url = resized_url.lstrip('.')
+        return resized_url
 
     @staticmethod
     def _replace_empty(value: bytes):
