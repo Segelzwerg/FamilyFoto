@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from PIL import Image, ExifTags
@@ -23,6 +24,20 @@ class Photo(db.Model):
         Path of the photo on the server.
         """
         return f'./photos/{self.filename}'
+
+    @property
+    def abs_path(self):
+        """
+        Returns absolute path of the photo.
+        """
+        return os.path.abspath(f'/photo/{self.filename}')
+
+    @property
+    def image_view(self):
+        """
+        Returns path to image viewer template of this photo.
+        """
+        return f'/image/{self.filename}'
 
     @property
     def meta(self):
