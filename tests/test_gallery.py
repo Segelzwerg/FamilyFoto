@@ -8,20 +8,16 @@ from flask_login import current_user
 from family_foto.app import add_user
 from family_foto.models import db
 from family_foto.models.photo import Photo
+from tests.BasePhotoTestCase import BasePhotoTestCase
 from tests.base_login_test_case import BaseLoginTestCase
 
 PHOTOS_SAVE_PATH = './photos'
 
 
-class GalleryTestCase(BaseLoginTestCase):
+class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
     """
     Testcase for the gallery display.
     """
-
-    def tearDown(self):
-        if os.path.exists(PHOTOS_SAVE_PATH):
-            rmtree(PHOTOS_SAVE_PATH)
-        super().tearDown()
 
     def test_gallery_route(self):
         """
