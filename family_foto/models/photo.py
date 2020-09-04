@@ -51,6 +51,14 @@ class Photo(db.Model):
 
         return exif
 
+    @property
+    def height(self):
+        return int(self.meta['ExifImageHeight'])
+
+    @property
+    def width(self):
+        return int(self.meta['ExifImageWidth'])
+
     @staticmethod
     def _replace_empty(value: bytes):
         """
