@@ -111,6 +111,17 @@ def upload():
     return render_template('upload.html', form=form, user=current_user, title='Upload')
 
 
+@app.route('/image/<filename>')
+@login_required
+def image_view(filename):
+    """
+    Displays an photo in the image viewer.
+    """
+    log.info(f'{current_user.username} requested image view of {filename}')
+    photo = Photo.query.filter_by(filename=filename).first()
+    return render_template('image.html', user=current_user, photo=photo)
+
+
 @app.route('/photo/<filename>')
 @app.route('/_uploads/photos/<filename>')
 @login_required
