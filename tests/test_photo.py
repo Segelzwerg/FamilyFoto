@@ -71,6 +71,13 @@ class PhotoTestCase(BaseTestCase):
         width = self.photo.width
         self.assertEqual(4208, width)
 
+    def test_resize(self):
+        """
+        Tests if photos are correctly resized.
+        """
+        resized_url = self.photo.resize(400, 400)
+        self.assertTrue(os.path.exists(f'./{resized_url}'), msg=f'{resized_url} does not exists.')
+
     @staticmethod
     def _test_meta(expected_dict, meta):
         keys_not_in = {k: v for k, v in expected_dict.items() if k not in meta.keys()}
