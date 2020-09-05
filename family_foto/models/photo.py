@@ -85,7 +85,4 @@ class Photo(db.Model):
         """
         Tries to replace '\x00'
         """
-        try:
-            value = str(value).replace('\x00', '')
-        finally:
-            return str(value)
+        return str(value).replace('\x00', '')
