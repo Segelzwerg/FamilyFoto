@@ -74,6 +74,8 @@ class Photo(db.Model):
         :param height: the new height
         """
         resized_url = resize(self.path, f'{width}x{height}')
+        if not os.path.exists(resized_url):
+            raise FileNotFoundError(f'resized file of {self} could not be saved')
         resized_url = resized_url.lstrip('.')
         return resized_url
 
