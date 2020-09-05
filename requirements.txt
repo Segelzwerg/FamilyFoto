@@ -1,7 +1,7 @@
 Flask~=1.1.2
 flask_api
 flask_login
-flask_resize[full]
+flask_resize
 flask_sqlalchemy
 flask_testing
 -e git://github.com/maxcountryman/flask-uploads.git#egg=flask-uploads
@@ -12,4 +12,4 @@ pylint>=2.6.0
 pylint-flask
 pylint-flask-sqlalchemy
 pytest
-pytest-cov
+pytest-cov<=2.8
