@@ -9,7 +9,7 @@ class PhotoTestCase(BaseTestCase):
     """
 
     def setUp(self):
-        super(PhotoTestCase, self).setUp()
+        super().setUp()
         self.user = add_user('marcel', '123')
         self.other_user = add_user('lea', '654')
         self.photo = Photo(filename='test.jpg', user=self.user)
