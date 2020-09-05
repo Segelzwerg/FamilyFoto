@@ -16,12 +16,6 @@ class PhotoTestCase(BasePhotoTestCase):
     Tests the functionality of the Photo Entity.
     """
 
-    @pytest.fixture
-    def example_image(self):
-        file_path = 'data/example-image.jpg'
-        file = open(file_path, 'rb')
-        return FileStorage(stream=file, filename=file_path, content_type='image')
-
     def setUp(self):
         super().setUp()
         self.user = add_user('marcel', '123')
