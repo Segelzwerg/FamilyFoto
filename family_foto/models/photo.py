@@ -75,8 +75,10 @@ class Photo(db.Model):
         """
         Checks if the other user has permission to view that photo.
         """
-        # pylint: disable=no-member
-        return self.user.has_general_read_permission(other_user)
+        if self.user == other_user.id:
+            return True
+        user = User.query.get(self.user)
+        return user.has_general_read_permission(other_user)
 
     @staticmethod
     def _replace_empty(value: bytes):
