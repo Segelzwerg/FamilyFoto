@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, request, send_from_directory
+from flask import Flask, redirect, url_for, render_template, request, send_from_directory, abort
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug.datastructures import FileStorage
@@ -119,6 +119,8 @@ def image_view(filename):
     """
     log.info(f'{current_user.username} requested image view of {filename}')
     photo = Photo.query.filter_by(filename=filename).first()
+    if not photo.has_read_permission(current_user):
+        abort(401)
     return render_template('image.html', user=current_user, photo=photo)
 
 
