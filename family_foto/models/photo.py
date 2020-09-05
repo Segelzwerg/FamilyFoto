@@ -55,10 +55,16 @@ class Photo(db.Model):
 
     @property
     def height(self):
+        """
+        Returns the image height.
+        """
         return int(self.meta['ExifImageHeight'])
 
     @property
     def width(self):
+        """
+        Returns image width
+        """
         return int(self.meta['ExifImageWidth'])
 
     def resize(self, width: int, height: int):

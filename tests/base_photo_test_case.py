@@ -9,6 +9,9 @@ RESIZED_SAVE_PATH = './resized-images'
 
 
 class BasePhotoTestCase(BaseTestCase):
+    """
+    Base Test Case with handles everything regarding photos.
+    """
     def setUp(self):
         super().setUp()
         if not os.path.exists('./photos'):
