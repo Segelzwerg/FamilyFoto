@@ -64,6 +64,12 @@ class User(UserMixin, db.Model):
         for revoked_user in revoked_users:
             self.settings.revoke_sharing(revoked_user)
 
+    def has_general_read_permission(self, other_user: 'User')->bool:
+        """
+        Checks if the other use is allowed to view all photos.
+        """
+        return self.settings.has_all_sharing(other_user)
+
     @staticmethod
     def all_user_asc():
         """
