@@ -15,9 +15,12 @@ class BasePhotoTestCase(BaseTestCase):
             os.mkdir(PHOTOS_SAVE_PATH)
         if os.path.exists(RESIZED_SAVE_PATH):
             rmtree(RESIZED_SAVE_PATH)
-        copyfile('./data/example.jpg', f'{PHOTOS_SAVE_PATH}/example.jpg')
-        self.photo = Photo(filename='example.jpg', url='/photos/example.jpg')
         Photo.query.delete()
+
+        copied_path = copyfile('./data/example.jpg', f'{PHOTOS_SAVE_PATH}/example.jpg')
+        if not os.path.exists(copied_path):
+            raise FileNotFoundError(f'{copied_path} does not exists.')
+        self.photo = Photo(filename='example.jpg', url='/photos/example.jpg')
 
     def tearDown(self):
         if os.path.exists(PHOTOS_SAVE_PATH):
