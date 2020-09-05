@@ -17,6 +17,7 @@ class BasePhotoTestCase(BaseTestCase):
             rmtree(RESIZED_SAVE_PATH)
         copyfile('./data/example.jpg', f'{PHOTOS_SAVE_PATH}/example.jpg')
         self.photo = Photo(filename='example.jpg', url='/photos/example.jpg')
+        Photo.query.delete()
 
     def tearDown(self):
         if os.path.exists(PHOTOS_SAVE_PATH):
