@@ -2,7 +2,7 @@ import os
 
 from family_foto.app import add_user
 from family_foto.models.photo import Photo
-from tests.BasePhotoTestCase import BasePhotoTestCase
+from tests.base_photo_test_case import BasePhotoTestCase
 
 PHOTOS_SAVE_PATH = './photos'
 RESIZED_SAVE_PATH = './resized-images'
