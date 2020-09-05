@@ -28,4 +28,5 @@ class Photo(db.Model):
         """
         Checks if the other user has permission to view that photo.
         """
+        # pylint: disable=no-member
         return self.user.has_general_read_permission(other_user)
