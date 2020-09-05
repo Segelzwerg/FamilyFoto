@@ -5,6 +5,7 @@ from PIL import Image, ExifTags
 from sqlalchemy import ForeignKey
 
 from family_foto.models import db
+from family_foto.models.user import User
 from family_foto.resize import resize
 
 
@@ -69,6 +70,13 @@ class Photo(db.Model):
         resized_url = resize(self.path, f'{width}x{height}')
         resized_url = resized_url.lstrip('.')
         return resized_url
+
+    def has_read_permission(self, other_user: User) -> bool:
+        """
+        Checks if the other user has permission to view that photo.
+        """
+        # pylint: disable=no-member
+        return self.user.has_general_read_permission(other_user)
 
     @staticmethod
     def _replace_empty(value: bytes):
