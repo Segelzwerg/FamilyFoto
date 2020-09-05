@@ -38,3 +38,9 @@ class UserSettings(db.Model):
             raise AttributeError('other_user must not be None')
         self.share_all.remove(other_user)
         log.info(f'{self.user} revokes sharing of photos with {other_user}.')
+
+    def has_all_sharing(self, other_user) -> bool:
+        """
+        Checks if the user is allowed to view all photos.
+        """
+        return other_user in self.share_all

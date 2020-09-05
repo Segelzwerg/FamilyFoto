@@ -20,6 +20,18 @@ class UserSettingsTestCase(BaseTestCase):
         self.assertIsNotNone(self.user.settings)
         self.assertEqual(self.user.id, self.user.settings.user_id)
 
+    def test_user_is_allowed_to_view_sharing(self):
+        """
+        Tests if getter of permissions works correctly.
+        """
+        other_user = add_user('test', '123')
+        lea = add_user('lea', '1234')
+
+        self.user.share_all_with([other_user, lea])
+        settings = UserSettings.query.filter_by(user_id=self.user.id).first()
+        self.assertTrue(settings.has_all_sharing(other_user), msg=f'{other_user} is not in '
+                                                                  f'{settings.share_all}')
+
     def test_add_user_to_sharing(self):
         """
         Tests if the share with does work correctly.
