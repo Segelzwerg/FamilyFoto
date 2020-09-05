@@ -1,8 +1,5 @@
 import os
 
-import pytest
-from werkzeug.datastructures import FileStorage
-
 from family_foto.app import add_user
 from family_foto.models.photo import Photo
 from tests.BasePhotoTestCase import BasePhotoTestCase

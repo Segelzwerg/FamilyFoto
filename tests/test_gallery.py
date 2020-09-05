@@ -1,6 +1,4 @@
-import os
 from io import BytesIO
-from shutil import rmtree
 
 from flask_api import status
 from flask_login import current_user
