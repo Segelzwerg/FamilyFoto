@@ -13,7 +13,9 @@ class BaseLoginTestCase(BaseTestCase):
         super().setUp()
         self.patcher = patch('flask_login.utils._get_user')
         self.mock_current_user = self.patcher.start()
-        self.mock_current_user.return_value = add_user('marcel', '1234')
+        user = add_user('marcel', '1234')
+        self.mock_current_user.return_value = user
+        self.mock_current_user.id = user.id
 
     def tearDown(self):
         self.patcher.stop()

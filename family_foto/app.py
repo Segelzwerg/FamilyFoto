@@ -1,5 +1,4 @@
-import flask_resize
-from flask import Flask, redirect, url_for, render_template, request, send_from_directory
+from flask import Flask, redirect, url_for, render_template, request, send_from_directory, abort
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug.datastructures import FileStorage
@@ -25,8 +24,6 @@ login_manager.init_app(app)
 
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
-
-resize = flask_resize.Resize(app)
 
 
 def add_user(username: str, password: str) -> User:
@@ -114,6 +111,19 @@ def upload():
     return render_template('upload.html', form=form, user=current_user, title='Upload')
 
 
+@app.route('/image/<filename>')
+@login_required
+def image_view(filename):
+    """
+    Displays an photo in the image viewer.
+    """
+    log.info(f'{current_user.username} requested image view of {filename}')
+    photo = Photo.query.filter_by(filename=filename).first()
+    if not photo.has_read_permission(current_user):
+        abort(401)
+    return render_template('image.html', user=current_user, photo=photo)
+
+
 @app.route('/photo/<filename>')
 @app.route('/_uploads/photos/<filename>')
 @login_required
@@ -133,8 +143,8 @@ def resized_photo(filename):
     Returns the path resized image.
     :param filename: name of the resized photo
     """
-    log.info(f'{current_user.username} requested /resized-images/{filename}')
-    return send_from_directory('../resized-images',
+    log.info(f'{current_user.username} requested {app.config["RESIZED_DEST"]}/{filename}')
+    return send_from_directory(f'.{app.config["RESIZED_DEST"]}',
                                filename)
 
 
