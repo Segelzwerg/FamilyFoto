@@ -5,6 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # pylint: disable=too-few-public-methods
 
+
 class BaseConfig:
     """
     Basic configurations with all configuration have in common.
@@ -38,3 +39,4 @@ class TestConfiguration(BaseConfig):
     HASH_ROUNDS = 1
 
     UPLOADED_PHOTOS_DEST = './tests/photos'
+    RESIZED_DEST = './tests/resized-images'
