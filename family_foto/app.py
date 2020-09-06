@@ -136,6 +136,18 @@ def uploaded_file(filename):
     return send_from_directory(f'../{app.config["UPLOADED_PHOTOS_DEST"]}', filename)
 
 
+@app.route('/resized-images/<filename>')
+@login_required
+def resized_photo(filename):
+    """
+    Returns the path resized image.
+    :param filename: name of the resized photo
+    """
+    log.info(f'{current_user.username} requested /resized-images/{filename}')
+    return send_from_directory('../resized-images',
+                               filename)
+
+
 @app.route('/gallery', methods=['GET'])
 @login_required
 def gallery():
