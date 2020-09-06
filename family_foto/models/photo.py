@@ -36,13 +36,6 @@ class Photo(db.Model):
         return os.path.abspath(f'/photo/{self.filename}')
 
     @property
-    def image_view(self):
-        """
-        Returns path to image viewer template of this photo.
-        """
-        return f'/image/{self.filename}'
-
-    @property
     def meta(self):
         """
         Meta data of the photo.
