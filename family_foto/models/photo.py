@@ -2,11 +2,11 @@ import os
 from datetime import datetime
 
 from PIL import Image, ExifTags
+from resizeimage.resizeimage import resize_width
 from sqlalchemy import ForeignKey
 
 from family_foto.models import db
 from family_foto.models.user import User
-from family_foto.resize import resize
 
 
 class Photo(db.Model):
@@ -73,11 +73,13 @@ class Photo(db.Model):
         :param width: the new width
         :param height: the new height
         """
-        resized_url = resize(self.path, f'{width}x{height}')
-        if not os.path.exists(resized_url):
-            raise FileNotFoundError(f'resized file of {self} could not be saved')
-        resized_url = resized_url.lstrip('.')
-        return resized_url
+        with open(self.path, 'r+b') as file:
+            with Image.open(file) as image:
+                cover = resize_width(image, width)
+                if not os.path.exists('./resized-images'):
+                    os.mkdir('./resized-images')
+                cover.save(f'./resized-images/{self.filename}', image.format)
+        return f'./resized-images/{self.filename}'
 
     def has_read_permission(self, other_user: User) -> bool:
         """
