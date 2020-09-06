@@ -5,6 +5,7 @@ from PIL import Image, ExifTags
 from resizeimage.resizeimage import resize_width
 from sqlalchemy import ForeignKey
 
+from family_foto.config import BaseConfig
 from family_foto.models import db
 from family_foto.models.user import User
 
@@ -25,7 +26,7 @@ class Photo(db.Model):
         """
         Path of the photo on the server.
         """
-        return f'./photos/{self.filename}'
+        return f'{BaseConfig.UPLOADED_PHOTOS_DEST}/{self.filename}'
 
     @property
     def abs_path(self):
@@ -76,10 +77,10 @@ class Photo(db.Model):
         with open(self.path, 'r+b') as file:
             with Image.open(file) as image:
                 cover = resize_width(image, width)
-                if not os.path.exists('./resized-images'):
-                    os.mkdir('./resized-images')
-                cover.save(f'./resized-images/{self.filename}', image.format)
-        return f'./resized-images/{self.filename}'
+                if not os.path.exists(BaseConfig.RESIZED_DEST):
+                    os.mkdir(BaseConfig.RESIZED_DEST)
+                cover.save(f'{BaseConfig.RESIZED_DEST}/{self.filename}', image.format)
+        return f'{BaseConfig.RESIZED_DEST}/{self.filename}'
 
     def has_read_permission(self, other_user: User) -> bool:
         """
