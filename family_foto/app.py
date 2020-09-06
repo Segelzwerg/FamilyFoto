@@ -143,8 +143,8 @@ def resized_photo(filename):
     Returns the path resized image.
     :param filename: name of the resized photo
     """
-    log.info(f'{current_user.username} requested /resized-images/{filename}')
-    return send_from_directory('../resized-images',
+    log.info(f'{current_user.username} requested {app.config["RESIZED_DEST"]}/{filename}')
+    return send_from_directory(f'.{app.config["RESIZED_DEST"]}',
                                filename)
 
 
