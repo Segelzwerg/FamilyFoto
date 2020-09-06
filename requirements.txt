@@ -11,5 +11,6 @@ WTForms~=2.3.3
 pylint>=2.6.0
 pylint-flask
 pylint-flask-sqlalchemy
+python-resize-image
 pytest
 pytest-cov
