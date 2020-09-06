@@ -79,8 +79,9 @@ class Photo(db.Model):
                 cover = resize_width(image, width)
                 if not os.path.exists(BaseConfig.RESIZED_DEST):
                     os.mkdir(BaseConfig.RESIZED_DEST)
-                cover.save(f'{BaseConfig.RESIZED_DEST}/{self.filename}', image.format)
-        return f'{BaseConfig.RESIZED_DEST}/{self.filename}'
+                save_path = f'{BaseConfig.RESIZED_DEST}/{width}_{height}_{self.filename}'
+                cover.save(save_path, image.format)
+        return save_path.lstrip('.')
 
     def has_read_permission(self, other_user: User) -> bool:
         """
