@@ -10,8 +10,7 @@ class BaseConfig:
     Basic configurations with all configuration have in common.
     """
     UPLOADED_PHOTOS_DEST = './photos'
-    RESIZE_URL = '.'
-    RESIZE_ROOT = '.'
+    RESIZED_DEST = './resized-images'
 
 
 class Config(BaseConfig):
