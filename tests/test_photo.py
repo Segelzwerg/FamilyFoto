@@ -81,6 +81,12 @@ class PhotoTestCase(BasePhotoTestCase):
         resized_url = self.photo.resize(400, 400)
         self.assertTrue(os.path.exists(f'./{resized_url}'), msg=f'{resized_url} does not exists.')
 
+    def test_image_view_path(self):
+        """
+        Tests the image view path.
+        """
+        self.assertEqual(f'/image/{self.photo.filename}', self.photo.image_view)
+
     @staticmethod
     def _test_meta(expected_dict, meta):
         keys_not_in = {k: v for k, v in expected_dict.items() if k not in meta.keys()}
