@@ -3,8 +3,8 @@ from flask_api import status
 from family_foto.app import add_user
 from family_foto.models import db
 from family_foto.models.photo import Photo
-from tests.base_photo_test_case import BasePhotoTestCase
 from tests.base_login_test_case import BaseLoginTestCase
+from tests.base_photo_test_case import BasePhotoTestCase
 
 
 class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
@@ -36,3 +36,13 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         db.session.commit()
         response = self.client.get('/image/example.jpg')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+    def test_shared_individual_photo(self):
+        """
+        Tests sharing an individual photo with another user.
+        """
+        db.session.add(self.photo)
+        db.session.commit()
+        other_user = add_user('other', 'user')
+        response = self.client.post('/image/example.jpg', data=dict(share_with=[other_user.id]))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
