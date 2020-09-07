@@ -111,7 +111,7 @@ def upload():
     return render_template('upload.html', form=form, user=current_user, title='Upload')
 
 
-@app.route('/image/<filename>')
+@app.route('/image/<filename>', methods=['GET', 'POST'])
 @login_required
 def image_view(filename):
     """
