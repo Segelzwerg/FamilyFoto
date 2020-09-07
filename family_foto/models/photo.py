@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from typing import List, Union
 
 from PIL import Image, ExifTags
 from resizeimage.resizeimage import resize_width
@@ -89,12 +90,15 @@ class Photo(db.Model):
             file.close()
         return save_path.lstrip('.')
 
-    def share_with(self, other_user: User) -> None:
+    def share_with(self, other_users: Union[User, List[User]]) -> None:
         """
         Share this photo with an user.
-        :param other_user: the other user the photo will be shared with.
+        :param other_users: the other user the photo will be shared with.
         """
-        self.shared_with.append(other_user)
+        if not isinstance(other_users, list):
+            other_users = [other_users]
+        for user in other_users:
+            self.shared_with.append(user)
 
     def has_read_permission(self, other_user: User) -> bool:
         """
