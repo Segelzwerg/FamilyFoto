@@ -4,8 +4,8 @@ from flask_uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
-from family_foto.forms.upload_form import UploadForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
+from family_foto.forms.upload_form import UploadForm
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.photo import Photo
@@ -118,10 +118,22 @@ def image_view(filename):
     Displays an photo in the image viewer.
     """
     log.info(f'{current_user.username} requested image view of {filename}')
+    form = PhotoSharingForm()
     photo = Photo.query.filter_by(filename=filename).first()
+
+    if request.form.get('share_with'):
+        users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
+            'share_with')]
+        log.info(f'{current_user} requests to share photos with {users_share_with}')
+        photo.shared_with(users_share_with)
+        db.session.commit()
+
+    form.share_with.choices = User.all_user_asc()
+    form.share_with.data = [str(other_user_id) for
+                            other_user_id in [current_user.settings.share_all_id]]
     if not photo.has_read_permission(current_user):
         abort(401)
-    return render_template('image.html', user=current_user, photo=photo)
+    return render_template('image.html', user=current_user, photo=photo, form=form)
 
 
 @app.route('/photo/<filename>')
