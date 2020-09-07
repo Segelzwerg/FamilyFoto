@@ -4,7 +4,7 @@ from wtforms import SubmitField
 from family_foto.forms.fields.multi_checkbox_field import MultiCheckboxField
 
 
-class UserSettingsForm(FlaskForm):
+class PhotoSharingForm(FlaskForm):
     """
     Form of user settings.
     """
