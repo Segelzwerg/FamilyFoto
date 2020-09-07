@@ -52,6 +52,17 @@ class PhotoTestCase(BasePhotoTestCase):
         self.assertTrue(self.photo.has_read_permission(self.other_user),
                         msg=f'{self.other_user} has no permission for this photo by {self.user}.')
 
+    def test_sharing_via_individual_multiple(self):
+        """
+        Tests sharing for an individual photo with multiple users.
+        """
+        third_user = add_user('third', '3')
+        self.photo.share_with([self.other_user, third_user])
+        self.assertTrue(self.photo.has_read_permission(self.other_user),
+                        msg=f'{self.other_user} has no permission for this photo by {self.user}.')
+        self.assertTrue(self.photo.has_read_permission(third_user),
+                        msg=f'{third_user} has no permission for this photo by {self.user}.')
+
     def test_sharing_via_individual_not_granted(self):
         """
         Tests sharing for an individual photo is not granted.
