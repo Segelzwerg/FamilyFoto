@@ -125,7 +125,7 @@ def image_view(filename):
         users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
             'share_with')]
         log.info(f'{current_user} requests to share photos with {users_share_with}')
-        photo.shared_with(users_share_with)
+        photo.share_with(users_share_with)
         db.session.commit()
 
     form.share_with.choices = User.all_user_asc()
