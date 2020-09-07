@@ -17,7 +17,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
                             back_populates='user', uselist=False)
-    photos = relationship('Photo')
+    photos = relationship('Photo', foreign_keys='Photo.user')
 
     def __repr__(self):
         return f'<User {self.username}>'
