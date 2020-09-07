@@ -44,6 +44,14 @@ class PhotoTestCase(BasePhotoTestCase):
                          msg=f'{self.other_user} has general reading permission of {self.user}\'s'
                              f'photos.')
 
+    def test_sharing_via_individual(self):
+        """
+        Tests sharing for an individual photo.
+        """
+        self.photo.share_with(self.other_user)
+        self.assertTrue(self.photo.has_read_permission(self.other_user),
+                        msg=f'{self.other_user} has no permission for this photo by {self.user}.')
+
     def test_meta(self):
         """
         Test the meta data property.
