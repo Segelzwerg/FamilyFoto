@@ -4,6 +4,7 @@ from datetime import datetime
 from PIL import Image, ExifTags
 from resizeimage.resizeimage import resize_width
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 from family_foto.config import BaseConfig
 from family_foto.models import db
@@ -20,6 +21,9 @@ class Photo(db.Model):
     url = db.Column(db.String(128), unique=True)
     upload_date = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.Column(db.Integer, ForeignKey('user.id'))
+    share_with_id = db.Column(db.Integer, ForeignKey('user.id'))
+
+    shared_with = relationship('User', foreign_keys=[share_with_id], uselist=True)
 
     @property
     def path(self):
@@ -85,11 +89,20 @@ class Photo(db.Model):
             file.close()
         return save_path.lstrip('.')
 
+    def share_with(self, other_user: User) -> None:
+        """
+        Share this photo with an user.
+        :param other_user: the other user the photo will be shared with.
+        """
+        self.shared_with.append(other_user)
+
     def has_read_permission(self, other_user: User) -> bool:
         """
         Checks if the other user has permission to view that photo.
         """
         if self.user == other_user.id:
+            return True
+        if other_user in self.shared_with:
             return True
         user = User.query.get(self.user)
         return user.has_general_read_permission(other_user)
