@@ -52,6 +52,13 @@ class PhotoTestCase(BasePhotoTestCase):
         self.assertTrue(self.photo.has_read_permission(self.other_user),
                         msg=f'{self.other_user} has no permission for this photo by {self.user}.')
 
+    def test_sharing_via_individual_not_granted(self):
+        """
+        Tests sharing for an individual photo is not granted.
+        """
+        self.assertFalse(self.photo.has_read_permission(self.other_user),
+                         msg=f'{self.other_user} has permission for this photo by {self.user}.')
+
     def test_meta(self):
         """
         Test the meta data property.
