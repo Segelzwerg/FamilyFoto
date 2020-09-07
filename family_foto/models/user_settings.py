@@ -25,7 +25,9 @@ class UserSettings(db.Model):
         :param other_user: user how will get access to the photos
         """
         if other_user is None:
-            raise AttributeError('other_user must not be None.')
+            msg = 'other_user must not be None.'
+            log.error(msg)
+            raise AttributeError(msg)
         self.share_all.append(other_user)
         log.info(f'{self.user} shares photos with {other_user}.')
 
