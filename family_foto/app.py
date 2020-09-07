@@ -5,7 +5,7 @@ from werkzeug.datastructures import FileStorage
 
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.upload_form import UploadForm
-from family_foto.forms.user_settings_form import UserSettingsForm
+from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.photo import Photo
@@ -164,7 +164,7 @@ def settings():
     """
     Handles all user settings requests.
     """
-    form = UserSettingsForm()
+    form = PhotoSharingForm()
     if request.form.get('share_with'):
         users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
             'share_with')]
