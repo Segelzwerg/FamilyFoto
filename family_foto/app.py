@@ -8,6 +8,7 @@ from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.logger import log
 from family_foto.models import db
+from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
@@ -103,7 +104,8 @@ def upload():
         file: FileStorage = request.files['file']
         if 'image' in file.content_type:
             filename = photos.save(file)
-            photo = Photo(filename=filename, user=current_user.id, url=photos.url(filename))
+            photo = Photo(filename=filename, user=current_user.id,
+                          url=photos.url(filename))
             db.session.add(photo)
             db.session.commit()
             log.info(f'{current_user.username} uploaded {filename}')
@@ -119,21 +121,21 @@ def image_view(filename):
     """
     log.info(f'{current_user.username} requested image view of {filename}')
     form = PhotoSharingForm()
-    photo = Photo.query.filter_by(filename=filename).first()
+    file = File.query.filter_by(filename=filename).first()
 
     if request.form.get('share_with'):
         users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
             'share_with')]
         log.info(f'{current_user} requests to share photos with {users_share_with}')
-        photo.share_with(users_share_with)
+        file.share_with(users_share_with)
         db.session.commit()
 
     form.share_with.choices = User.all_user_asc()
     form.share_with.data = [str(other_user_id) for
                             other_user_id in [current_user.settings.share_all_id]]
-    if not photo.has_read_permission(current_user):
+    if not file.has_read_permission(current_user):
         abort(401)
-    return render_template('image.html', user=current_user, photo=photo, form=form)
+    return render_template('image.html', user=current_user, photo=file, form=form)
 
 
 @app.route('/photo/<filename>')
