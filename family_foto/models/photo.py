@@ -19,7 +19,7 @@ class Photo(File):
         'polymorphic_identity': 'photo'
     }
 
-    def resize(self, width: int, height: int):
+    def thumbnail(self, width: int, height: int):
         """
         Returns the url for resized photo.
         :param width: the new width

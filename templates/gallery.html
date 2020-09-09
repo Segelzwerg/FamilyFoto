@@ -4,7 +4,8 @@
     <h1>Gallery </h1>
     {% for photo in photos %}
         <a href="{{ photo.image_view }}">
-            <img src="{{ photo.resize(200,200) }}" alt="{{ photo.filename }}" class="img-thumbnail">
+            <img src="{{ photo.thumbnail(200,200) }}" alt="{{ photo.filename }}"
+                 class="img-thumbnail">
         </a>
     {% endfor %}
 {% endblock %}

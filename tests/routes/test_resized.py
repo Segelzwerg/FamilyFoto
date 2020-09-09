@@ -14,6 +14,6 @@ class ResizedTestCase(BasePhotoTestCase, BaseLoginTestCase):
         Tests the route is working.
         """
         length = 200
-        self.photo.resize(length, length)
+        self.photo.thumbnail(length, length)
         response = self.client.get(f'/resized-images/{length}_{length}_{self.photo.filename}')
         self.assertEqual(status.HTTP_200_OK, response.status_code, msg=response)
