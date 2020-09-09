@@ -1,4 +1,5 @@
 import os
+from abc import abstractmethod
 from datetime import datetime
 from typing import List, Union
 
@@ -77,6 +78,15 @@ class File(db.Model):
         Returns image width
         """
         return int(self.meta['ExifImageWidth'])
+
+    @abstractmethod
+    def thumbnail(self, width: int, height: int):
+        """
+        Returns a thumbnail of the media file.
+        :param width: thumbnail width in pixel
+        :param height: thumbnail height in pixel (aspect ratio will be kept)
+        """
+        raise NotImplementedError(f'{self} is abstract and not thumbnail() is not implemented.')
 
     def share_with(self, other_users: Union[User, List[User]]) -> None:
         """
