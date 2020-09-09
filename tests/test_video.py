@@ -10,6 +10,8 @@ class VideoTestCase(VideoBaseTestCase):
 
     def setUp(self):
         super().setUp()
+        link = 'https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_1920_18MG.mp4'
+        print(f'example video from: {link}')
 
     def test_thumbnail_video(self):
         """
