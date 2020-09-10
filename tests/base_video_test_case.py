@@ -19,7 +19,7 @@ class VideoBaseTestCase(BaseTestCase):
         if not os.path.exists(VIDEOS_SAVE_PATH):
             os.mkdir(VIDEOS_SAVE_PATH)
         if os.path.exists(RESIZED_SAVE_PATH):
-            rmtree(RESIZED_SAVE_PATH)
+            os.mkdir(RESIZED_SAVE_PATH)
         File.query.delete()
         Video.query.delete()
 
@@ -31,4 +31,6 @@ class VideoBaseTestCase(BaseTestCase):
     def tearDown(self):
         if os.path.exists(VIDEOS_SAVE_PATH):
             rmtree(VIDEOS_SAVE_PATH)
+        if os.path.exists(RESIZED_SAVE_PATH):
+            rmtree(RESIZED_SAVE_PATH)
         super().tearDown()
