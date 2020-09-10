@@ -8,6 +8,7 @@ flask_testing
 flask_wtf
 Werkzeug~=1.0.1
 WTForms~=2.3.3
+opencv-python~=4.4.0.42
 pylint>=2.6.0
 pylint-flask
 pylint-flask-sqlalchemy
