@@ -11,6 +11,7 @@ class BaseConfig:
     Basic configurations with all configuration have in common.
     """
     UPLOADED_PHOTOS_DEST = './photos'
+    UPLOADED_VIDEOS_DEST = './videos'
     RESIZED_DEST = './resized-images'
 
 
