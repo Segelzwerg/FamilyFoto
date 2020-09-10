@@ -19,6 +19,13 @@ class Photo(File):
         'polymorphic_identity': 'photo'
     }
 
+    @property
+    def path(self):
+        """
+        Returns path to photo file.
+        """
+        return f'{BaseConfig.UPLOADED_PHOTOS_DEST}/{self.filename}'
+
     def thumbnail(self, width: int, height: int):
         """
         Returns the url for resized photo.

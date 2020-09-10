@@ -33,11 +33,12 @@ class File(db.Model):
     }
 
     @property
+    @abstractmethod
     def path(self):
         """
-        Path of the photo on the server.
+        Path of the file on the server.
         """
-        return f'{BaseConfig.UPLOADED_PHOTOS_DEST}/{self.filename}'
+        raise NotImplementedError('Each file type has it\'s directory.')
 
     @property
     def abs_path(self):
