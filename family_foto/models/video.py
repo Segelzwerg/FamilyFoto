@@ -15,6 +15,10 @@ class Video(File):
     """
     id = db.Column(db.Integer, ForeignKey('file.id'), primary_key=True)
 
+    __mapper_args__ = {
+        'polymorphic_identity': 'video'
+    }
+
     @property
     def path(self):
         """
