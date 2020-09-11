@@ -1,5 +1,7 @@
 import os
 
+from PIL import Image
+
 from tests.base_video_test_case import BaseVideoTestCase
 
 
@@ -25,4 +27,7 @@ class VideoTestCase(BaseVideoTestCase):
         Tests the rendering of the thumbnail of the video.
         """
         path = self.video.thumbnail(200, 200)
-        self.assertTrue(os.path.exists(f'./{path}'), msg=f'{path} does not exists.')
+        path = f'./{path}'
+        image = Image.open(path)
+        self.assertTrue(os.path.exists(path), msg=f'{path} does not exists.')
+        self.assertEqual(200, image.width)
