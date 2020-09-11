@@ -20,5 +20,5 @@ class UserLoggedInTestCase(BaseLoginTestCase):
         db.session.add(other_photo)
         db.session.commit()
         other_user.share_all_with(current_user)
-        photos = current_user.get_photos()
+        photos = current_user.get_media()
         self.assertIn(other_photo, photos)

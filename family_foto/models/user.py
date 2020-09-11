@@ -36,10 +36,10 @@ class User(UserMixin, db.Model):
         """
         return check_password_hash(self.password_hash, password)
 
-    def get_photos(self):
+    def get_media(self):
         """
-        Gets all photos from this user.
-        :return: List of photo objects.
+        Gets all media files from this user.
+        :return: List of file objects.
         """
         user_photos = User.query.filter_by(id=self.id).first().files
         user_shared = UserSettings.query.filter(

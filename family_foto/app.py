@@ -178,8 +178,8 @@ def gallery():
     """
     Shows all pictures requested
     """
-    user_photos = current_user.get_photos()
-    return render_template('gallery.html', photos=user_photos)
+    user_media = current_user.get_media()
+    return render_template('gallery.html', media=user_media)
 
 
 @app.route('/settings', methods=['GET', 'POST'])
