@@ -52,4 +52,4 @@ class Video(File):
             raise IOError(f'could not write {path}')
         video.release()
         cv2.destroyAllWindows()
-        return path
+        return path.lstrip('.')
