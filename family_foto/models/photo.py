@@ -1,12 +1,10 @@
-import os
-
 from PIL import Image, ExifTags
-from resizeimage.resizeimage import resize_width
 from sqlalchemy import ForeignKey
 
 from family_foto.config import BaseConfig
 from family_foto.models import db
 from family_foto.models.file import File
+from family_foto.utils.image import resize
 
 
 class Photo(File):
@@ -44,13 +42,5 @@ class Photo(File):
         :param width: the new width
         :param height: the new height
         """
-        with open(self.path, 'r+b') as file:
-            with Image.open(file) as image:
-                cover = resize_width(image, width)
-                if not os.path.exists(BaseConfig.RESIZED_DEST):
-                    os.mkdir(BaseConfig.RESIZED_DEST)
-                save_path = f'{BaseConfig.RESIZED_DEST}/{width}_{height}_{self.filename}'
-                cover.save(save_path, image.format)
-                image.close()
-            file.close()
+        save_path = resize(self.path, self.filename, height, width)
         return save_path.lstrip('.')
