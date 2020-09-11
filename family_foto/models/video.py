@@ -2,6 +2,7 @@ import os
 import random
 
 import cv2
+import ffmpeg
 from sqlalchemy import ForeignKey
 
 from family_foto.config import BaseConfig
@@ -18,6 +19,13 @@ class Video(File):
     __mapper_args__ = {
         'polymorphic_identity': 'video'
     }
+
+    @property
+    def meta(self):
+        """
+        Returns the meta data of the video.
+        """
+        return ffmpeg.probe(self.path)
 
     @property
     def path(self):
@@ -37,8 +45,7 @@ class Video(File):
 
         video.set(cv2.CAP_PROP_POS_FRAMES, random.randint(0, frame_count))
         ret, frame = video.read()
-        filename = os.path.splitext(self.filename)[0]
-        path = f'{BaseConfig.RESIZED_DEST}/{width}_{height}_{filename}.jpg'
+        path = f'{BaseConfig.RESIZED_DEST}/{width}_{height}_{self.filename}.jpg'
         if not os.path.exists(BaseConfig.RESIZED_DEST):
             os.mkdir(BaseConfig.RESIZED_DEST)
         if not cv2.imwrite(path, frame):
