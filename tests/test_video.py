@@ -25,4 +25,4 @@ class VideoTestCase(BaseVideoTestCase):
         Tests the rendering of the thumbnail of the video.
         """
         path = self.video.thumbnail(200, 200)
-        self.assertTrue(os.path.exists(path), msg=f'{path} does not exists.')
+        self.assertTrue(os.path.exists(f'./{path}'), msg=f'{path} does not exists.')
