@@ -65,7 +65,9 @@ class UploadTestCase(BaseLoginTestCase):
         Tests if upload of a video works.
         """
         with self.client:
-            with open('../data/example.mp4', 'rb') as file:
+            path = '../data/example.mp4'
+            path = os.path.join(os.path.dirname(__file__), path)
+            with open(os.path.abspath(path), 'rb') as file:
                 data = dict(file=(file, 'example.mp4'))
                 response = self.client.post('/upload',
                                             content_type='multipart/form-data',
