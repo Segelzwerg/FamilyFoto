@@ -1,6 +1,6 @@
 import os
 
-from PIL import Image
+from PIL import Image, ExifTags
 from resizeimage.resizeimage import resize_width
 from sqlalchemy import ForeignKey
 
@@ -18,6 +18,18 @@ class Photo(File):
     __mapper_args__ = {
         'polymorphic_identity': 'photo'
     }
+
+    @property
+    def meta(self):
+        """
+        Meta data of the photo.
+        """
+        with Image.open(self.path) as image:
+            exif = {ExifTags.TAGS[k]: v for k, v in image.getexif().items() if k in
+                    ExifTags.TAGS}
+            exif = {k: self._replace_empty(v) for k, v in exif.items()}
+
+        return exif
 
     @property
     def path(self):

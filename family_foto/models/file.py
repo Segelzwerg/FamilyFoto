@@ -3,11 +3,9 @@ from abc import abstractmethod
 from datetime import datetime
 from typing import List, Union
 
-from PIL import Image, ExifTags
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
-from family_foto.config import BaseConfig
 from family_foto.models import db
 from family_foto.models.user import User
 
@@ -55,16 +53,12 @@ class File(db.Model):
         return f'/image/{self.filename}'
 
     @property
+    @abstractmethod
     def meta(self):
         """
-        Meta data of the photo.
+        Meta data of the file.
         """
-        with Image.open(self.path) as image:
-            exif = {ExifTags.TAGS[k]: v for k, v in image.getexif().items() if k in
-                    ExifTags.TAGS}
-            exif = {k: self._replace_empty(v) for k, v in exif.items()}
-
-        return exif
+        raise NotImplementedError('Each media type has is custom meta data retriever.')
 
     @property
     def height(self):
