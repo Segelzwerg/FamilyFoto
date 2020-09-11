@@ -12,7 +12,7 @@ PHOTOS_SAVE_PATH = './photos'
 
 class UploadTestCase(BaseLoginTestCase):
     """
-    Test case for uploading photos.
+    Test case for uploading media files.
     """
 
     def tearDown(self):
