@@ -3,6 +3,7 @@ from flask_login import LoginManager, current_user, login_user, logout_user, log
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug.datastructures import FileStorage
 
+from family_foto.config import BaseConfig
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.upload_form import UploadForm
@@ -12,6 +13,7 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
+from family_foto.models.video import Video
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('family_foto.config.Config')
@@ -24,7 +26,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 photos = UploadSet('photos', IMAGES)
-configure_uploads(app, photos)
+videos = UploadSet('videos', BaseConfig.VIDEOS)
+configure_uploads(app, (photos, videos))
 
 
 def add_user(username: str, password: str) -> User:
@@ -107,8 +110,15 @@ def upload():
             photo = Photo(filename=filename, user=current_user.id,
                           url=photos.url(filename))
             db.session.add(photo)
-            db.session.commit()
-            log.info(f'{current_user.username} uploaded {filename}')
+        elif 'video' in file.content_type:
+            filename = videos.save(file)
+            video = Video(filename=filename, user=current_user.id,
+                          url=photos.url(filename))
+            db.session.add(video)
+        else:
+            abort(400, f'file type {file.content_type} not supported.')
+        db.session.commit()
+        log.info(f'{current_user.username} uploaded {filename}')
     form = UploadForm()
     return render_template('upload.html', form=form, user=current_user, title='Upload')
 
