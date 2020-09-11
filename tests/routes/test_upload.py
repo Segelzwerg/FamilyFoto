@@ -10,7 +10,7 @@ from tests.base_login_test_case import BaseLoginTestCase
 PHOTOS_SAVE_PATH = './photos'
 
 
-class PhotoUploadTestCase(BaseLoginTestCase):
+class UploadTestCase(BaseLoginTestCase):
     """
     Test case for uploading photos.
     """
