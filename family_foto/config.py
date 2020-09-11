@@ -14,6 +14,9 @@ class BaseConfig:
     UPLOADED_VIDEOS_DEST = './videos'
     RESIZED_DEST = './resized-images'
 
+    VIDEOS = tuple('mp4'.split())
+
+
 
 class Config(BaseConfig):
     """
