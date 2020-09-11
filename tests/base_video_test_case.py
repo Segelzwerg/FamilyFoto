@@ -9,7 +9,7 @@ VIDEOS_SAVE_PATH = './videos'
 RESIZED_SAVE_PATH = './resized-images'
 
 
-class VideoBaseTestCase(BaseTestCase):
+class BaseVideoTestCase(BaseTestCase):
     """
     Base Setup for usage of videos.
     """

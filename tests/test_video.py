@@ -1,9 +1,9 @@
 import os
 
-from tests.base_video_test_case import VideoBaseTestCase
+from tests.base_video_test_case import BaseVideoTestCase
 
 
-class VideoTestCase(VideoBaseTestCase):
+class VideoTestCase(BaseVideoTestCase):
     """
     Test the functionality of the video entity.
     """
