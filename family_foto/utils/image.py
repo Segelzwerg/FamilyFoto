@@ -7,6 +7,14 @@ from family_foto.config import BaseConfig
 
 
 def resize(path: str, filename: str, height: int, width: int):
+    """
+    Resizes an image to the ordered width,
+    :param path: path to original image
+    :param filename: name of the original image
+    :param height: wanted height
+    :param width: wanted width (aspect ration will be kept)
+    :return: path to resized image
+    """
     with open(path, 'r+b') as file:
         with Image.open(file) as image:
             cover = resize_width(image, width)
