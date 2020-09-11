@@ -56,7 +56,7 @@ class UploadTestCase(BaseLoginTestCase):
         response = self.client.post('/upload',
                                     content_type='multipart/form-data',
                                     data=file)
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         if os.path.exists(PHOTOS_SAVE_PATH):
             self.assertNotIn('foto.jpg', os.listdir(PHOTOS_SAVE_PATH))
 
