@@ -1,6 +1,7 @@
 import os
 
 from PIL import Image
+from flask_api import status
 
 from tests.base_video_test_case import BaseVideoTestCase
 
