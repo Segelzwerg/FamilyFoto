@@ -44,3 +44,9 @@ class VideoTestCase(BaseVideoTestCase):
         image = Image.open(path)
         self.assertTrue(os.path.exists(path), msg=f'{path} does not exists.')
         self.assertEqual(200, image.width)
+
+    def test_video_url(self):
+        """
+        Tests the return value of the url property.
+        """
+        self.assertEqual('/videos/example.mp4', self.video.url)
