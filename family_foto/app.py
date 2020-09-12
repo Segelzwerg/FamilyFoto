@@ -160,6 +160,17 @@ def uploaded_file(filename):
     return send_from_directory(f'../{app.config["UPLOADED_PHOTOS_DEST"]}', filename)
 
 
+@app.route('/videos/<filename>')
+@login_required
+def get_video(filename):
+    """
+    Returns path of the original video.
+    :param filename: name of the file
+    """
+    log.info(f'{current_user.username} requested {app.config["UPLOADED_VIDEOS_DEST"]}/{filename}')
+    return send_from_directory(f'../{app.config["UPLOADED_VIDEOS_DEST"]}', filename)
+
+
 @app.route('/resized-images/<filename>')
 @login_required
 def resized_photo(filename):
