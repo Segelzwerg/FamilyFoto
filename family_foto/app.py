@@ -113,7 +113,7 @@ def upload():
         elif 'video' in file.content_type:
             filename = videos.save(file)
             video = Video(filename=filename, user=current_user.id,
-                          url=photos.url(filename))
+                          url=videos.url(filename))
             db.session.add(video)
         else:
             abort(400, f'file type {file.content_type} not supported.')
@@ -160,6 +160,7 @@ def uploaded_file(filename):
     return send_from_directory(f'../{app.config["UPLOADED_PHOTOS_DEST"]}', filename)
 
 
+@app.route('/_uploads/videos/<filename>')
 @app.route('/videos/<filename>')
 @login_required
 def get_video(filename):
