@@ -104,7 +104,7 @@ class PhotoTestCase(BasePhotoTestCase):
         """
         Tests if photos are correctly resized.
         """
-        resized_url = self.photo.resize(400, 400)
+        resized_url = self.photo.thumbnail(400, 400)
         self.assertTrue(os.path.exists(f'./{resized_url}'), msg=f'{resized_url} does not exists.')
 
     def test_image_view_path(self):

@@ -33,7 +33,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         self.client.post('/upload',
                          content_type='multipart/form-data',
                          data=file)
-        photos = current_user.get_photos()
+        photos = current_user.get_media()
         all_photos = Photo.query.all()
         self.assertListEqual(photos, all_photos)
 
@@ -50,7 +50,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         other_photo = Photo(filename='other-photo.jpg', user=2)
         db.session.add(other_photo)
         db.session.commit()
-        photos = current_user.get_photos()
+        photos = current_user.get_media()
         all_photos = Photo.query.all()
         self.assertIn(other_photo, all_photos)
         self.assertNotIn(other_photo, photos)

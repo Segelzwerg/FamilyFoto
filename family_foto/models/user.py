@@ -17,7 +17,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
                             back_populates='user', uselist=False)
-    photos = relationship('Photo', foreign_keys='Photo.user')
+    files = relationship('File', foreign_keys='File.user')
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -36,16 +36,16 @@ class User(UserMixin, db.Model):
         """
         return check_password_hash(self.password_hash, password)
 
-    def get_photos(self):
+    def get_media(self):
         """
-        Gets all photos from this user.
-        :return: List of photo objects.
+        Gets all media files from this user.
+        :return: List of file objects.
         """
-        user_photos = User.query.filter_by(id=self.id).first().photos
+        user_photos = User.query.filter_by(id=self.id).first().files
         user_shared = UserSettings.query.filter(
             UserSettings.share_all.any(User.id == self.id)).all()
         for user in user_shared:
-            user_photos.extend(User.query.filter_by(id=user.id).first().photos)
+            user_photos.extend(User.query.filter_by(id=user.id).first().files)
         return user_photos
 
     def share_all_with(self, other_users: Union['User', List['User']]) -> None:
@@ -64,7 +64,7 @@ class User(UserMixin, db.Model):
         for revoked_user in revoked_users:
             self.settings.revoke_sharing(revoked_user)
 
-    def has_general_read_permission(self, other_user: 'User')->bool:
+    def has_general_read_permission(self, other_user: 'User') -> bool:
         """
         Checks if the other use is allowed to view all photos.
         """
