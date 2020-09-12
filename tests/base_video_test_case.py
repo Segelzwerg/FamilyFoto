@@ -18,7 +18,7 @@ class BaseVideoTestCase(BaseTestCase):
         super().setUp()
         if not os.path.exists(VIDEOS_SAVE_PATH):
             os.mkdir(VIDEOS_SAVE_PATH)
-        if os.path.exists(RESIZED_SAVE_PATH):
+        if not os.path.exists(RESIZED_SAVE_PATH):
             os.mkdir(RESIZED_SAVE_PATH)
         File.query.delete()
         Video.query.delete()
