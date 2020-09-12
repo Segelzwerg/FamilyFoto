@@ -43,4 +43,5 @@ class TestConfiguration(BaseConfig):
     HASH_ROUNDS = 1
 
     UPLOADED_PHOTOS_DEST = './tests/photos'
+    UPLOADED_VIDEOS_DEST = './tests/videos'
     RESIZED_DEST = './tests/resized-images'
