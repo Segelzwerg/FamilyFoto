@@ -45,7 +45,8 @@ class Video(File):
         frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
 
         video.set(cv2.CAP_PROP_POS_FRAMES, random.randint(0, frame_count))
-        ret, frame = video.read()
+        _, frame = video.read()
+
         path = f'{BaseConfig.RESIZED_DEST}/{width}_{height}_{self.filename}.jpg'
         if not os.path.exists(BaseConfig.RESIZED_DEST):
             os.mkdir(BaseConfig.RESIZED_DEST)
