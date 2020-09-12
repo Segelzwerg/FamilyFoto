@@ -1,16 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>User Settings</h1>
-    <h2>Photo Sharing</h2>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.share_with.label }}<br>
-            {{ form.share_with }}
-        </p>
-        <p>
-            {{ form.submit() }}
-        </p>
-    </form>
+    <div class="container">
+        <h1>User Settings</h1>
+        {% include 'fragments/photo-sharing.html' %}
+    </div>
 {% endblock %}

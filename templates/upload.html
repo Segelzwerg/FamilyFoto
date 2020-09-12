@@ -1,13 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Upload a photo</h1>
-    <form action="" method="post" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.file.label }}<br>
-            {{ form.file(size=32) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <div class="card" style="width: 25rem">
+        <div class="card-body">
+
+            <h1 class="card-title">Upload a photo</h1>
+            <form action="" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    {{ form.hidden_tag() }}
+                    <div class="custom-file">
+                        {{ form.file.label(class="custom-file-label") }}<br>
+                        {{ form.file(size=32, class="custom-file-input") }}
+                    </div>
+                    <p>{{ form.submit(class="btn btn-primary") }}</p>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

@@ -22,10 +22,27 @@ class UserSettings(db.Model):
     def share_all_photos_with(self, other_user):
         """
         Allows the user to see the user's photos.
-        :param other_user: id of the other user
-        :type other_user: User
+        :param other_user: user how will get access to the photos
         """
         if other_user is None:
-            raise AttributeError('other_user must not be None.')
+            msg = 'other_user must not be None.'
+            log.error(msg)
+            raise AttributeError(msg)
         self.share_all.append(other_user)
         log.info(f'{self.user} shares photos with {other_user}.')
+
+    def revoke_sharing(self, other_user):
+        """
+        Revokes the privileges of the other use.
+        :param other_user: the user how rights will get revoked
+        """
+        if other_user is None:
+            raise AttributeError('other_user must not be None')
+        self.share_all.remove(other_user)
+        log.info(f'{self.user} revokes sharing of photos with {other_user}.')
+
+    def has_all_sharing(self, other_user) -> bool:
+        """
+        Checks if the user is allowed to view all photos.
+        """
+        return other_user in self.share_all

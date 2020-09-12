@@ -5,13 +5,17 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # pylint: disable=too-few-public-methods
 
+
 class BaseConfig:
     """
     Basic configurations with all configuration have in common.
     """
     UPLOADED_PHOTOS_DEST = './photos'
-    RESIZE_URL = '.'
-    RESIZE_ROOT = '.'
+    UPLOADED_VIDEOS_DEST = './videos'
+    RESIZED_DEST = './resized-images'
+
+    VIDEOS = tuple('mp4'.split())
+
 
 
 class Config(BaseConfig):
@@ -39,3 +43,5 @@ class TestConfiguration(BaseConfig):
     HASH_ROUNDS = 1
 
     UPLOADED_PHOTOS_DEST = './tests/photos'
+    UPLOADED_VIDEOS_DEST = './tests/videos'
+    RESIZED_DEST = './tests/resized-images'

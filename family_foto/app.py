@@ -1,17 +1,19 @@
-import flask_resize
-from flask import Flask, redirect, url_for, render_template, request, send_from_directory
+from flask import Flask, redirect, url_for, render_template, request, send_from_directory, abort
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug.datastructures import FileStorage
 
+from family_foto.config import BaseConfig
 from family_foto.forms.login_form import LoginForm
+from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.upload_form import UploadForm
-from family_foto.forms.user_settings_form import UserSettingsForm
 from family_foto.logger import log
 from family_foto.models import db
+from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
+from family_foto.models.video import Video
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('family_foto.config.Config')
@@ -24,9 +26,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 photos = UploadSet('photos', IMAGES)
-configure_uploads(app, photos)
-
-resize = flask_resize.Resize(app)
+videos = UploadSet('videos', BaseConfig.VIDEOS)
+configure_uploads(app, (photos, videos))
 
 
 def add_user(username: str, password: str) -> User:
@@ -106,12 +107,45 @@ def upload():
         file: FileStorage = request.files['file']
         if 'image' in file.content_type:
             filename = photos.save(file)
-            photo = Photo(filename=filename, user=current_user.id, url=photos.url(filename))
+            photo = Photo(filename=filename, user=current_user.id,
+                          url=photos.url(filename))
             db.session.add(photo)
-            db.session.commit()
-            log.info(f'{current_user.username} uploaded {filename}')
+        elif 'video' in file.content_type:
+            filename = videos.save(file)
+            video = Video(filename=filename, user=current_user.id,
+                          url=videos.url(filename))
+            db.session.add(video)
+        else:
+            abort(400, f'file type {file.content_type} not supported.')
+        db.session.commit()
+        log.info(f'{current_user.username} uploaded {filename}')
     form = UploadForm()
     return render_template('upload.html', form=form, user=current_user, title='Upload')
+
+
+@app.route('/image/<filename>', methods=['GET', 'POST'])
+@login_required
+def image_view(filename):
+    """
+    Displays an photo in the image viewer.
+    """
+    log.info(f'{current_user.username} requested image view of {filename}')
+    form = PhotoSharingForm()
+    file = File.query.filter_by(filename=filename).first()
+
+    if request.form.get('share_with'):
+        users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
+            'share_with')]
+        log.info(f'{current_user} requests to share photos with {users_share_with}')
+        file.share_with(users_share_with)
+        db.session.commit()
+
+    form.share_with.choices = User.all_user_asc()
+    form.share_with.data = [str(other_user_id) for
+                            other_user_id in [current_user.settings.share_all_id]]
+    if not file.has_read_permission(current_user):
+        abort(401)
+    return render_template('image.html', user=current_user, photo=file, form=form)
 
 
 @app.route('/photo/<filename>')
@@ -126,6 +160,18 @@ def uploaded_file(filename):
     return send_from_directory(f'../{app.config["UPLOADED_PHOTOS_DEST"]}', filename)
 
 
+@app.route('/_uploads/videos/<filename>')
+@app.route('/videos/<filename>')
+@login_required
+def get_video(filename):
+    """
+    Returns path of the original video.
+    :param filename: name of the file
+    """
+    log.info(f'{current_user.username} requested {app.config["UPLOADED_VIDEOS_DEST"]}/{filename}')
+    return send_from_directory(f'../{app.config["UPLOADED_VIDEOS_DEST"]}', filename)
+
+
 @app.route('/resized-images/<filename>')
 @login_required
 def resized_photo(filename):
@@ -133,8 +179,8 @@ def resized_photo(filename):
     Returns the path resized image.
     :param filename: name of the resized photo
     """
-    log.info(f'{current_user.username} requested /resized-images/{filename}')
-    return send_from_directory('../resized-images',
+    log.info(f'{current_user.username} requested {app.config["RESIZED_DEST"]}/{filename}')
+    return send_from_directory(f'.{app.config["RESIZED_DEST"]}',
                                filename)
 
 
@@ -144,8 +190,8 @@ def gallery():
     """
     Shows all pictures requested
     """
-    user_photos = current_user.get_photos()
-    return render_template('gallery.html', photos=user_photos)
+    user_media = current_user.get_media()
+    return render_template('gallery.html', media=user_media)
 
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -154,7 +200,7 @@ def settings():
     """
     Handles all user settings requests.
     """
-    form = UserSettingsForm()
+    form = PhotoSharingForm()
     if request.form.get('share_with'):
         users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
             'share_with')]

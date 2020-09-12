@@ -2,10 +2,10 @@
 
 {% block content %}
     <h1>Gallery </h1>
-    {% for photo in photos %}
-        <a href="{{ photo.url }}">
-            <img src="{{ photo.path|resize('200x200') }}" alt={{ photo.filename }}>
+    {% for medium in media %}
+        <a href="{{ medium.image_view }}">
+            <img src="{{ medium.thumbnail(200,200) }}" alt="{{ medium.filename }}"
+                 class="img-thumbnail">
         </a>
     {% endfor %}
-
 {% endblock %}

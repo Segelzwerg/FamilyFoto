@@ -7,13 +7,12 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.8, 3.9.0-rc.1]
       fail-fast: false
       max-parallel: 4
-      
+    runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -32,6 +31,7 @@ jobs:
         run: |
           python --version
           python3 --version
+          sudo apt-get install ffmpeg
           python3 -m pip install --upgrade pip setuptools
           python3 -m pip install -r requirements.txt
           

@@ -1,15 +1,18 @@
+ffmpeg-python
 Flask~=1.1.2
 flask_api
 flask_login
-flask_resize[full]
+flask_resize
 flask_sqlalchemy
 flask_testing
 -e git://github.com/maxcountryman/flask-uploads.git#egg=flask-uploads
 flask_wtf
 Werkzeug~=1.0.1
 WTForms~=2.3.3
-pylint>=2.5.3
+opencv-python~=4.4.0.42
+pylint>=2.6.0
 pylint-flask
 pylint-flask-sqlalchemy
+python-resize-image
 pytest
 pytest-cov
