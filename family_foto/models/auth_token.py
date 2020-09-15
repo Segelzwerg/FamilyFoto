@@ -13,12 +13,11 @@ class AuthToken(db.Model):
     token = db.Column(db.String(32), index=True, unique=True)
     expiration = db.Column(db.DateTime)
 
-    @staticmethod
-    def check(token: 'AuthToken') -> bool:
+    def check(self) -> bool:
         """
         Checks if the an AuthToken is still valid.
         """
-        return token.expiration < datetime.utcnow()
+        return self.expiration < datetime.utcnow()
 
     @staticmethod
     def create_token(expires_in: int = 3600) -> 'AuthToken':
