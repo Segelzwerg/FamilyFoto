@@ -17,7 +17,7 @@ class AuthToken(db.Model):
         """
         Checks if the an AuthToken is still valid.
         """
-        return self.expiration < datetime.utcnow()
+        return self.expiration > datetime.utcnow()
 
     @staticmethod
     def create_token(expires_in: int = 3600) -> 'AuthToken':
