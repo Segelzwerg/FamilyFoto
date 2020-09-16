@@ -1,4 +1,5 @@
 from family_foto.app import add_user
+from family_foto.models.auth_token import AuthToken
 from family_foto.models.user import User
 from tests.base_test_case import BaseTestCase
 
@@ -28,3 +29,11 @@ class UserTestCases(BaseTestCase):
         user.share_all_with(other_user)
         self.assertTrue(user.has_general_read_permission(other_user),
                         msg=f'{other_user} has no permission to view photos of {user}')
+
+    def test_auth_token(self):
+        """
+        Checks if an AuthToken is returned.
+        """
+        user = add_user('authy', 'geheim')
+        token = user.get_token()
+        self.assertIsInstance(token, AuthToken)
