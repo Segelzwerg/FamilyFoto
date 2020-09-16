@@ -30,10 +30,21 @@ class UserTestCases(BaseTestCase):
         self.assertTrue(user.has_general_read_permission(other_user),
                         msg=f'{other_user} has no permission to view photos of {user}')
 
-    def test_auth_token(self):
+    def test_create_auth_token(self):
         """
         Checks if an AuthToken is returned.
         """
         user = add_user('authy', 'geheim')
         token = user.get_token()
         self.assertIsInstance(token, AuthToken)
+
+    def test_get_auth_token(self):
+        """
+        Test getting an already existing token.
+        """
+        user = add_user('authy', 'geheim')
+        first_token = user.get_token()
+        second_token = user.get_token()
+        self.assertIsInstance(first_token, AuthToken)
+        self.assertIsInstance(second_token, AuthToken)
+        self.assertEqual(first_token, second_token)
