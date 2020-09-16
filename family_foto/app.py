@@ -3,6 +3,7 @@ from flask_login import LoginManager, current_user, login_user, logout_user, log
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug.datastructures import FileStorage
 
+from family_foto.api import api
 from family_foto.config import BaseConfig
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
@@ -17,6 +18,7 @@ from family_foto.models.video import Video
 
 app = Flask(__name__, template_folder='../templates')
 app.config.from_object('family_foto.config.Config')
+app.register_blueprint(api, url_prefix='/api')
 
 db.init_app(app)
 db.app = app
