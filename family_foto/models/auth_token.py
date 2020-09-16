@@ -19,6 +19,12 @@ class AuthToken(db.Model):
         """
         return self.expiration > datetime.utcnow()
 
+    def revoke(self) -> None:
+        """
+        Revoke this token.
+        """
+        self.expiration = datetime.utcnow()
+
     @staticmethod
     def create_token(expires_in: int = 3600) -> 'AuthToken':
         """
