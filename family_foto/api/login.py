@@ -21,7 +21,7 @@ def get_token():
     token = basic_auth.current_user().get_token()
     db.session.commit()
     log.info(f'{current_user} requested AuthToken.')
-    return jsonify({'token': token})
+    return jsonify({'token': token.to_dict()})
 
 
 @basic_auth.verify_password

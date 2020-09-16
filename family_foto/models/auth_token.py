@@ -16,6 +16,12 @@ class AuthToken(db.Model):
     expiration = db.Column(db.DateTime)
     user = db.Column(db.Integer, ForeignKey('user.id'))
 
+    def to_dict(self):
+        """
+        Returns the auth token as dict.
+        """
+        return {'token': self.token}
+
     def check(self) -> bool:
         """
         Checks if the an AuthToken is still valid.
