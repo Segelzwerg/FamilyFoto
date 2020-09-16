@@ -1,14 +1,16 @@
 from flask import jsonify
-from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_login import current_user
 
 from family_foto.api import api
 from family_foto.api.errors import error_response
 from family_foto.logger import log
 from family_foto.models import db
+from family_foto.models.auth_token import AuthToken
 from family_foto.models.user import User
 
 basic_auth = HTTPBasicAuth()
+token_auth = HTTPTokenAuth()
 
 
 @api.route('/token', methods=['POST'])
@@ -42,5 +44,23 @@ def basic_auth_error(status):
     """
     Returns the custom error message for a given error code.
     :param status: integer of the error code
+    """
+    return error_response(status)
+
+
+@token_auth.verify_token
+def verify_token(token: AuthToken):
+    """
+    Verifies the current token.
+    :param token: token to validate
+    """
+    return token.check() if token else None
+
+
+@token_auth.error_handler
+def token_auth_error(status: int):
+    """
+    Handles token auth errors
+    :param status: http error status code
     """
     return error_response(status)
