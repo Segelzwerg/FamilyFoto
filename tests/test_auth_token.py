@@ -51,3 +51,11 @@ class TestAuthTokenTestCase(BaseTestCase):
         token = AuthToken.create_token(100)
         mock_datetime.utcnow = mock.Mock(return_value=datetime(1901, 12, 21, 0, 1, 50))
         self.assertFalse(token.check())
+
+    def test_revoke_token(self):
+        """
+        Tests if a token can be revoked.
+        """
+        token = AuthToken.create_token(6000)
+        token.revoke()
+        self.assertFalse(token.check(), msg=f'{token} is still valid.')
