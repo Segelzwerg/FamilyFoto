@@ -2,6 +2,8 @@ import base64
 import os
 from datetime import datetime, timedelta
 
+from sqlalchemy import ForeignKey
+
 from family_foto.models import db
 
 
@@ -12,6 +14,7 @@ class AuthToken(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True)
     token = db.Column(db.String(32), index=True, unique=True)
     expiration = db.Column(db.DateTime)
+    user = db.Column(db.Integer, ForeignKey('user.id'))
 
     def check(self) -> bool:
         """
