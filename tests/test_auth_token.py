@@ -8,6 +8,10 @@ from tests.base_test_case import BaseTestCase
 
 
 def mock_os_random(size=24):
+    """
+    Mocks the os random function
+    :param size:
+    """
     return b'\x99\x9f\xa0\xb7\xdd\r\x9c#\x97\x0c\xae\xc1>b*\xdb\xde)Q=\xeb\xa7\x1b<'
 
 
@@ -15,6 +19,7 @@ class TestAuthTokenTestCase(BaseTestCase):
     """
     Test the AuthToken Class.
     """
+
     def setUp(self):
         super().setUp()
         self.user = add_user('authy', 'secret')
