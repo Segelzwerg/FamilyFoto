@@ -12,6 +12,7 @@ class ApiAuthTestCase(BaseLoginTestCase):
     """
     Tests the api.
     """
+
     def test_token_getter(self):
         """
         Tests the api route for getting a token.
@@ -22,6 +23,17 @@ class ApiAuthTestCase(BaseLoginTestCase):
                                         headers={'Authorization': f'Basic {credentials}'})
 
             self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_wrong_password(self):
+        """
+        Tests the error handling of wrong credentials.
+        """
+        with self.client:
+            credentials = b64encode(b'marcel:12345').decode('utf-8')
+            response = self.client.post('/api/token',
+                                        headers={'Authorization': f'Basic {credentials}'})
+
+            self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
     def test_verify_token(self):
         """
