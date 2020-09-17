@@ -63,6 +63,14 @@ class TestAuthTokenTestCase(BaseTestCase):
         mock_datetime.utcnow = mock.Mock(return_value=datetime(1901, 12, 21, 0, 1, 50))
         self.assertFalse(token.check(self.user.id))
 
+    def test_wrong_id(self):
+        """
+        Test user is not owner of token.
+        """
+        other_user = add_user('other', 'user')
+        token = AuthToken.create_token(other_user, 100)
+        self.assertFalse(token.check(self.user.id))
+
     def test_revoke_token(self):
         """
         Tests if a token can be revoked.
