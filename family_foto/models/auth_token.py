@@ -3,6 +3,7 @@ import os
 from datetime import datetime, timedelta
 
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 from family_foto.models import db
 
@@ -14,7 +15,9 @@ class AuthToken(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True)
     token = db.Column(db.String(32), index=True, unique=True)
     expiration = db.Column(db.DateTime)
-    user = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey('user.id'), unique=True, nullable=False)
+    user = relationship('User', foreign_keys=[user_id], uselist=False)
+
 
     def to_dict(self):
         """

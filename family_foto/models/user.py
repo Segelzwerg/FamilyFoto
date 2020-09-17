@@ -19,7 +19,7 @@ class User(UserMixin, db.Model):
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
                             back_populates='user', uselist=False)
     files = relationship('File', foreign_keys='File.user')
-    token = relationship('AuthToken', uselist=False)
+    token = relationship('AuthToken', foreign_keys='AuthToken.user_id', uselist=False)
 
     def __repr__(self):
         return f'<User {self.username}>'
