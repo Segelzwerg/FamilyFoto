@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from family_foto.models import db
+from family_foto.models.auth_token import AuthToken
 from family_foto.models.user_settings import UserSettings
 
 
@@ -18,6 +19,7 @@ class User(UserMixin, db.Model):
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
                             back_populates='user', uselist=False)
     files = relationship('File', foreign_keys='File.user')
+    token = relationship('AuthToken', foreign_keys='AuthToken.user_id', uselist=False)
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -69,6 +71,16 @@ class User(UserMixin, db.Model):
         Checks if the other use is allowed to view all photos.
         """
         return self.settings.has_all_sharing(other_user)
+
+    def get_token(self) -> AuthToken:
+        """
+        Retrieves a new token or the current one.
+        :return: an AuthToken
+        """
+        if self.token is None or not self.token.check(self.id):
+            auth_token = AuthToken.create_token(self)
+            self.token = auth_token
+        return self.token
 
     @staticmethod
     def all_user_asc():
