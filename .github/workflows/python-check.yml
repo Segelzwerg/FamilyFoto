@@ -1,0 +1,54 @@
+name: Python Check
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+        python-version: [3.8]
+      fail-fast: false
+      max-parallel: 4
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python --version
+          python3 --version
+          sudo apt-get install ffmpeg
+          python3 -m pip install --upgrade pip setuptools
+          python3 -m pip install -r requirements.txt
+          
+      - name: Python Pylint Github Action
+        run: |
+          python3 -m pylint --version
+          python3 -m pylint --load-plugins pylint_flask_sqlalchemy --rcfile=.pylintrc -j 2 family_foto tests
+          
+      - name: Python Pytest with Coverage
+        run: |
+          cd tests
+          python3 -m pytest --cov=../family_foto --cov-report=xml
+          cd ..
+      - name: Upload to codecoverage
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./tests/coverage.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}

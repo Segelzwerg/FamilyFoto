@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Image View </h1>
+    <div class="row">
+        <div class="col-auto">
+            <div class="card">
+                {% if photo is not none %}
+                    <a href="{{ photo.url }}">
+                        <img src="{{ photo.thumbnail(400, 400) }}" alt={{ photo.filename }}>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Meta Tag</th>
+                            <th>Meta Value</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for tag, value in photo.meta.items() %}
+                            <tr class="{{ loop.cycle('odd', 'even') }}">
+                                {% set rowloop = loop %}
+                                <td id="cell-{{ rowloop.index }}-{{ loop.index }}">{{ tag }}</td>
+                                <td id="cell-{{ rowloop.index }}-{{ loop.index }}">{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-auto">
+            {% include 'fragments/photo-sharing.html' %}
+        </div>
+    </div>
+{% endblock %}
