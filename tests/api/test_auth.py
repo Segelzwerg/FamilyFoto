@@ -1,6 +1,7 @@
 from base64 import b64encode
 
 from flask_api import status
+from flask_login import current_user
 
 from family_foto.api.auth import verify_token
 from family_foto.models.auth_token import AuthToken
@@ -23,5 +24,5 @@ class ApiAuthTestCase(BaseLoginTestCase):
         """
         Tests the verification of a token.
         """
-        token = AuthToken.create_token()
+        token = AuthToken.create_token(current_user)
         self.assertTrue(verify_token(token), msg=f'Expected {token} to be verified but was not.')

@@ -54,7 +54,7 @@ def verify_token(token: AuthToken):
     Verifies the current token.
     :param token: token to validate
     """
-    return token.check() if token else None
+    return token.check(current_user.id) if token else None
 
 
 @token_auth.error_handler

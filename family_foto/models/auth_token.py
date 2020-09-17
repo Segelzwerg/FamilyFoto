@@ -14,7 +14,7 @@ class AuthToken(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True)
     token = db.Column(db.String(32), index=True, unique=True)
     expiration = db.Column(db.DateTime)
-    user = db.Column(db.Integer, ForeignKey('user.id'))
+    user = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
 
     def to_dict(self):
         """
@@ -22,10 +22,12 @@ class AuthToken(db.Model):
         """
         return {'token': self.token}
 
-    def check(self) -> bool:
+    def check(self, user_id) -> bool:
         """
         Checks if the an AuthToken is still valid.
         """
+        if self.user.id != user_id:
+            return False
         return self.expiration > datetime.utcnow()
 
     def revoke(self) -> None:
@@ -35,14 +37,15 @@ class AuthToken(db.Model):
         self.expiration = datetime.utcnow()
 
     @staticmethod
-    def create_token(expires_in: int = 3600) -> 'AuthToken':
+    def create_token(user, expires_in: int = 3600) -> 'AuthToken':
         """
         Generates a new AuthToken.
+        :param user: owner of the token
         :param expires_in: seconds until the token expires.
         """
         now = datetime.utcnow()
         token_string = base64.b64encode(os.urandom(24)).decode('utf-8')
         expiration = now + timedelta(seconds=expires_in)
-        token = AuthToken(token=token_string, expiration=expiration)
+        token = AuthToken(user=user, token=token_string, expiration=expiration)
         db.session.add(token)
         return token

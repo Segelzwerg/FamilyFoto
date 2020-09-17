@@ -77,8 +77,8 @@ class User(UserMixin, db.Model):
         Retrieves a new token or the current one.
         :return: an AuthToken
         """
-        if self.token is None or not self.token.check():
-            auth_token = AuthToken.create_token()
+        if self.token is None or not self.token.check(self.id):
+            auth_token = AuthToken.create_token(self)
             self.token = auth_token
         return self.token
 
