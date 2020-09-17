@@ -18,7 +18,6 @@ class AuthToken(db.Model):
     user_id = db.Column(db.Integer, ForeignKey('user.id'), unique=True, nullable=False)
     user = relationship('User', foreign_keys=[user_id], uselist=False)
 
-
     def to_dict(self):
         """
         Returns the auth token as dict.
