@@ -7,6 +7,8 @@ from family_foto.models.auth_token import AuthToken
 from tests.base_test_case import BaseTestCase
 
 
+# requires parameter for mocking
+# pylint: disable=W0613
 def mock_os_random(size=24):
     """
     Mocks the os random function
