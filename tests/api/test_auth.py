@@ -9,6 +9,9 @@ from tests.base_login_test_case import BaseLoginTestCase
 
 
 class ApiAuthTestCase(BaseLoginTestCase):
+    """
+    Tests the api.
+    """
     def test_token_getter(self):
         """
         Tests the api route for getting a token.
