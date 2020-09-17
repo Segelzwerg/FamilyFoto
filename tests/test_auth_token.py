@@ -7,7 +7,7 @@ from family_foto.models.auth_token import AuthToken
 from tests.base_test_case import BaseTestCase
 
 
-def os_random_mock(size=24):
+def mock_os_random(size=24):
     return b'\x99\x9f\xa0\xb7\xdd\r\x9c#\x97\x0c\xae\xc1>b*\xdb\xde)Q=\xeb\xa7\x1b<'
 
 
@@ -30,7 +30,7 @@ class TestAuthTokenTestCase(BaseTestCase):
         expected_expiration = datetime(1901, 12, 21, 0, 1, 40)
         self.assertEqual(expected_expiration, token.expiration)
 
-    @mock.patch('family_foto.models.auth_token.os.urandom', side_effect=os_random_mock)
+    @mock.patch('family_foto.models.auth_token.os.urandom', side_effect=mock_os_random)
     def test_token_gen_token(self, os_random_mock):
         """
         Tests the token generator.
