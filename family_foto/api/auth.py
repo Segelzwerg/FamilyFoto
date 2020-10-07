@@ -1,5 +1,3 @@
-from typing import Union
-
 from flask import jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_login import current_user
@@ -29,7 +27,7 @@ def get_token():
 
 
 @basic_auth.verify_password
-def verify_password(username: str, password: str) -> Union[None, User]:
+def verify_password(username: str, password: str) -> [None, User]:
     """
     Verifies the password for given user.
     :param username: the username string
