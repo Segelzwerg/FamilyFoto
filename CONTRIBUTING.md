@@ -18,7 +18,7 @@ Please comment on an issue before starting work. This way nobody is wasting time
 
 ### Coding
 
-Please use Java Coding Conventions so the code is easily readable for everyone.
+Please use [PEP8](https://www.python.org/dev/peps/pep-0008/) so the code is easily readable for everyone.
 
 #### Commits
 
