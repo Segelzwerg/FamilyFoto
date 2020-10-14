@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List
 
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
@@ -50,7 +50,7 @@ class User(UserMixin, db.Model):
             user_photos.extend(User.query.filter_by(id=user.id).first().files)
         return user_photos
 
-    def share_all_with(self, other_users: Union['User', List['User']]) -> None:
+    def share_all_with(self, other_users: ('User', List['User'])) -> None:
         """
         Share all photos with users. It also revokes user privileges if not in list.
         :param other_users: the user/s all photos will be shared with
