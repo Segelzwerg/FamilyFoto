@@ -147,8 +147,8 @@ def uploaded_file(filename):
     Returns path of the original photo.
     :param filename: name of the file
     """
-    log.info(
-        f'{current_user.username} requested {current_app.config["UPLOADED_PHOTOS_DEST"]}/{filename}')
+    log.info(f'{current_user.username} requested '
+             f'{current_app.config["UPLOADED_PHOTOS_DEST"]}/{filename}')
     return send_from_directory(current_app.config["UPLOADED_PHOTOS_DEST"], filename)
 
 
@@ -160,8 +160,8 @@ def get_video(filename):
     Returns path of the original video.
     :param filename: name of the file
     """
-    log.info(
-        f'{current_user.username} requested {current_app.config["UPLOADED_VIDEOS_DEST"]}/{filename}')
+    log.info(f'{current_user.username} requested '
+             f'{current_app.config["UPLOADED_VIDEOS_DEST"]}/{filename}')
     return send_from_directory(current_app.config["UPLOADED_VIDEOS_DEST"], filename)
 
 

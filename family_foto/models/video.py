@@ -49,7 +49,6 @@ class Video(File):
         """
         Returns the meta data of the video.
         """
-        # TODO: cache this
         return ffmpeg.probe(self.abs_path)
 
     @property
