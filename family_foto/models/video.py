@@ -3,6 +3,7 @@ import random
 
 import cv2
 import ffmpeg
+from flask import current_app
 from sqlalchemy import ForeignKey
 
 from family_foto.models import db
@@ -14,6 +15,7 @@ class Video(File):
     """
     Class of the video entity.
     """
+
     id = db.Column(db.Integer, ForeignKey('file.id'), primary_key=True)
 
     __mapper_args__ = {
@@ -21,18 +23,36 @@ class Video(File):
     }
 
     @property
+    def image_view(self):
+        return f'/image/{self.filename}'
+
+    @property
+    def height(self) -> int:
+        streams: list[dict] = self.meta['streams']
+        for stream in streams:
+            if stream['codec_type'] == 'video':
+                return int(stream['height'])
+
+    @property
+    def width(self) -> int:
+        streams: list[dict] = self.meta['streams']
+        for stream in streams:
+            if stream['codec_type'] == 'video':
+                return int(stream['width'])
+
+    @property
     def meta(self):
         """
         Returns the meta data of the video.
         """
-        return ffmpeg.probe(self.path)
+        return ffmpeg.probe(self.abs_path)
 
     @property
     def path(self):
         """
         Returns path to video file.
         """
-        return f'{BaseConfig.UPLOADED_VIDEOS_DEST}/{self.filename}'
+        return current_app.config['UPLOADED_VIDEOS_DEST_RELATIVE'] + "/" + self.filename
 
     def thumbnail(self, width: int, height: int):
         """
@@ -40,18 +60,18 @@ class Video(File):
         :param width: thumbnail width in pixel
         :param height: thumbnail height in pixel (aspect ratio will be kept)
         """
-        video = cv2.VideoCapture(self.path)
+        video = cv2.VideoCapture(self.abs_path)
         frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
 
         video.set(cv2.CAP_PROP_POS_FRAMES, random.randint(0, frame_count))
         _, frame = video.read()
 
-        path = f'{BaseConfig.RESIZED_DEST}/{width}_{height}_{self.filename}.jpg'
-        if not os.path.exists(BaseConfig.RESIZED_DEST):
-            os.mkdir(BaseConfig.RESIZED_DEST)
+        path = f'{current_app.config["RESIZED_DEST"]}/{width}_{height}_{self.filename}.jpg'
+        if not os.path.exists(current_app.config["RESIZED_DEST"]):
+            os.mkdir(current_app.config["RESIZED_DEST"])
         if not cv2.imwrite(path, frame):
             raise IOError(f'could not write {path}')
         path = resize(path, self.filename, width, height)
         video.release()
         cv2.destroyAllWindows()
-        return path.lstrip('.')
+        return path

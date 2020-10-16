@@ -3,7 +3,7 @@ from shutil import rmtree
 
 from PIL import Image
 
-from tests.base_video_test_case import BaseVideoTestCase, RESIZED_SAVE_PATH
+from tests.base_video_test_case import BaseVideoTestCase
 
 
 class VideoTestCase(BaseVideoTestCase):
@@ -20,7 +20,7 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests the path property.
         """
-        expected_path = './videos/example.mp4'
+        expected_path = 'videos/example.mp4'
         self.assertEqual(expected_path, self.video.path)
 
     def test_thumbnail_video(self):
@@ -28,21 +28,19 @@ class VideoTestCase(BaseVideoTestCase):
         Tests the rendering of the thumbnail of the video.
         """
         path = self.video.thumbnail(200, 200)
-        path = f'./{path}'
         image = Image.open(path)
-        self.assertTrue(os.path.exists(path), msg=f'{path} does not exists.')
+        self.assertTrue(os.path.isfile(path), msg=f'{path} does not exist.')
         self.assertEqual(200, image.width)
 
     def test_thumbnail_dir_not_exists(self):
         """
-        Tests the creation of thumbnail if the thumbail directory does not exists.
+        Tests the creation of thumbnail if the thumbnail directory does not exist.
         """
-        if os.path.exists(RESIZED_SAVE_PATH):
-            rmtree(RESIZED_SAVE_PATH)
+        if os.path.exists(self.app.config['RESIZED_DEST']):
+            rmtree(self.app.config['RESIZED_DEST'])
         path = self.video.thumbnail(200, 200)
-        path = f'./{path}'
         image = Image.open(path)
-        self.assertTrue(os.path.exists(path), msg=f'{path} does not exists.')
+        self.assertTrue(os.path.exists(path), msg=f'{path} does not exist.')
         self.assertEqual(200, image.width)
 
     def test_video_url(self):

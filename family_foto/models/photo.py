@@ -1,4 +1,5 @@
 from PIL import Image, ExifTags
+from flask import current_app
 from sqlalchemy import ForeignKey
 
 from family_foto.models import db
@@ -10,6 +11,7 @@ class Photo(File):
     """
     Class of Photo Entity
     """
+
     id = db.Column(db.Integer, ForeignKey('file.id'), primary_key=True)
 
     __mapper_args__ = {
@@ -17,11 +19,30 @@ class Photo(File):
     }
 
     @property
+    def image_view(self):
+        return f'/image/{self.filename}'
+
+    def __open_image(self) -> Image.Image:
+        return Image.open(self.abs_path)
+
+    @property
+    def height(self):
+        with self.__open_image() as image:
+            return image.height
+        # return int(self.meta['ExifImageHeight'])
+
+    @property
+    def width(self):
+        with self.__open_image() as image:
+            return image.width
+        # return int(self.meta['ExifImageWidth'])
+
+    @property
     def meta(self):
         """
         Meta data of the photo.
         """
-        with Image.open(self.path) as image:
+        with self.__open_image() as image:
             exif = {ExifTags.TAGS[k]: v for k, v in image.getexif().items() if k in
                     ExifTags.TAGS}
             exif = {k: self._replace_empty(v) for k, v in exif.items()}
@@ -33,13 +54,13 @@ class Photo(File):
         """
         Returns path to photo file.
         """
-        return f'{BaseConfig.UPLOADED_PHOTOS_DEST}/{self.filename}'
+        return current_app.config['UPLOADED_PHOTOS_DEST_RELATIVE'] + "/" + self.filename
 
     def thumbnail(self, width: int, height: int):
         """
-        Returns the url for resized photo.
+        Returns the path of the resized photo.
         :param width: the new width
         :param height: the new height
         """
-        save_path = resize(self.path, self.filename, height, width)
-        return save_path.lstrip('.')
+        save_path = resize(self.abs_path, self.filename, height, width)
+        return save_path

@@ -20,12 +20,33 @@ class FileTestCase(BaseTestCase):
         with raises(NotImplementedError):
             _ = self.file.path
 
+    def test_image_view(self):
+        """
+        Test image view is not implemented.
+        """
+        with raises(NotImplementedError):
+            _ = self.file.image_view
+
     def test_meta(self):
         """
         Test meta is not implemented.
         """
         with raises(NotImplementedError):
             _ = self.file.meta
+
+    def test_height(self):
+        """
+        Test height is not implemented.
+        """
+        with raises(NotImplementedError):
+            _ = self.file.height
+
+    def test_width(self):
+        """
+        Test width is not implemented.
+        """
+        with raises(NotImplementedError):
+            _ = self.file.width
 
     def test_thumbnail(self):
         """
