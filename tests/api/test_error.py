@@ -14,7 +14,7 @@ class ApiErrorTestCase(BaseTestCase):
         response = error_response(1)
         json = response.json
 
-        expected_json = {'error': 'Unkown error'}
+        expected_json = {'error': 'Unknown error'}
         self.assertDictEqual(expected_json, json)
 
     def test_404(self):

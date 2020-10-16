@@ -8,7 +8,7 @@ def error_response(status_code: int, message: str = None):
     :param status_code: http error code
     :param message: optional message
     """
-    payload = {'error': HTTP_STATUS_CODES.get(status_code, 'Unkown error')}
+    payload = {'error': HTTP_STATUS_CODES.get(status_code, 'Unknown error')}
     if message:
         payload['message'] = message
     response = jsonify(payload)

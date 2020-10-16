@@ -1,11 +1,8 @@
 import os
 
-from family_foto.app import add_user
 from family_foto.models.photo import Photo
+from family_foto.web import add_user
 from tests.base_photo_test_case import BasePhotoTestCase
-
-PHOTOS_SAVE_PATH = './photos'
-RESIZED_SAVE_PATH = './resized-images'
 
 
 class PhotoTestCase(BasePhotoTestCase):
@@ -25,7 +22,7 @@ class PhotoTestCase(BasePhotoTestCase):
         """
         filename = 'test.jpg'
         photo = Photo(filename=filename, url='/photos/test.jpg')
-        self.assertEqual(f'./photos/{filename}', photo.path)
+        self.assertEqual(f'photos/{filename}', photo.path)
 
     def test_sharing_via_all(self):
         """
@@ -104,8 +101,8 @@ class PhotoTestCase(BasePhotoTestCase):
         """
         Tests if photos are correctly resized.
         """
-        resized_url = self.photo.thumbnail(400, 400)
-        self.assertTrue(os.path.exists(f'./{resized_url}'), msg=f'{resized_url} does not exists.')
+        resized_path = self.photo.thumbnail(400, 400)
+        self.assertTrue(os.path.isfile(resized_path), msg=f'{resized_path} does not exist.')
 
     def test_image_view_path(self):
         """

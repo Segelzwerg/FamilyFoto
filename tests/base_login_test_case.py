@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from family_foto.app import add_user
+from family_foto.web import add_user
 from tests.base_test_case import BaseTestCase
 
 
