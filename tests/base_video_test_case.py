@@ -21,7 +21,8 @@ class BaseVideoTestCase(BaseTestCase):
         Video.query.delete()
 
         path = os.path.join(os.path.dirname(__file__), 'data/example.mp4')
-        copied_path = copyfile(os.path.abspath(path), f'{self.app.config["UPLOADED_VIDEOS_DEST"]}/example.mp4')
+        copied_path = copyfile(os.path.abspath(path),
+                               f'{self.app.config["UPLOADED_VIDEOS_DEST"]}/example.mp4')
         if not os.path.exists(copied_path):
             raise FileNotFoundError(f'{copied_path} does not exists.')
         self.video = Video(filename='example.mp4', url='/videos/example.mp4')
