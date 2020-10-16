@@ -33,6 +33,8 @@ class Video(File):
             if stream['codec_type'] == 'video':
                 return int(stream['height'])
 
+        raise RuntimeError('could not read height from video file')
+
     @property
     def width(self) -> int:
         streams: list[dict] = self.meta['streams']
@@ -40,11 +42,14 @@ class Video(File):
             if stream['codec_type'] == 'video':
                 return int(stream['width'])
 
+        raise RuntimeError('could not read width from video file')
+
     @property
     def meta(self):
         """
         Returns the meta data of the video.
         """
+        # TODO: cache this
         return ffmpeg.probe(self.abs_path)
 
     @property

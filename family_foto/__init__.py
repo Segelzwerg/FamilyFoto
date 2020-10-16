@@ -1,5 +1,5 @@
 import os
-from typing import Any, Mapping
+from typing import Any
 
 import flask_uploads
 from flask import Flask
@@ -9,7 +9,14 @@ from flask_login import LoginManager
 login_manager = LoginManager()
 
 
+# pylint: disable=import-outside-toplevel
 def create_app(test_config: dict[str, Any] = None, test_instance_path: str = None) -> Flask:
+    """
+    Create the Flask application.
+    :param test_config: config override
+    :param test_instance_path: instance path override
+    :return: the configured app
+    """
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True, instance_path=test_instance_path)
     app.config.from_mapping(
@@ -30,9 +37,12 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
 
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or app.config[
         'DATABASE_URL_TEMPLATE'].format(instance_path=app.instance_path)
-    app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(app.instance_path, app.config['UPLOADED_PHOTOS_DEST_RELATIVE'])
-    app.config['UPLOADED_VIDEOS_DEST'] = os.path.join(app.instance_path, app.config['UPLOADED_VIDEOS_DEST_RELATIVE'])
-    app.config['RESIZED_DEST'] = os.path.join(app.instance_path, app.config['RESIZED_DEST_RELATIVE'])
+    app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(app.instance_path,
+                                                      app.config['UPLOADED_PHOTOS_DEST_RELATIVE'])
+    app.config['UPLOADED_VIDEOS_DEST'] = os.path.join(app.instance_path,
+                                                      app.config['UPLOADED_VIDEOS_DEST_RELATIVE'])
+    app.config['RESIZED_DEST'] = os.path.join(app.instance_path,
+                                              app.config['RESIZED_DEST_RELATIVE'])
 
     # ensure the instance folder exists
     try:

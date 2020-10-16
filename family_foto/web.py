@@ -1,5 +1,6 @@
 import flask_uploads
-from flask import redirect, url_for, render_template, request, send_from_directory, abort, current_app, Blueprint
+from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
+    current_app, Blueprint
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet
 from werkzeug.datastructures import FileStorage
@@ -146,7 +147,8 @@ def uploaded_file(filename):
     Returns path of the original photo.
     :param filename: name of the file
     """
-    log.info(f'{current_user.username} requested {current_app.config["UPLOADED_PHOTOS_DEST"]}/{filename}')
+    log.info(
+        f'{current_user.username} requested {current_app.config["UPLOADED_PHOTOS_DEST"]}/{filename}')
     return send_from_directory(current_app.config["UPLOADED_PHOTOS_DEST"], filename)
 
 
@@ -158,7 +160,8 @@ def get_video(filename):
     Returns path of the original video.
     :param filename: name of the file
     """
-    log.info(f'{current_user.username} requested {current_app.config["UPLOADED_VIDEOS_DEST"]}/{filename}')
+    log.info(
+        f'{current_user.username} requested {current_app.config["UPLOADED_VIDEOS_DEST"]}/{filename}')
     return send_from_directory(current_app.config["UPLOADED_VIDEOS_DEST"], filename)
 
 
