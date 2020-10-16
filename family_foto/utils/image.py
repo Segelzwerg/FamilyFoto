@@ -3,8 +3,6 @@ import os
 from PIL import Image
 from resizeimage.resizeimage import resize_width
 
-from family_foto.config import BaseConfig
-
 
 def resize(path: str, filename: str, height: int, width: int):
     """
@@ -14,6 +12,8 @@ def resize(path: str, filename: str, height: int, width: int):
     :param height: wanted height
     :param width: wanted width (aspect ration will be kept)
     :return: path to resized image
+    """
+    # TODO: implement this
     """
     with open(path, 'r+b') as file:
         with Image.open(file) as image:
@@ -25,3 +25,5 @@ def resize(path: str, filename: str, height: int, width: int):
             image.close()
         file.close()
     return save_path
+    """
+    return ''

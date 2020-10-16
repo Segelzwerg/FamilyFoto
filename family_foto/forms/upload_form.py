@@ -7,8 +7,5 @@ class UploadForm(FlaskForm):
     """
     Data form of upload mask.
     """
-    file = MultipleFileField('File',
-                             validators=[FileRequired(),
-                                         FileAllowed(['jpg', 'png'],
-                                                     'Images Only!')])
+    file = MultipleFileField('File', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images Only!')])
     submit = SubmitField('Upload')

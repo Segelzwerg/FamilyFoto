@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-api = Blueprint('api', __name__)
+api = Blueprint('api', __name__, url_prefix='/api')
 
 # avoid circular imports
 # pylint: disable=wrong-import-position

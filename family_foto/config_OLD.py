@@ -17,7 +17,6 @@ class BaseConfig:
     VIDEOS = tuple('mp4'.split())
 
 
-
 class Config(BaseConfig):
     """
     Flask configuration.

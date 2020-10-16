@@ -5,7 +5,6 @@ import cv2
 import ffmpeg
 from sqlalchemy import ForeignKey
 
-from family_foto.config import BaseConfig
 from family_foto.models import db
 from family_foto.models.file import File
 from family_foto.utils.image import resize
