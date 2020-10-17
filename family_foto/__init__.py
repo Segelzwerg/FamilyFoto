@@ -6,6 +6,15 @@ from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 
+UPLOADED_PHOTOS_DEST = 'UPLOADED_PHOTOS_DEST'
+UPLOADED_PHOTOS_DEST_RELATIVE = 'UPLOADED_PHOTOS_DEST_RELATIVE'
+
+UPLOADED_VIDEOS_DEST = 'UPLOADED_VIDEOS_DEST'
+UPLOADED_VIDEOS_DEST_RELATIVE = 'UPLOADED_VIDEOS_DEST_RELATIVE'
+
+RESIZED_DEST = 'RESIZED_DEST'
+RESIZED_DEST_RELATIVE = 'RESIZED_DEST_RELATIVE'
+
 login_manager = LoginManager()
 
 
@@ -38,11 +47,11 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or app.config[
         'DATABASE_URL_TEMPLATE'].format(instance_path=app.instance_path)
     app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(app.instance_path,
-                                                      app.config['UPLOADED_PHOTOS_DEST_RELATIVE'])
+                                                      app.config[UPLOADED_PHOTOS_DEST_RELATIVE])
     app.config['UPLOADED_VIDEOS_DEST'] = os.path.join(app.instance_path,
-                                                      app.config['UPLOADED_VIDEOS_DEST_RELATIVE'])
-    app.config['RESIZED_DEST'] = os.path.join(app.instance_path,
-                                              app.config['RESIZED_DEST_RELATIVE'])
+                                                      app.config[UPLOADED_PHOTOS_DEST_RELATIVE])
+    app.config[RESIZED_DEST] = os.path.join(app.instance_path,
+                                            app.config[RESIZED_DEST_RELATIVE])
 
     # ensure the instance folder exists
     try:

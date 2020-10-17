@@ -5,7 +5,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet
 from werkzeug.datastructures import FileStorage
 
-from family_foto import login_manager
+from family_foto import login_manager, RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.upload_form import UploadForm
@@ -16,6 +16,8 @@ from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
 from family_foto.models.video import Video
+
+
 
 web_bp = Blueprint('web', __name__)
 
@@ -148,8 +150,8 @@ def uploaded_file(filename):
     :param filename: name of the file
     """
     log.info(f'{current_user.username} requested '
-             f'{current_app.config["UPLOADED_PHOTOS_DEST"]}/{filename}')
-    return send_from_directory(current_app.config["UPLOADED_PHOTOS_DEST"], filename)
+             f'{current_app.config[UPLOADED_PHOTOS_DEST]}/{filename}')
+    return send_from_directory(current_app.config[UPLOADED_PHOTOS_DEST], filename)
 
 
 @web_bp.route('/_uploads/videos/<filename>')
@@ -161,8 +163,8 @@ def get_video(filename):
     :param filename: name of the file
     """
     log.info(f'{current_user.username} requested '
-             f'{current_app.config["UPLOADED_VIDEOS_DEST"]}/{filename}')
-    return send_from_directory(current_app.config["UPLOADED_VIDEOS_DEST"], filename)
+             f'{current_app.config[UPLOADED_VIDEOS_DEST]}/{filename}')
+    return send_from_directory(current_app.config[UPLOADED_VIDEOS_DEST], filename)
 
 
 @web_bp.route('/resized-images/<filename>')
@@ -172,8 +174,8 @@ def resized_photo(filename):
     Returns the path resized image.
     :param filename: name of the resized photo
     """
-    log.info(f'{current_user.username} requested {current_app.config["RESIZED_DEST"]}/{filename}')
-    return send_from_directory(current_app.config["RESIZED_DEST"], filename)
+    log.info(f'{current_user.username} requested {current_app.config[RESIZED_DEST]}/{filename}')
+    return send_from_directory(current_app.config[RESIZED_DEST], filename)
 
 
 @web_bp.route('/gallery', methods=['GET'])
