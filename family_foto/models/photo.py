@@ -2,6 +2,7 @@ from PIL import Image, ExifTags
 from flask import current_app
 from sqlalchemy import ForeignKey
 
+from family_foto import UPLOADED_PHOTOS_DEST_RELATIVE
 from family_foto.models import db
 from family_foto.models.file import File
 from family_foto.utils.image import resize
@@ -54,7 +55,7 @@ class Photo(File):
         """
         Returns path to photo file.
         """
-        return current_app.config['UPLOADED_PHOTOS_DEST_RELATIVE'] + "/" + self.filename
+        return current_app.config[UPLOADED_PHOTOS_DEST_RELATIVE] + "/" + self.filename
 
     def thumbnail(self, width: int, height: int):
         """
