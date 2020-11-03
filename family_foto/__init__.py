@@ -49,7 +49,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(app.instance_path,
                                                       app.config[UPLOADED_PHOTOS_DEST_RELATIVE])
     app.config['UPLOADED_VIDEOS_DEST'] = os.path.join(app.instance_path,
-                                                      app.config[UPLOADED_PHOTOS_DEST_RELATIVE])
+                                                      app.config[UPLOADED_VIDEOS_DEST_RELATIVE])
     app.config[RESIZED_DEST] = os.path.join(app.instance_path,
                                             app.config[RESIZED_DEST_RELATIVE])
 
