@@ -60,3 +60,9 @@ class VideoTestCase(BaseVideoTestCase):
         Tests the video height property.
         """
         self.assertEqual(1920, self.video.width)
+
+    def test_image_view_property(self):
+        """
+        Tests if the route is returned correctly.
+        """
+        self.assertEqual('/image/example.mp4', self.video.image_view)
