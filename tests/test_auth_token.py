@@ -2,8 +2,8 @@ import base64
 from datetime import datetime
 from unittest import mock
 
+from family_foto import add_user
 from family_foto.models.auth_token import AuthToken
-from family_foto.web import add_user
 from tests.base_test_case import BaseTestCase
 
 

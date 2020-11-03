@@ -5,7 +5,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet
 from werkzeug.datastructures import FileStorage
 
-from family_foto import login_manager, RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
+from family_foto.const import RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.upload_form import UploadForm
@@ -14,7 +14,6 @@ from family_foto.models import db
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
-from family_foto.models.user_settings import UserSettings
 from family_foto.models.video import Video
 
 web_bp = Blueprint('web', __name__)
@@ -22,29 +21,6 @@ web_bp = Blueprint('web', __name__)
 VIDEOS = ('mp4',)
 photos = UploadSet('photos', flask_uploads.IMAGES)
 videos = UploadSet('videos', VIDEOS)
-
-
-def add_user(username: str, password: str) -> User:
-    """
-    This registers an user.
-    :param username: name of the user
-    :param password: plain text password
-    """
-    user = User(username=username)
-    user.set_password(password)
-    exists = User.query.filter_by(username=username).first()
-    if exists:
-        log.warning(f'{user.username} already exists.')
-        return exists
-
-    user_settings = UserSettings(user_id=user.id)
-    user.settings = user_settings
-
-    db.session.add(user_settings)
-    db.session.add(user)
-    db.session.commit()
-    log.info(f'{user.username} registered.')
-    return user
 
 
 @web_bp.route('/')
@@ -205,13 +181,3 @@ def settings():
     return render_template('user-settings.html',
                            user=current_user,
                            form=form)
-
-
-@login_manager.user_loader
-def load_user(user_id: int):
-    """
-    Loads a user from the database.
-    :param user_id:
-    :return: An user if exists.
-    """
-    return User.query.get(int(user_id))

@@ -1,6 +1,6 @@
 from flask_api import status
 
-from family_foto.web import add_user
+from family_foto import add_user
 from tests.base_login_test_case import BaseLoginTestCase
 
 
