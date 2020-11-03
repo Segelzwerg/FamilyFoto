@@ -1,8 +1,7 @@
-import flask_uploads
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
     current_app, Blueprint
 from flask_login import current_user, login_user, logout_user, login_required
-from flask_uploads import UploadSet
+from flask_uploads import UploadSet, IMAGES
 from werkzeug.datastructures import FileStorage
 
 from family_foto.const import RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
@@ -19,7 +18,7 @@ from family_foto.models.video import Video
 web_bp = Blueprint('web', __name__)
 
 VIDEOS = ('mp4',)
-photos = UploadSet('photos', flask_uploads.IMAGES)
+photos = UploadSet('photos', IMAGES)
 videos = UploadSet('videos', VIDEOS)
 
 
