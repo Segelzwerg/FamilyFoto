@@ -1,22 +1,31 @@
 import os
+from shutil import rmtree
 
 from flask_testing import TestCase
 
-from family_foto import config
-from family_foto.app import app, add_user, db
+import family_foto
+from family_foto import add_user
+from family_foto.models import db
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
 
 
-# pylint: disable=invalid-name
 class BaseTestCase(TestCase):
     """
     Basic Test Case that setups the flask app with a db.
     """
 
     def create_app(self):
-        app.config.from_object(config.TestConfiguration)
-        app.config['WTF_CSRF_ENABLED'] = False
+        instance_path = os.path.join(os.path.dirname(__file__), 'instance')
+        app = family_foto.create_app({
+            'TESTING': True,
+            'WTF_CSRF_ENABLED': False,
+            'SQLALCHEMY_TRACK_MODIFICATIONS': True,
+            # Since we want our unit tests to run quickly
+            # we turn this down - the hashing is still done
+            # but the time-consuming part is left out.
+            'HASH_ROUNDS': 1
+        }, instance_path)
         return app
 
     def setUp(self):
@@ -32,8 +41,7 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         db.session.close()
         db.drop_all()
-        if os.path.exists('../test.db'):
-            os.remove('../test.db')
+        rmtree(self.app.instance_path)
 
     def test_setup(self):
         """

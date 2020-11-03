@@ -3,6 +3,7 @@ from abc import abstractmethod
 from datetime import datetime
 from typing import List, Union
 
+from flask import current_app
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -36,21 +37,22 @@ class File(db.Model):
         """
         Path of the file on the server.
         """
-        raise NotImplementedError('Each file type has it\'s directory.')
+        raise NotImplementedError('Each file type has its directory.')
 
     @property
     def abs_path(self):
         """
         Returns absolute path of the photo.
         """
-        return os.path.abspath(f'/photo/{self.filename}')
+        return os.path.abspath(os.path.join(current_app.instance_path, self.path))
 
     @property
+    @abstractmethod
     def image_view(self):
         """
         Returns path to image viewer template of this photo.
         """
-        return f'/image/{self.filename}'
+        raise NotImplementedError('Each file type has its directory.')
 
     @property
     @abstractmethod
@@ -61,18 +63,20 @@ class File(db.Model):
         raise NotImplementedError('Each media type has is custom meta data retriever.')
 
     @property
+    @abstractmethod
     def height(self):
         """
         Returns the image height.
         """
-        return int(self.meta['ExifImageHeight'])
+        raise NotImplementedError('Each media type has is custom meta data retriever.')
 
     @property
+    @abstractmethod
     def width(self):
         """
         Returns image width
         """
-        return int(self.meta['ExifImageWidth'])
+        raise NotImplementedError('Each media type has is custom meta data retriever.')
 
     @abstractmethod
     def thumbnail(self, width: int, height: int):
@@ -81,7 +85,7 @@ class File(db.Model):
         :param width: thumbnail width in pixel
         :param height: thumbnail height in pixel (aspect ratio will be kept)
         """
-        raise NotImplementedError(f'{self} is abstract and not thumbnail() is not implemented.')
+        raise NotImplementedError(f'{self} is abstract and thumbnail() is not implemented.')
 
     def share_with(self, other_users: Union[User, List[User]]) -> None:
         """

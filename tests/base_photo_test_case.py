@@ -6,9 +6,6 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from tests.base_test_case import BaseTestCase
 
-PHOTOS_SAVE_PATH = './photos'
-RESIZED_SAVE_PATH = './resized-images'
-
 
 class BasePhotoTestCase(BaseTestCase):
     """
@@ -17,22 +14,18 @@ class BasePhotoTestCase(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        if not os.path.exists('./photos'):
-            os.mkdir(PHOTOS_SAVE_PATH)
-        if os.path.exists(RESIZED_SAVE_PATH):
-            rmtree(RESIZED_SAVE_PATH)
+        if not os.path.exists(self.app.config['UPLOADED_PHOTOS_DEST']):
+            os.mkdir(self.app.config['UPLOADED_PHOTOS_DEST'])
+        if os.path.exists(self.app.config['RESIZED_DEST']):
+            rmtree(self.app.config['RESIZED_DEST'])
         File.query.delete()
         Photo.query.delete()
 
-        copied_path = copyfile('./data/example.jpg', f'{PHOTOS_SAVE_PATH}/example.jpg')
+        path = os.path.join(os.path.dirname(__file__), 'data/example.jpg')
+        copied_path = copyfile(path, f'{self.app.config["UPLOADED_PHOTOS_DEST"]}/example.jpg')
         if not os.path.exists(copied_path):
             raise FileNotFoundError(f'{copied_path} does not exists.')
         self.photo = Photo(filename='example.jpg', url='/photos/example.jpg')
-
-    def tearDown(self):
-        if os.path.exists(PHOTOS_SAVE_PATH):
-            rmtree(PHOTOS_SAVE_PATH)
-        super().tearDown()
 
     def test_commit(self):
         """Tests committing the file works"""

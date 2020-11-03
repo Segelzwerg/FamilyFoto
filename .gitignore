@@ -1,6 +1,17 @@
-# Project exclude paths
-/venv/
-/.idea/
-/app.db
-/coverage.xml
-/.coverage
+venv*/
+.idea/
+app.db
+coverage.xml
+.coverage
+
+*.pyc
+__pycache__/
+
+instance/
+
+.pytest_cache/
+htmlcov/
+
+dist/
+build/
+*.egg-info/

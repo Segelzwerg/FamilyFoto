@@ -15,13 +15,10 @@ class LogoutTestCase(BaseTestCase):
         """
 
         with self.client:
-            self.client.post('/login',
-                             data={'username': 'marcel',
-                                   'password': '1234'},
+            self.client.post('/login', data={'username': 'marcel', 'password': '1234'},
                              follow_redirects=True)
             response = self.client.get('/logout')
 
             username = current_user.username if not current_user.is_anonymous else 'anonymous'
-            self.assertTrue(current_user.is_anonymous, msg=f'user <{username}> is '
-                                                           f'still logged in')
+            self.assertTrue(current_user.is_anonymous, msg=f'user <{username}> is still logged in')
             self.assertTrue(status.is_redirect(response.status_code))

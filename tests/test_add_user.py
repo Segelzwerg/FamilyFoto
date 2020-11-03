@@ -1,4 +1,4 @@
-from family_foto.app import add_user
+from family_foto import add_user
 from family_foto.models import db
 from family_foto.models.user import User
 from tests.base_test_case import BaseTestCase
@@ -8,6 +8,7 @@ class AddUserTestCase(BaseTestCase):
     """
     Test case for adding users.
     """
+
     def test_add_user(self):
         """
         Tests if a new user can be added.

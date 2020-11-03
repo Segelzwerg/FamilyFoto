@@ -8,8 +8,6 @@ from family_foto.models.photo import Photo
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_photo_test_case import BasePhotoTestCase
 
-PHOTOS_SAVE_PATH = './photos'
-
 
 class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
     """

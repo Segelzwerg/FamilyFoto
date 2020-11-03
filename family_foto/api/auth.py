@@ -1,10 +1,8 @@
-from typing import Union
-
 from flask import jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_login import current_user
 
-from family_foto.api import api
+from family_foto.api import api_bp
 from family_foto.api.errors import error_response
 from family_foto.logger import log
 from family_foto.models import db
@@ -15,7 +13,7 @@ basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
 
 
-@api.route('/token', methods=['POST'])
+@api_bp.route('/token', methods=['POST'])
 @basic_auth.login_required
 def get_token():
     """
@@ -29,7 +27,7 @@ def get_token():
 
 
 @basic_auth.verify_password
-def verify_password(username: str, password: str) -> Union[None, User]:
+def verify_password(username: str, password: str) -> [None, User]:
     """
     Verifies the password for given user.
     :param username: the username string
