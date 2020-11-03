@@ -17,8 +17,6 @@ from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
 from family_foto.models.video import Video
 
-
-
 web_bp = Blueprint('web', __name__)
 
 VIDEOS = ('mp4',)
