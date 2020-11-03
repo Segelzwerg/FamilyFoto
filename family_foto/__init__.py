@@ -6,14 +6,12 @@ from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 
-UPLOADED_PHOTOS_DEST = 'UPLOADED_PHOTOS_DEST'
-UPLOADED_PHOTOS_DEST_RELATIVE = 'UPLOADED_PHOTOS_DEST_RELATIVE'
-
-UPLOADED_VIDEOS_DEST = 'UPLOADED_VIDEOS_DEST'
-UPLOADED_VIDEOS_DEST_RELATIVE = 'UPLOADED_VIDEOS_DEST_RELATIVE'
-
-RESIZED_DEST = 'RESIZED_DEST'
-RESIZED_DEST_RELATIVE = 'RESIZED_DEST_RELATIVE'
+from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DEST_RELATIVE, \
+    RESIZED_DEST_RELATIVE, RESIZED_DEST
+from family_foto.logger import log
+from family_foto.models import db
+from family_foto.models.user import User
+from family_foto.models.user_settings import UserSettings
 
 login_manager = LoginManager()
 
@@ -67,7 +65,6 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     from family_foto.web import web_bp
     app.register_blueprint(web_bp)
 
-    from family_foto.models import db
     db.init_app(app)
     db.app = app
     db.create_all()
@@ -77,7 +74,39 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     from family_foto.web import photos, videos
     flask_uploads.configure_uploads(app, (photos, videos))
 
-    from family_foto.web import add_user
     add_user('admin', 'admin')
 
     return app
+
+
+def add_user(username: str, password: str) -> User:
+    """
+    This registers an user.
+    :param username: name of the user
+    :param password: plain text password
+    """
+    user = User(username=username)
+    user.set_password(password)
+    exists = User.query.filter_by(username=username).first()
+    if exists:
+        log.warning(f'{user.username} already exists.')
+        return exists
+
+    user_settings = UserSettings(user_id=user.id)
+    user.settings = user_settings
+
+    db.session.add(user_settings)
+    db.session.add(user)
+    db.session.commit()
+    log.info(f'{user.username} registered.')
+    return user
+
+
+@login_manager.user_loader
+def load_user(user_id: int):
+    """
+    Loads a user from the database.
+    :param user_id:
+    :return: An user if exists.
+    """
+    return User.query.get(int(user_id))

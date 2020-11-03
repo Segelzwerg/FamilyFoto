@@ -4,10 +4,10 @@ from shutil import rmtree
 from flask_testing import TestCase
 
 import family_foto
+from family_foto import add_user
 from family_foto.models import db
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
-from family_foto.web import add_user
 
 
 class BaseTestCase(TestCase):

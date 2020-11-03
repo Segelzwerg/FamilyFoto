@@ -1,7 +1,7 @@
 import os
 
+from family_foto import add_user
 from family_foto.models.photo import Photo
-from family_foto.web import add_user
 from tests.base_photo_test_case import BasePhotoTestCase
 
 

@@ -2,7 +2,7 @@ from PIL import Image, ExifTags
 from flask import current_app
 from sqlalchemy import ForeignKey
 
-from family_foto import UPLOADED_PHOTOS_DEST_RELATIVE
+from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE
 from family_foto.models import db
 from family_foto.models.file import File
 from family_foto.utils.image import resize
