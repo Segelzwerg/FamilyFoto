@@ -48,3 +48,15 @@ class VideoTestCase(BaseVideoTestCase):
         Tests the return value of the url property.
         """
         self.assertEqual('/videos/example.mp4', self.video.url)
+
+    def test_video_height(self):
+        """
+        Tests the video height property.
+        """
+        self.assertEqual(1080, self.video.height)
+
+    def test_video_width(self):
+        """
+        Tests the video height property.
+        """
+        self.assertEqual(1920, self.video.width)
