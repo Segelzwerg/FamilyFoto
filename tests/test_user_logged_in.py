@@ -1,6 +1,6 @@
 from flask_login import current_user
 
-from family_foto.app import add_user
+from family_foto import add_user
 from family_foto.models import db
 from family_foto.models.photo import Photo
 from tests.base_login_test_case import BaseLoginTestCase
