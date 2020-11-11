@@ -1,4 +1,4 @@
-FROM arm64v8/python:3.9-alpine
+FROM arm64v8/python:3.9-slim
 COPY ./requirements.txt requirements.txt
 RUN apk update
 RUN apk add cmake
