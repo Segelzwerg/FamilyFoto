@@ -1,5 +1,7 @@
 FROM arm64v8/python:3.9-alpine
 COPY ./requirements.txt requirements.txt
+RUN apk update
+RUN apk cmake
 RUN pip install --default-timeout=1000 -r requirements.txt
 WORKDIR /app
 ENV FLASK_APP family_foto
