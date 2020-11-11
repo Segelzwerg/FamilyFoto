@@ -1,10 +1,10 @@
-FROM arm64v8/python:3.9-buster
+FROM arm64v8/python:3.9-alpine
 COPY ./requirements.txt requirements.txt
-RUN apt-get update
-RUN apt-get install -y libgl1-mesa-dev
+RUN apk update
+RUN apk add libgl1-mesa-dev
 RUN pip install -r requirements.txt
 WORKDIR /app
 ENV FLASK_APP family_foto
 ENV FLASK_RUN_HOST 0.0.0.0
 COPY . .
-CMD ["flask", "run"]
+CMD ["flask", "ruuupdatepdaten"]
