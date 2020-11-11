@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+
+  build:
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . --file ${{ matrix.arch }}.dockerfile --tag segelzwerg/family-foto:${{ matrix.arch }}
