@@ -7,4 +7,4 @@ WORKDIR /app
 ENV FLASK_APP family_foto
 ENV FLASK_RUN_HOST 0.0.0.0
 COPY . .
-CMD ["flask", "ruuupdatepdaten"]
+CMD ["flask", "run"]
