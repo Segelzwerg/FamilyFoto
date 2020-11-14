@@ -1,4 +1,7 @@
+import os
+
 from flask_api import status
+from lxml import html
 
 from family_foto import add_user
 from family_foto.models import db
@@ -46,3 +49,22 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         other_user = add_user('other', 'user')
         response = self.client.post('/image/example.jpg', data=dict(share_with=[other_user.id]))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_image_is_displayed(self):
+        """
+        Tests the images in the gallery are displayed.
+        """
+        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/example.jpg')
+        file = open(path, 'rb')
+        filename = 'test.jpg'
+        data = dict(file=(file, filename))
+        self.client.post('/upload',
+                         content_type='multipart/form-data',
+                         data=data)
+        file.close()
+        response = self.client.get(f'/image/{filename}')
+        html_content = html.fromstring(response.data.decode('utf-8'))
+        image = html_content.xpath('//img')[0].attrib['src']
+        response = self.client.get(image)
+        message = f'The image resource could not be loaded: {image}'
+        self.assertEqual(status.HTTP_200_OK, response.status_code, msg=message)
