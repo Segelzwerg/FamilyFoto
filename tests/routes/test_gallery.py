@@ -83,4 +83,5 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         html_content = html.fromstring(response.data.decode('utf-8'))
         image = html_content.xpath('//img')[0].attrib['src']
         response = self.client.get(image)
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        message = f'The image resource could not be loaded: {image}'
+        self.assertEqual(status.HTTP_200_OK, response.status_code, msg=message)
