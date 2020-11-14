@@ -1,3 +1,5 @@
+import os
+
 from PIL import Image, ExifTags
 from flask import current_app
 from sqlalchemy import ForeignKey
@@ -64,4 +66,4 @@ class Photo(File):
         :param height: the new height
         """
         save_path = resize(self.abs_path, self.filename, height, width)
-        return save_path.split('instance')[1]
+        return os.path.relpath(save_path, os.path.dirname(current_app.config['RESIZED_DEST']))
