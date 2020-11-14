@@ -64,4 +64,4 @@ class Photo(File):
         :param height: the new height
         """
         save_path = resize(self.abs_path, self.filename, height, width)
-        return save_path
+        return save_path.split('instance')[1]
