@@ -1,5 +1,7 @@
 import os
 
+from flask import current_app
+
 from family_foto import add_user
 from family_foto.models.photo import Photo
 from tests.base_photo_test_case import BasePhotoTestCase
@@ -102,7 +104,8 @@ class PhotoTestCase(BasePhotoTestCase):
         Tests if photos are correctly resized.
         """
         resized_path = self.photo.thumbnail(400, 400)
-        self.assertTrue(os.path.isfile(resized_path), msg=f'{resized_path} does not exist.')
+        path = os.path.join(os.path.dirname(current_app.config['RESIZED_DEST']), resized_path)
+        self.assertTrue(os.path.isfile(path), msg=f'{path} does not exist.')
 
     def test_image_view_path(self):
         """
