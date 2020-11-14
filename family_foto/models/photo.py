@@ -66,4 +66,4 @@ class Photo(File):
         :param height: the new height
         """
         save_path = resize(self.abs_path, self.filename, height, width)
-        return os.path.relpath(save_path, os.path.dirname(current_app.config['RESIZED_DEST']))
+        return f'/{os.path.relpath(save_path, os.path.dirname(current_app.config["RESIZED_DEST"]))}'
