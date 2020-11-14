@@ -17,6 +17,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install build essentials
+      run: sudo apt-get install build-essential
     - name: Install arm64 build support
       run: sudo apt-get install qemu binfmt-support qemu-user-static
     - name: Build the Docker image
