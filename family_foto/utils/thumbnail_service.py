@@ -1,5 +1,4 @@
 import os
-import random
 
 from cv2 import cv2
 from flask import current_app
@@ -8,13 +7,14 @@ from family_foto.logger import log
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
-from family_foto.utils.image import resize
+from family_foto.utils.image import resize, get_random_frame
 
 
 class ThumbnailService:
     """
     Creates thumbnails for a media file.
     """
+
     @staticmethod
     def generate(file: File, width=400, height=400):
         """
@@ -46,9 +46,7 @@ class ThumbnailService:
         :return: url to the thumbnail resource
         """
         video = cv2.VideoCapture(file.abs_path)
-        frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
-        video.set(cv2.CAP_PROP_POS_FRAMES, random.randint(0, frame_count))
-        _, frame = video.read()
+        frame, video = get_random_frame(video)
         if frame is None:
             message = f'Could no read video: {file.abs_path}'
             log.error(message)
@@ -58,7 +56,7 @@ class ThumbnailService:
             os.mkdir(current_app.config["RESIZED_DEST"])
         if not cv2.imwrite(path, frame):
             raise IOError(f'could not write {path}')
-        path = resize(path, file.filename+'.jpg', width, height)
+        path = resize(path, file.filename + '.jpg', width, height)
         video.release()
         cv2.destroyAllWindows()
         return path
