@@ -7,7 +7,7 @@
             <div class="card">
                 {% if photo is not none %}
                     <a href="{{ photo.url }}">
-                        <img src="{{ thumbnail }}" alt={{ photo.filename }}>
+                        <img src="{{ thumbnail }}" alt="File could not be loaded: {{ photo.filename }}">
                     </a>
                 {% endif %}
             </div>

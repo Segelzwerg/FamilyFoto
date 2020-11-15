@@ -4,7 +4,7 @@
     <h1>Gallery </h1>
     {% for medium, thumbnail in media %}
         <a href="{{ medium.image_view }}">
-            <img src="{{ thumbnail }}" alt="{{ medium.filename }}"
+            <img src="{{ thumbnail }}" alt="File could not be loaded: {{ medium.filename }}"
                  class="img-thumbnail">
         </a>
     {% endfor %}
