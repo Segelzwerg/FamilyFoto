@@ -4,7 +4,6 @@ import random
 from cv2 import cv2
 from flask import current_app
 
-from family_foto import RESIZED_DEST
 from family_foto.logger import log
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
@@ -54,9 +53,9 @@ class ThumbnailService:
             message = f'Could no read video: {file.abs_path}'
             log.error(message)
             raise IOError(message)
-        path = f'{current_app.config[RESIZED_DEST]}/{width}_{height}_{file.filename}.jpg'
-        if not os.path.exists(current_app.config[RESIZED_DEST]):
-            os.mkdir(current_app.config[RESIZED_DEST])
+        path = f'{current_app.config["RESIZED_DEST"]}/{width}_{height}_{file.filename}.jpg'
+        if not os.path.exists(current_app.config["RESIZED_DEST"]):
+            os.mkdir(current_app.config["RESIZED_DEST"])
         if not cv2.imwrite(path, frame):
             raise IOError(f'could not write {path}')
         path = resize(path, file.filename+'.jpg', width, height)
