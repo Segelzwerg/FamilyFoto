@@ -48,7 +48,7 @@ class ThumbnailService:
         video = cv2.VideoCapture(file.abs_path)
         frame, video = get_random_frame(video)
         if frame is None:
-            message = f'Could no read video: {file.abs_path}'
+            message = f'Could not read video: {file.abs_path}'
             log.error(message)
             raise IOError(message)
         path = f'{current_app.config["RESIZED_DEST"]}/{width}_{height}_{file.filename}.jpg'
