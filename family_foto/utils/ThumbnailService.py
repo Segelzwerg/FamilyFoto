@@ -14,15 +14,17 @@ class ThumbnailService:
     Creates thumbnails for a media file.
     """
     @staticmethod
-    def generate(file: File):
+    def generate(file: File, width=400, height=400):
         """
         Selects the resize function depending on the media type.
         :param file: to be resized
+        :param width: the width of the thumbnail
+        :param height: the height of the thumbnail
         :return: url to the thumbnail resource
         """
         log.info(f'Generate thumbnail for {file.filename}')
         if isinstance(file, Photo):
-            path = resize(file.abs_path, file.filename, 400, 400)
+            path = resize(file.abs_path, file.filename, width, height)
         elif isinstance(file, Video):
             pass
         else:

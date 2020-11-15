@@ -159,7 +159,7 @@ def gallery():
     Shows all pictures requested
     """
     user_media = current_user.get_media()
-    thumbnails = [ThumbnailService.generate(file) for file in user_media]
+    thumbnails = [ThumbnailService.generate(file, 200, 200) for file in user_media]
     return render_template('gallery.html', media=zip(user_media, thumbnails))
 
 
