@@ -58,7 +58,7 @@ class ThumbnailService:
             os.mkdir(current_app.config[RESIZED_DEST])
         if not cv2.imwrite(path, frame):
             raise IOError(f'could not write {path}')
-        path = resize(path, file.filename, width, height)
+        path = resize(path, file.filename+'.jpg', width, height)
         video.release()
         cv2.destroyAllWindows()
         return path
