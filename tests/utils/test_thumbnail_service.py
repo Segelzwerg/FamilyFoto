@@ -1,4 +1,4 @@
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 from family_foto.models.video import Video
 from family_foto.utils import image
@@ -33,10 +33,7 @@ class TestThumbnailService(BaseMediaTestCase):
         with self.assertRaises(TypeError):
             ThumbnailService.generate(UnsupportedFileType())
 
+    @patch('family_foto.utils.image.get_random_frame', Mock(return_value=None))
     def test_generate_cv2_error(self):
-        image.get_random_frame = Mock()
-        image.get_random_frame.__enter__ = Mock(Video)
-        image.get_random_frame.__exit__ = Mock(return_value=[None, None])
-        with image.get_random_frame:
-            with self.assertRaises(IOError):
-                ThumbnailService.generate(self.video)
+        with self.assertRaisesRegex(IOError, 'Could not read video:'):
+            ThumbnailService.generate(self.video)

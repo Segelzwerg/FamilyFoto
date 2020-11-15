@@ -35,4 +35,4 @@ def get_random_frame(video):
     frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
     video.set(cv2.CAP_PROP_POS_FRAMES, random.randint(0, frame_count))
     _, frame = video.read()
-    return frame, video
+    return frame

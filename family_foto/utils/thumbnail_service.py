@@ -7,7 +7,7 @@ from family_foto.logger import log
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
-from family_foto.utils.image import resize, get_random_frame
+from family_foto.utils import image
 
 
 class ThumbnailService:
@@ -26,7 +26,7 @@ class ThumbnailService:
         """
         log.info(f'Generate thumbnail for {file.filename}')
         if isinstance(file, Photo):
-            path = resize(file.abs_path, file.filename, width, height)
+            path = image.resize(file.abs_path, file.filename, width, height)
         elif isinstance(file, Video):
             path = ThumbnailService.video_thumbnail(file, height, width)
         else:
@@ -46,7 +46,7 @@ class ThumbnailService:
         :return: url to the thumbnail resource
         """
         video = cv2.VideoCapture(file.abs_path)
-        frame, video = get_random_frame(video)
+        frame = image.get_random_frame(video)
         if frame is None:
             message = f'Could not read video: {file.abs_path}'
             log.error(message)
@@ -56,7 +56,7 @@ class ThumbnailService:
             os.mkdir(current_app.config["RESIZED_DEST"])
         if not cv2.imwrite(path, frame):
             raise IOError(f'could not write {path}')
-        path = resize(path, file.filename + '.jpg', width, height)
+        path = image.resize(path, file.filename + '.jpg', width, height)
         video.release()
         cv2.destroyAllWindows()
         return path
