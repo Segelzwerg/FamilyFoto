@@ -14,7 +14,7 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.video import Video
-from family_foto.utils.ThumbnailService import ThumbnailService
+from family_foto.utils.thumbnail_service import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
 
