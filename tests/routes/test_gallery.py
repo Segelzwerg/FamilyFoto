@@ -74,7 +74,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         filename = 'test.jpg'
 
-        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), f'data/example.jpg')
+        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/example.jpg')
         file = open(path, 'rb')
         data = dict(file=(file, filename))
         self.client.post('/upload',
