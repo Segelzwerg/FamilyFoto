@@ -23,4 +23,4 @@ class TestThumbnailService(BasePhotoTestCase, BaseVideoTestCase):
         """
         video = Video(filename='example.mp4', url='/videos/example.mp4')
         path = ThumbnailService.generate(video)
-        self.assertEqual('/resized-images/400_400_example.mp4', path)
+        self.assertEqual('/resized-images/400_400_example.mp4.jpg', path)
