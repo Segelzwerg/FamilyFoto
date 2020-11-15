@@ -2,6 +2,9 @@ from family_foto.models.file import File
 
 
 class UnsupportedFileType(File):
+    """
+    Dummy class for testing unsupported behaviour.
+    """
     @property
     def path(self):
         raise NotImplementedError
