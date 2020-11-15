@@ -1,5 +1,3 @@
-from pytest import raises
-
 from family_foto.utils.thumbnail_service import ThumbnailService
 from tests.base_media_test_case import BaseMediaTestCase
 from tests.test_utils.test_classes import UnsupportedFileType
@@ -28,5 +26,5 @@ class TestThumbnailService(BaseMediaTestCase):
         """
         Tests if an error is raised for an unsupported type.
         """
-        with raises(TypeError):
+        with self.assertRaises(TypeError):
             ThumbnailService.generate(UnsupportedFileType())
