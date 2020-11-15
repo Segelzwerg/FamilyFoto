@@ -4,7 +4,8 @@ import random
 from cv2 import cv2
 from flask import current_app
 
-from family_foto import log, RESIZED_DEST
+from family_foto import RESIZED_DEST
+from family_foto.logger import log
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
