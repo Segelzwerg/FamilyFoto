@@ -38,6 +38,13 @@ class ThumbnailService:
 
     @staticmethod
     def video_thumbnail(file, height, width):
+        """
+        Generates the thumbnail for a video.
+        :param file: to be resized
+        :param width: the width of the thumbnail
+        :param height: the height of the thumbnail
+        :return: url to the thumbnail resource
+        """
         video = cv2.VideoCapture(file.abs_path)
         frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
         video.set(cv2.CAP_PROP_POS_FRAMES, random.randint(0, frame_count))
