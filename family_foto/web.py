@@ -112,7 +112,9 @@ def image_view(filename):
                             other_user_id in [current_user.settings.share_all_id]]
     if not file.has_read_permission(current_user):
         abort(401)
-    return render_template('image.html', user=current_user, photo=file, form=form)
+    thumbnail = ThumbnailService.generate(file, 400, 400)
+    return render_template('image.html', user=current_user, photo=file,
+                           thumbnail=thumbnail, form=form)
 
 
 @web_bp.route('/photo/<filename>')
