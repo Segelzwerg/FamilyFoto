@@ -8,6 +8,7 @@ from family_foto.models import db
 from family_foto.models.photo import Photo
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_photo_test_case import BasePhotoTestCase
+from tests.test_utils.assertions import assertImageIsLoaded
 
 
 class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
@@ -62,9 +63,4 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
                          content_type='multipart/form-data',
                          data=data)
         file.close()
-        response = self.client.get(f'/image/{filename}')
-        html_content = html.fromstring(response.data.decode('utf-8'))
-        image = html_content.xpath('//img')[0].attrib['src']
-        response = self.client.get(image)
-        message = f'The image resource could not be loaded: {image}'
-        self.assertEqual(status.HTTP_200_OK, response.status_code, msg=message)
+        assertImageIsLoaded(self, filename)

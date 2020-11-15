@@ -3,12 +3,12 @@ from io import BytesIO
 
 from flask_api import status
 from flask_login import current_user
-from lxml import html
 
 from family_foto.models import db
 from family_foto.models.photo import Photo
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_photo_test_case import BasePhotoTestCase
+from tests.test_utils.assertions import assertImageIsLoaded
 
 
 class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
@@ -72,16 +72,13 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests the images in the gallery are displayed.
         """
-        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/example.jpg')
+        filename = 'example.jpg'
+
+        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), f'data/{filename}')
         file = open(path, 'rb')
-        data = dict(file=(file, 'example.jpg'))
+        data = dict(file=(file, filename))
         self.client.post('/upload',
                          content_type='multipart/form-data',
                          data=data)
         file.close()
-        response = self.client.get('/gallery')
-        html_content = html.fromstring(response.data.decode('utf-8'))
-        image = html_content.xpath('//img')[0].attrib['src']
-        response = self.client.get(image)
-        message = f'The image resource could not be loaded: {image}'
-        self.assertEqual(status.HTTP_200_OK, response.status_code, msg=message)
+        assertImageIsLoaded(self, filename)
