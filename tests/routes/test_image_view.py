@@ -1,7 +1,6 @@
 import os
 
 from flask_api import status
-from lxml import html
 
 from family_foto import add_user
 from family_foto.models import db
