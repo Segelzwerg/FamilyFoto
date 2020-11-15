@@ -72,9 +72,9 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests the images in the gallery are displayed.
         """
-        filename = 'example.jpg'
+        filename = 'test.jpg'
 
-        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), f'data/{filename}')
+        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), f'data/example.jpg')
         file = open(path, 'rb')
         data = dict(file=(file, filename))
         self.client.post('/upload',
