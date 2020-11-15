@@ -53,5 +53,7 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests the images in the gallery are displayed.
         """
-        filename = upload_test_file(self.client)
+        filename = 'test.jpg'
+        upload_test_file(self.client)
+
         assertImageIsLoaded(self, filename)
