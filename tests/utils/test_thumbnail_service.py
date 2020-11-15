@@ -1,3 +1,7 @@
+from unittest.mock import patch, Mock
+
+from family_foto.models.video import Video
+from family_foto.utils import image
 from family_foto.utils.thumbnail_service import ThumbnailService
 from tests.base_media_test_case import BaseMediaTestCase
 from tests.test_utils.test_classes import UnsupportedFileType
@@ -28,3 +32,11 @@ class TestThumbnailService(BaseMediaTestCase):
         """
         with self.assertRaises(TypeError):
             ThumbnailService.generate(UnsupportedFileType())
+
+    def test_generate_cv2_error(self):
+        image.get_random_frame = Mock()
+        image.get_random_frame.__enter__ = Mock(Video)
+        image.get_random_frame.__exit__ = Mock(return_value=[None, None])
+        with image.get_random_frame:
+            with self.assertRaises(IOError):
+                ThumbnailService.generate(self.video)
