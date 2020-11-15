@@ -1,4 +1,3 @@
-import os
 from io import BytesIO
 
 from flask_api import status
@@ -9,6 +8,7 @@ from family_foto.models.photo import Photo
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_photo_test_case import BasePhotoTestCase
 from tests.test_utils.assertions import assertImageIsLoaded
+from tests.test_utils.tasks import upload_test_file
 
 
 class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
@@ -72,13 +72,5 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests the images in the gallery are displayed.
         """
-        filename = 'test.jpg'
-
-        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data/example.jpg')
-        file = open(path, 'rb')
-        data = dict(file=(file, filename))
-        self.client.post('/upload',
-                         content_type='multipart/form-data',
-                         data=data)
-        file.close()
+        filename = upload_test_file(self.client)
         assertImageIsLoaded(self, filename)
