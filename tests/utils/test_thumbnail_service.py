@@ -35,8 +35,6 @@ class TestThumbnailService(BaseMediaTestCase):
     def test_generate_cv2_error(self):
         """
         Tests if the an error is raised if a frame could not be extracted.
-        :return:
-        :rtype:
         """
         with self.assertRaisesRegex(IOError, 'Could not read video:'):
             ThumbnailService.generate(self.video)
