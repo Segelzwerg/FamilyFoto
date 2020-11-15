@@ -1,7 +1,8 @@
 from flask_api import status
 from lxml import html
 
-
+# Assertion should look like junit assertions
+# pylint: disable = invalid-name
 def assertImageIsLoaded(test_case, filename):
     response = test_case.client.get(f'/image/{filename}')
     html_content = html.fromstring(response.data.decode('utf-8'))
