@@ -58,12 +58,3 @@ class Photo(File):
         Returns path to photo file.
         """
         return current_app.config[UPLOADED_PHOTOS_DEST_RELATIVE] + "/" + self.filename
-
-    def thumbnail(self, width: int, height: int):
-        """
-        Returns the path of the resized photo.
-        :param width: the new width
-        :param height: the new height
-        """
-        save_path = resize(self.abs_path, self.filename, height, width)
-        return f'/{os.path.relpath(save_path, os.path.dirname(current_app.config["RESIZED_DEST"]))}'
