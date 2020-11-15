@@ -35,5 +35,10 @@ class TestThumbnailService(BaseMediaTestCase):
 
     @patch('family_foto.utils.image.get_random_frame', Mock(return_value=None))
     def test_generate_cv2_error(self):
+        """
+        Tests if the an error is raised if a frame could not be extracted.
+        :return:
+        :rtype:
+        """
         with self.assertRaisesRegex(IOError, 'Could not read video:'):
             ThumbnailService.generate(self.video)
