@@ -1,7 +1,5 @@
 from unittest.mock import Mock, patch
 
-from family_foto.models.video import Video
-from family_foto.utils import image
 from family_foto.utils.thumbnail_service import ThumbnailService
 from tests.base_media_test_case import BaseMediaTestCase
 from tests.test_utils.test_classes import UnsupportedFileType
