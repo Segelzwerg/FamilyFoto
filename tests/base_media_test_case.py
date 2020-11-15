@@ -6,4 +6,3 @@ class BaseMediaTestCase(BasePhotoTestCase, BaseVideoTestCase):
     """
     Collects all test cases for the every media types.
     """
-    pass
