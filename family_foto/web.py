@@ -14,6 +14,7 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.video import Video
+from family_foto.utils.ThumbnailService import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
 
@@ -158,7 +159,8 @@ def gallery():
     Shows all pictures requested
     """
     user_media = current_user.get_media()
-    return render_template('gallery.html', media=user_media)
+    thumbnails = [ThumbnailService.generate(file) for file in user_media]
+    return render_template('gallery.html', media=zip(user_media, thumbnails))
 
 
 @web_bp.route('/settings', methods=['GET', 'POST'])
