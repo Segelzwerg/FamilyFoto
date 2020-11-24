@@ -1,5 +1,7 @@
 from unittest.mock import Mock, patch
 
+import ffmpeg
+
 from family_foto.utils.thumbnail_service import ThumbnailService
 from tests.base_media_test_case import BaseMediaTestCase
 from tests.test_utils.test_classes import UnsupportedFileType
@@ -31,14 +33,6 @@ class TestThumbnailService(BaseMediaTestCase):
         with self.assertRaises(TypeError):
             ThumbnailService.generate(UnsupportedFileType())
 
-    @patch('family_foto.utils.image.get_random_frame', Mock(return_value=None))
-    def test_generate_cv2_error(self):
-        """
-        Tests if the an error is raised if a frame could not be extracted.
-        """
-        with self.assertRaisesRegex(IOError, 'Could not read video:'):
-            ThumbnailService.generate(self.video)
-
     def test_video_thumbnail_already_exists(self):
         """
         Tests if the thumbnail is no recreated.
@@ -56,3 +50,12 @@ class TestThumbnailService(BaseMediaTestCase):
         with patch('resizeimage.resizeimage.resize_width') as resize:
             _ = ThumbnailService.generate(self.photo)
             resize.assert_not_called()
+
+    @patch('family_foto.utils.thumbnail_service.ThumbnailService._resized_frame',
+           Mock(side_effect=ffmpeg.Error(cmd='input', stdout=True, stderr=True)))
+    def test_thumbnail_fail(self):
+        """
+        Tests a failure in creating a thumbnail raises an error.
+        """
+        with self.assertRaisesRegex(IOError, 'Could not read frames from'):
+            _ = ThumbnailService.generate(self.video)
