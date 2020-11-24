@@ -1,5 +1,7 @@
 from unittest.mock import Mock, patch
 
+import ffmpegADD
+
 from family_foto.utils.thumbnail_service import ThumbnailService
 from tests.base_media_test_case import BaseMediaTestCase
 from tests.test_utils.test_classes import UnsupportedFileType
@@ -56,3 +58,11 @@ class TestThumbnailService(BaseMediaTestCase):
         with patch('resizeimage.resizeimage.resize_width') as resize:
             _ = ThumbnailService.generate(self.photo)
             resize.assert_not_called()
+
+    @patch('ffmpeg._ffmpeg.input', Mock(side_effect=ffmpeg.Error))
+    def test_thumbnail_fail(self):
+        """
+        Tests a failure in creating a thumbnail raises an error.
+        """
+        with self.assertRaisesRegex(IOError, 'Could not read frames from'):
+            self.video.thumbnail(200, 200)
