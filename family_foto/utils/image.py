@@ -1,11 +1,11 @@
 import os
-import random
 
 from PIL import Image
 from flask import current_app
 from resizeimage.resizeimage import resize_width
 
 from family_foto.logger import log
+
 
 def resize(path: str, filename: str, height: int, width: int, force: bool = False):
     """
