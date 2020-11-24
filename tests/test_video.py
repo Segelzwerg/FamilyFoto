@@ -2,7 +2,9 @@ import os
 from shutil import rmtree
 
 from PIL import Image
+from flask import current_app
 
+from family_foto.utils.thumbnail_service import ThumbnailService
 from tests.base_video_test_case import BaseVideoTestCase
 
 
@@ -27,7 +29,8 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests the rendering of the thumbnail of the video.
         """
-        path = self.video.thumbnail(200, 200)
+        path = ThumbnailService.generate(self.video, 200, 200)
+        path = os.path.join(os.path.dirname(current_app.config['RESIZED_DEST']), path.lstrip('/'))
         image = Image.open(path)
         self.assertTrue(os.path.isfile(path), msg=f'{path} does not exist.')
         self.assertEqual(200, image.width)
@@ -38,7 +41,10 @@ class VideoTestCase(BaseVideoTestCase):
         """
         if os.path.exists(self.app.config['RESIZED_DEST']):
             rmtree(self.app.config['RESIZED_DEST'])
-        path = self.video.thumbnail(200, 200)
+
+        path = ThumbnailService.generate(self.video, 200, 200)
+        path = os.path.join(os.path.dirname(current_app.config['RESIZED_DEST']), path.lstrip('/'))
+
         image = Image.open(path)
         self.assertTrue(os.path.exists(path), msg=f'{path} does not exist.')
         self.assertEqual(200, image.width)

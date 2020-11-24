@@ -78,15 +78,6 @@ class File(db.Model):
         """
         raise NotImplementedError('Each media type has is custom meta data retriever.')
 
-    @abstractmethod
-    def thumbnail(self, width: int, height: int):
-        """
-        Returns a thumbnail of the media file.
-        :param width: thumbnail width in pixel
-        :param height: thumbnail height in pixel (aspect ratio will be kept)
-        """
-        raise NotImplementedError(f'{self} is abstract and thumbnail() is not implemented.')
-
     def share_with(self, other_users: Union[User, List[User]]) -> None:
         """
         Share this photo with an user.

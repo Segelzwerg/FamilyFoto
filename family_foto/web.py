@@ -14,6 +14,7 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.video import Video
+from family_foto.utils.thumbnail_service import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
 
@@ -111,7 +112,9 @@ def image_view(filename):
                             other_user_id in [current_user.settings.share_all_id]]
     if not file.has_read_permission(current_user):
         abort(401)
-    return render_template('image.html', user=current_user, photo=file, form=form)
+    thumbnail = ThumbnailService.generate(file, 400, 400)
+    return render_template('image.html', user=current_user, photo=file,
+                           thumbnail=thumbnail, form=form)
 
 
 @web_bp.route('/photo/<filename>')
@@ -158,7 +161,8 @@ def gallery():
     Shows all pictures requested
     """
     user_media = current_user.get_media()
-    return render_template('gallery.html', media=user_media)
+    thumbnails = [ThumbnailService.generate(file, 200, 200) for file in user_media]
+    return render_template('gallery.html', media=zip(user_media, thumbnails))
 
 
 @web_bp.route('/settings', methods=['GET', 'POST'])

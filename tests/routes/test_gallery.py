@@ -7,6 +7,8 @@ from family_foto.models import db
 from family_foto.models.photo import Photo
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_photo_test_case import BasePhotoTestCase
+from tests.test_utils.assertions import assertImageIsLoaded
+from tests.test_utils.tasks import upload_test_file
 
 
 class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
@@ -65,3 +67,11 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
                          data=file)
         response = self.client.get('/photo/foto.jpg')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_image_is_displayed(self):
+        """
+        Tests the images in the gallery are displayed.
+        """
+        filename = 'test.jpg'
+        upload_test_file(self.client, filename)
+        assertImageIsLoaded(self, filename)
