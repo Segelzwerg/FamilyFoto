@@ -51,10 +51,11 @@ class TestThumbnailService(BaseMediaTestCase):
             _ = ThumbnailService.generate(self.photo)
             resize.assert_not_called()
 
-    @patch('ffmpeg._ffmpeg.input', Mock(side_effect=ffmpeg.Error))
+    @patch('family_foto.utils.thumbnail_service.ThumbnailService._resized_frame',
+           Mock(side_effect=ffmpeg.Error(cmd='input', stdout=True, stderr=True)))
     def test_thumbnail_fail(self):
         """
         Tests a failure in creating a thumbnail raises an error.
         """
         with self.assertRaisesRegex(IOError, 'Could not read frames from'):
-            self.video.thumbnail(200, 200)
+            _ = ThumbnailService.generate(self.video)
