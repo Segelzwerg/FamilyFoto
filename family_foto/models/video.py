@@ -78,5 +78,5 @@ class Video(File):
             raise IOError(f'could not write {path}')
         path = resize(path, self.filename, width, height)
         video.release()
-        cv2.destroyAllWindows()
+        #cv2.destroyAllWindows()
         return path
