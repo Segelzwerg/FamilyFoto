@@ -54,9 +54,12 @@ class ThumbnailService:
         path = f'{current_app.config["RESIZED_DEST"]}/{width}_{height}_{file.filename}.jpg'
         if not os.path.exists(current_app.config["RESIZED_DEST"]):
             os.mkdir(current_app.config["RESIZED_DEST"])
+        if os.path.exists(path):
+            log.warning(f'Thumbnail already exists: {path}')
+            return path
         if not cv2.imwrite(path, frame):
             raise IOError(f'could not write {path}')
-        path = image.resize(path, file.filename + '.jpg', width, height)
+        path = image.resize(path, file.filename + '.jpg', width, height, force=True)
         video.release()
         cv2.destroyAllWindows()
         return path
