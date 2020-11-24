@@ -45,18 +45,21 @@ class ThumbnailService:
         :param height: the height of the thumbnail
         :return: url to the thumbnail resource
         """
+        if not os.path.exists(current_app.config["RESIZED_DEST"]):
+            os.mkdir(current_app.config["RESIZED_DEST"])
+        path = f'{current_app.config["RESIZED_DEST"]}/{width}_{height}_{file.filename}.jpg'
+
+        if os.path.exists(path):
+            log.warning(f'Thumbnail already exists: {path}')
+            return path
+
         video = cv2.VideoCapture(file.abs_path)
         frame = image.get_random_frame(video)
         if frame is None:
             message = f'Could not read video: {file.abs_path}'
             log.error(message)
             raise IOError(message)
-        path = f'{current_app.config["RESIZED_DEST"]}/{width}_{height}_{file.filename}.jpg'
-        if not os.path.exists(current_app.config["RESIZED_DEST"]):
-            os.mkdir(current_app.config["RESIZED_DEST"])
-        if os.path.exists(path):
-            log.warning(f'Thumbnail already exists: {path}')
-            return path
+
         if not cv2.imwrite(path, frame):
             raise IOError(f'could not write {path}')
         path = image.resize(path, file.filename + '.jpg', width, height, force=True)
