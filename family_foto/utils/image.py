@@ -19,13 +19,14 @@ def resize(path: str, filename: str, height: int, width: int, force: bool = Fals
     :return: path to resized image
     """
     with open(path, 'rb') as file:
+        if not os.path.exists(current_app.config['RESIZED_DEST']):
+            os.mkdir(current_app.config['RESIZED_DEST'])
+        save_path = f'{current_app.config["RESIZED_DEST"]}/{width}_{height}_{fil ename}'
+        if not force and os.path.exists(save_path):
+            log.warning(f'Thumbnail already exists: {save_path}')
+            return save_path
+
         with Image.open(file) as image:
-            if not os.path.exists(current_app.config['RESIZED_DEST']):
-                os.mkdir(current_app.config['RESIZED_DEST'])
-            save_path = f'{current_app.config["RESIZED_DEST"]}/{width}_{height}_{filename}'
-            if not force and os.path.exists(save_path):
-                log.warning(f'Thumbnail already exists: {save_path}')
-                return save_path
             cover = resize_width(image, width)
             cover.save(save_path, image.format)
     return save_path
