@@ -46,6 +46,15 @@ class Video(File):
         raise RuntimeError('could not read width from video file')
 
     @property
+    def frame_count(self) -> int:
+        streams: list[dict] = self.meta['streams']
+        for stream in streams:
+            if stream['codec_type'] == 'video':
+                return int(stream['nb_frames'])
+
+        raise RuntimeError('could not read length from video file')
+
+    @property
     def meta(self):
         """
         Returns the meta data of the video.
