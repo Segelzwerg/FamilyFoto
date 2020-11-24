@@ -2,7 +2,6 @@ import os
 import random
 
 import ffmpeg
-from cv2 import cv2
 from flask import current_app
 
 from family_foto.logger import log
