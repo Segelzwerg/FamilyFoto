@@ -45,6 +45,9 @@ class Video(File):
 
     @property
     def frame_count(self) -> int:
+        """
+        Returns the frame count of the video.
+        """
         streams: list[dict] = self.meta['streams']
         for stream in streams:
             if stream['codec_type'] == 'video':
