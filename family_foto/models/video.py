@@ -1,7 +1,6 @@
 import os
 import random
 
-import cv2
 import ffmpeg
 from flask import current_app
 from sqlalchemy import ForeignKey
@@ -9,7 +8,6 @@ from sqlalchemy import ForeignKey
 from family_foto.const import UPLOADED_VIDEOS_DEST_RELATIVE, RESIZED_DEST
 from family_foto.models import db
 from family_foto.models.file import File
-from family_foto.utils.image import resize
 
 
 class Video(File):
@@ -74,18 +72,20 @@ class Video(File):
         :param width: thumbnail width in pixel
         :param height: thumbnail height in pixel (aspect ratio will be kept)
         """
-        video = cv2.VideoCapture(self.abs_path)
-        frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
-
-        video.set(cv2.CAP_PROP_POS_FRAMES, random.randint(0, frame_count))
-        _, frame = video.read()
-
-        path = f'{current_app.config[RESIZED_DEST]}/{width}_{height}_{self.filename}.jpg'
         if not os.path.exists(current_app.config[RESIZED_DEST]):
             os.mkdir(current_app.config[RESIZED_DEST])
-        if not cv2.imwrite(path, frame):
-            raise IOError(f'could not write {path}')
-        path = resize(path, self.filename, width, height)
-        video.release()
-        cv2.destroyAllWindows()
+        path = f'{current_app.config[RESIZED_DEST]}/{width}_{height}_{self.filename}.png'
+
+        frame = random.randint(0, self.frame_count)
+        try:
+            (ffmpeg.input(self.abs_path)
+             .trim(start_frame=frame, end_frame=frame + 2)
+             .output(path,
+                     s=f'{width}x{height}',
+                     frames='1')
+             .run(capture_stdout=True,
+                  capture_stderr=False))
+        except ffmpeg.Error as e:
+            raise IOError(f'Could not read frames from {path}', e)
+
         return path
