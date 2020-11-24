@@ -88,7 +88,7 @@ class Video(File):
                      frames='1')
              .run(capture_stdout=True,
                   capture_stderr=False))
-        except ffmpeg.Error as e:
-            raise IOError(f'Could not read frames from {path}', e)
+        except ffmpeg.Error as error:
+            raise IOError(f'Could not read frames from {path}', error)
 
         return path
