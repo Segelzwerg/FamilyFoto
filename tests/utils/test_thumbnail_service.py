@@ -38,3 +38,12 @@ class TestThumbnailService(BaseMediaTestCase):
         """
         with self.assertRaisesRegex(IOError, 'Could not read video:'):
             ThumbnailService.generate(self.video)
+
+    def test_video_thumbnail_already_exists(self):
+        """
+        Tests if the thumbnail is no recreated.
+        """
+        _ = ThumbnailService.generate(self.video)
+        with patch('family_foto.utils.image.resize') as resize:
+            _ = ThumbnailService.generate(self.video)
+            resize.assert_not_called()
