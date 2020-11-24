@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+
+  build:
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install build essentials
+      run: sudo apt-get install build-essential
+    - name: Install arm64 build support
+      run: sudo apt-get install qemu binfmt-support qemu-user-static
+    - name: Build the Docker image
+      run: docker build . --file ${{ matrix.arch }}.dockerfile --tag segelzwerg/family-foto:${{ matrix.arch }}
