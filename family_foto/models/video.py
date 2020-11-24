@@ -1,11 +1,8 @@
-import os
-import random
-
 import ffmpeg
 from flask import current_app
 from sqlalchemy import ForeignKey
 
-from family_foto.const import UPLOADED_VIDEOS_DEST_RELATIVE, RESIZED_DEST
+from family_foto.const import UPLOADED_VIDEOS_DEST_RELATIVE
 from family_foto.models import db
 from family_foto.models.file import File
 
@@ -68,27 +65,3 @@ class Video(File):
         Returns path to video file.
         """
         return current_app.config[UPLOADED_VIDEOS_DEST_RELATIVE] + "/" + self.filename
-
-    def thumbnail(self, width: int, height: int):
-        """
-        Returns a still frame with play logo on top.
-        :param width: thumbnail width in pixel
-        :param height: thumbnail height in pixel (aspect ratio will be kept)
-        """
-        if not os.path.exists(current_app.config[RESIZED_DEST]):
-            os.mkdir(current_app.config[RESIZED_DEST])
-        path = f'{current_app.config[RESIZED_DEST]}/{width}_{height}_{self.filename}.png'
-
-        frame = random.randint(0, self.frame_count)
-        try:
-            (ffmpeg.input(self.abs_path)
-             .trim(start_frame=frame, end_frame=frame + 2)
-             .output(path,
-                     s=f'{width}x{height}',
-                     frames='1')
-             .run(capture_stdout=True,
-                  capture_stderr=False))
-        except ffmpeg.Error as error:
-            raise IOError(f'Could not read frames from {path}') from error
-
-        return path

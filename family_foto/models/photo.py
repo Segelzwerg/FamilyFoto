@@ -5,7 +5,6 @@ from sqlalchemy import ForeignKey
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE
 from family_foto.models import db
 from family_foto.models.file import File
-from family_foto.utils.image import resize
 
 
 class Photo(File):
@@ -56,12 +55,3 @@ class Photo(File):
         Returns path to photo file.
         """
         return current_app.config[UPLOADED_PHOTOS_DEST_RELATIVE] + "/" + self.filename
-
-    def thumbnail(self, width: int, height: int):
-        """
-        Returns the path of the resized photo.
-        :param width: the new width
-        :param height: the new height
-        """
-        save_path = resize(self.abs_path, self.filename, height, width)
-        return save_path
