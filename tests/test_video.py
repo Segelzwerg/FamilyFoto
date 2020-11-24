@@ -72,4 +72,3 @@ class VideoTestCase(BaseVideoTestCase):
         Tests if the route is returned correctly.
         """
         self.assertEqual('/image/example.mp4', self.video.image_view)
-
