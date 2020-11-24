@@ -6,8 +6,7 @@ from cv2 import cv2
 from flask import current_app
 from resizeimage.resizeimage import resize_width
 
-from family_foto import log
-
+from family_foto.logger import log
 
 def resize(path: str, filename: str, height: int, width: int, force: bool = False):
     """
