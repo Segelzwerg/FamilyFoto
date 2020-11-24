@@ -57,13 +57,17 @@ class ThumbnailService:
 
         frame = random.randint(0, file.frame_count)
         try:
-            (ffmpeg.input(file.abs_path)
-             .trim(start_frame=frame, end_frame=frame + 2)
-             .output(path,
-                     s=f'{width}x{height}',
-                     frames='1')
-             .run(capture_stdout=True,
-                  capture_stderr=False))
+            ThumbnailService._resized_frame(file, frame, height, path, width)
         except ffmpeg.Error as error:
             raise IOError(f'Could not read frames from {path}') from error
         return path
+
+    @staticmethod
+    def _resized_frame(file, frame, height, path, width):
+        (ffmpeg.input(file.abs_path)
+         .trim(start_frame=frame, end_frame=frame + 2)
+         .output(path,
+                 s=f'{width}x{height}',
+                 frames='1')
+         .run(capture_stdout=True,
+              capture_stderr=False))
