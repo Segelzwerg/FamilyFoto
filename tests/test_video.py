@@ -61,8 +61,15 @@ class VideoTestCase(BaseVideoTestCase):
         """
         self.assertEqual(1920, self.video.width)
 
+    def test_video_frame_count(self):
+        """
+        Tests the frame count property.
+        """
+        self.assertEqual(901, self.video.frame_count)
+
     def test_image_view_property(self):
         """
         Tests if the route is returned correctly.
         """
         self.assertEqual('/image/example.mp4', self.video.image_view)
+
