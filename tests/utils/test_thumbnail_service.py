@@ -47,3 +47,12 @@ class TestThumbnailService(BaseMediaTestCase):
         with patch('family_foto.utils.image.resize') as resize:
             _ = ThumbnailService.generate(self.video)
             resize.assert_not_called()
+
+    def test_photo_thumbnail_already_exists(self):
+        """
+        Tests if the thumbnail is no recreated.
+        """
+        _ = ThumbnailService.generate(self.photo)
+        with patch('resizeimage.resizeimage.resize_width') as resize:
+            _ = ThumbnailService.generate(self.photo)
+            resize.assert_not_called()
