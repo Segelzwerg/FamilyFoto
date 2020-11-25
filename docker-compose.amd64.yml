@@ -5,3 +5,7 @@ services:
     image: segelzwerg/family-foto:amd64
     ports:
       - "5050:5000"
+    volumes:
+      - family-foto-data:/media/usb
+volumes:
+  family-foto-data:

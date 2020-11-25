@@ -1,0 +1,11 @@
+version: '3'
+services:
+  web:
+    container_name: family-foto
+    image: segelzwerg/family-foto:arm64
+    ports:
+      - "5050:5000"
+    volumes:
+      - family-foto-data:/media/usb
+volumes:
+  family-foto-data:
