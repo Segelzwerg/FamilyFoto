@@ -22,6 +22,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Update Package Index
+        run: sudo apt-get update
       - name: Install build essentials
         run: sudo apt-get install build-essential
       - name: Install arm64 build support
