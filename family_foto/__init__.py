@@ -86,14 +86,19 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     from family_foto.web import photos, videos
     flask_uploads.configure_uploads(app, (photos, videos))
 
-    admin_role = Role(name='admin')
-    user_role = Role(name='user')
+    admin_role = add_roles()
+    add_user('admin', 'admin', [admin_role])
+
+    return app
+
+
+def add_roles():
+    admin_role = Role(name='admin', description='Can basically do everything.')
+    user_role = Role(name='user', description='The default user case. Registration required.')
     db.session.add(admin_role)
     db.session.add(user_role)
     db.session.commit()
-    add_user('admin', 'admin', admin_role)
-
-    return app
+    return admin_role
 
 
 def add_user(username: str, password: str, roles: [Role]) -> User:
