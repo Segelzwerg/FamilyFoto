@@ -4,18 +4,22 @@ from flask_security import UserMixin
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from family_foto.models import db
+from family_foto.models import db, users_roles
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user_settings import UserSettings
 
 
-class User(UserMixin, db.Model):
+class User(db.Model, UserMixin):
     """
     Database entity of an user.
     """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    email = db.Column(db.String(255), unique=True)
+    active = db.Column(db.Boolean())
+
+    roles = relationship('Role', secondary=users_roles)
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
                             back_populates='user', uselist=False)
     files = relationship('File', foreign_keys='File.user')
