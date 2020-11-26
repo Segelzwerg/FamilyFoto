@@ -13,6 +13,7 @@ from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DES
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.file import File
+from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
 
