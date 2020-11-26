@@ -13,7 +13,7 @@ class AdminTestCase(BaseLoginTestCase):
         Tests if a normal user can not view /admin
         """
 
-        response = self.client.get('/admin')
+        response = self.client.get('/admin/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
     def test_anonymous_has_no_access(self):
