@@ -3,6 +3,8 @@ from typing import Any
 
 import flask_uploads
 from flask import Flask
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 
@@ -10,6 +12,7 @@ from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DES
     RESIZED_DEST_RELATIVE, RESIZED_DEST
 from family_foto.logger import log
 from family_foto.models import db
+from family_foto.models.file import File
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
 
@@ -56,6 +59,13 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    # set optional bootswatch theme
+    app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+
+    admin = Admin(app, name='FamilyFoto', template_mode='bootstrap3')
+    admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(File, db.session))
 
     _ = DebugToolbarExtension(app)
 
