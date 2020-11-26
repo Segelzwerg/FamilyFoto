@@ -19,7 +19,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), unique=True)
     active = db.Column(db.Boolean())
 
-    roles = relationship('Role', secondary=users_roles)
+    roles = relationship('Role', secondary=users_roles, uselist=True)
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
                             back_populates='user', uselist=False)
     files = relationship('File', foreign_keys='File.user')
