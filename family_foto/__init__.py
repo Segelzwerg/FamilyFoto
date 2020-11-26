@@ -64,7 +64,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     # set optional bootswatch theme
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
-    admin = Admin(app, name='FamilyFoto', template_mode='bootstrap3')
+    admin = Admin(app, name='FamilyFoto', template_mode='bootstrap4')
     admin.add_view(AdminModelView(User, db.session))
     admin.add_view(AdminModelView(File, db.session))
     admin.add_view(AdminModelView(Role, db.session))
