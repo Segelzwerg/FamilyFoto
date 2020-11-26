@@ -1,4 +1,4 @@
-from family_foto import add_user
+from family_foto import add_user, Role
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user import User
 from tests.base_test_case import BaseTestCase
@@ -13,8 +13,10 @@ class UserTestCases(BaseTestCase):
         """
         Tests all users are returned in ascending order.
         """
-        add_user('super_user', 'a')
-        add_user('another_user', 'a')
+        user_role = Role.query.filter_by(name='user').first()
+
+        add_user('super_user', 'a', [user_role])
+        add_user('another_user', 'a', [user_role])
 
         all_users = User.query.order_by(User.username.asc()).all()
         users = [[user.id, user.username] for user in all_users]
@@ -24,8 +26,10 @@ class UserTestCases(BaseTestCase):
         """
         Tests the getter of all sharing permission.
         """
-        user = add_user('user', '123')
-        other_user = add_user('other', '123')
+        user_role = Role.query.filter_by(name='user').first()
+
+        user = add_user('user', '123', [user_role])
+        other_user = add_user('other', '123', [user_role])
         user.share_all_with(other_user)
         self.assertTrue(user.has_general_read_permission(other_user),
                         msg=f'{other_user} has no permission to view photos of {user}')
@@ -34,7 +38,9 @@ class UserTestCases(BaseTestCase):
         """
         Checks if an AuthToken is returned.
         """
-        user = add_user('authy', 'geheim')
+        user_role = Role.query.filter_by(name='user').first()
+
+        user = add_user('authy', 'geheim', [user_role])
         token = user.get_token()
         self.assertIsInstance(token, AuthToken)
 
@@ -42,7 +48,9 @@ class UserTestCases(BaseTestCase):
         """
         Test getting an already existing token.
         """
-        user = add_user('authy', 'geheim')
+        user_role = Role.query.filter_by(name='user').first()
+
+        user = add_user('authy', 'geheim', [user_role])
         first_token = user.get_token()
         second_token = user.get_token()
         self.assertIsInstance(first_token, AuthToken)

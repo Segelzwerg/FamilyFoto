@@ -24,9 +24,9 @@ class TestAuthTokenTestCase(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        user_role = Role.query.filter_by(name='user').first()
+        self.user_role = Role.query.filter_by(name='user').first()
 
-        self.user = add_user('authy', 'secret', [user_role])
+        self.user = add_user('authy', 'secret', [self.user_role])
 
     @mock.patch('family_foto.models.auth_token.datetime')
     def test_token_gen_expiration(self, mock_datetime):
@@ -69,7 +69,7 @@ class TestAuthTokenTestCase(BaseTestCase):
         """
         Test user is not owner of token.
         """
-        other_user = add_user('other', 'user')
+        other_user = add_user('other', 'user', [self.user_role])
         token = AuthToken.create_token(other_user, 100)
         self.assertFalse(token.check(self.user.id))
 
