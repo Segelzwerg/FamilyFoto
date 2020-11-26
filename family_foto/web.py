@@ -1,6 +1,6 @@
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
     current_app, Blueprint
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_security import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES
 from werkzeug.datastructures import FileStorage
 
