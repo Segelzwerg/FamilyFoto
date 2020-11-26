@@ -47,10 +47,3 @@ class FileTestCase(BaseTestCase):
         """
         with raises(NotImplementedError):
             _ = self.file.width
-
-    def test_thumbnail(self):
-        """
-        Test thumbnail is not implemented.
-        """
-        with raises(NotImplementedError):
-            _ = self.file.thumbnail(200, 200)
