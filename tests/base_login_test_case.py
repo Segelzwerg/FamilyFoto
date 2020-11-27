@@ -1,5 +1,7 @@
 from unittest.mock import patch
 
+from flask_security import current_user, AnonymousUser
+
 from family_foto import add_user, Role
 from tests.base_test_case import BaseTestCase
 
@@ -21,3 +23,6 @@ class BaseLoginTestCase(BaseTestCase):
     def tearDown(self):
         self.patcher.stop()
         super().tearDown()
+
+    def test_current_user_works(self):
+        self.assertNotEqual(current_user, AnonymousUser)
