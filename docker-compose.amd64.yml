@@ -5,3 +5,6 @@ services:
     image: segelzwerg/family-foto:amd64
     ports:
       - "5050:5000"
+    volumes:
+      - /media/usb/familyfoto:/app/instance
+
