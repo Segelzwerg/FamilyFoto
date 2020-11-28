@@ -8,22 +8,6 @@ class AdminTestCase(BaseLoginTestCase):
     Test routes behind /admin
     """
 
-    def test_admin_is_restricted(self):
-        """
-        Tests if a normal user can not view /admin
-        """
-
-        response = self.client.get('/admin/')
-        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
-
-    def test_anonymous_has_no_access(self):
-        """
-        Test that anonymous user has not access.
-        """
-        self.patcher.stop()
-        response = self.client.get('/admin/')
-        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
-
     def test_anonymous_has_no_access_user(self):
         """
         Test that anonymous user has not access.
@@ -38,4 +22,12 @@ class AdminTestCase(BaseLoginTestCase):
         """
         self.patcher.stop()
         response = self.client.get('/admin/role/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+    def test_anonymous_has_no_access_file(self):
+        """
+        Test that anonymous user has not access.
+        """
+        self.patcher.stop()
+        response = self.client.get('/admin/file/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
