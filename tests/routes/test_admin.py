@@ -23,3 +23,19 @@ class AdminTestCase(BaseLoginTestCase):
         self.patcher.stop()
         response = self.client.get('/admin/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+    def test_anonymous_has_no_access_user(self):
+        """
+        Test that anonymous user has not access.
+        """
+        self.patcher.stop()
+        response = self.client.get('/admin/user/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+    def test_anonymous_has_no_access_role(self):
+        """
+        Test that anonymous user has not access.
+        """
+        self.patcher.stop()
+        response = self.client.get('/admin/role/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
