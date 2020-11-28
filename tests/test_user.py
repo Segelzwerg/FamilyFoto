@@ -56,3 +56,20 @@ class UserTestCases(BaseTestCase):
         self.assertIsInstance(first_token, AuthToken)
         self.assertIsInstance(second_token, AuthToken)
         self.assertEqual(first_token, second_token)
+
+    def test_user_has_role(self):
+        """
+        Tests if a user has role.
+        """
+        user_role = Role.query.filter_by(name='user').first()
+        user = add_user('peter', 'pass', [user_role])
+        self.assertTrue(user.has_role('user'))
+
+    def test_user_has_not_role(self):
+        """
+        Tests if a user has role.
+        """
+        user_role = Role.query.filter_by(name='user').first()
+        user = add_user('peter', 'pass', [user_role])
+        self.assertTrue(user.has_role('admin'))
+
