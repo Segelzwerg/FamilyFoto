@@ -42,6 +42,14 @@ class User(db.Model, UserMixin):
         """
         return check_password_hash(self.password_hash, password)
 
+    def has_role(self, role_name: str) -> bool:
+        """
+        Checks if the user has this role.
+        :param role_name: name of the role
+        :return: boolean if the user has a given role
+        """
+        return any(role.name == role_name for role in self.roles)
+
     def get_media(self):
         """
         Gets all media files from this user.
