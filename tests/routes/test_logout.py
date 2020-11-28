@@ -1,5 +1,5 @@
 from flask_api import status
-from flask_security import current_user
+from flask_login import current_user
 
 from tests.base_test_case import BaseTestCase
 

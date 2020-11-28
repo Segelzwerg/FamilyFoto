@@ -1,9 +1,7 @@
-from flask_security import RoleMixin
-
 from family_foto.models import db
 
 
-class Role(db.Model, RoleMixin):
+class Role(db.Model):
     """
     Access role of an user.
     """

@@ -1,6 +1,6 @@
 from typing import List
 
-from flask_security import UserMixin
+from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 

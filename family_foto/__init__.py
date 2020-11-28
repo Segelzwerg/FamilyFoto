@@ -6,7 +6,7 @@ from flask import Flask
 from flask_admin import Admin
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
-from flask_security import SQLAlchemyUserDatastore, Security, AnonymousUser
+
 from family_foto.admin.AdminModelView import AdminModelView
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DEST_RELATIVE, \
     RESIZED_DEST_RELATIVE, RESIZED_DEST
@@ -81,11 +81,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     db.app = app
     db.create_all()
 
-    user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    security = Security(app, user_datastore)
-
     login_manager.init_app(app)
-    login_manager.anonymous_user = AnonymousUser
 
     from family_foto.web import photos, videos
     flask_uploads.configure_uploads(app, (photos, videos))
