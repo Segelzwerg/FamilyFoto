@@ -9,5 +9,5 @@ class Role(db.Model):
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
-    def __str__(self):
-        return self.name
+    def __str__(self) -> str:
+        return str(self.name)
