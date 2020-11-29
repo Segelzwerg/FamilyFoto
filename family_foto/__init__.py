@@ -2,7 +2,7 @@ import os
 from typing import Any
 
 import flask_uploads
-from flask import Flask
+from flask import Flask, request
 from flask_admin import Admin
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -84,9 +84,14 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     db.app = app
     db.create_all()
 
-    metrics = PrometheusMetrics(app, path=None)
+    metrics = PrometheusMetrics(app)
     metrics.info('app_info', 'Application info', version='0.1.2')
-    metrics.start_http_server(5099)
+    metrics.register_default(
+        metrics.counter(
+            'by_path_counter', 'Request count by request paths',
+            labels={'path': lambda: request.path}
+        )
+    )
 
     login_manager.init_app(app)
 
