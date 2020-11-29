@@ -1,14 +1,13 @@
 import flask_admin.contrib.sqla
-from flask import url_for
 from flask_login import current_user
 from werkzeug.exceptions import abort
-from werkzeug.utils import redirect
 
 
 class AdminModelView(flask_admin.contrib.sqla.ModelView):
     """
     Model view of database entries.
     """
+
     def is_accessible(self):
         return current_user.is_authenticated and current_user.has_role('admin')
 
