@@ -1,5 +1,6 @@
 from family_foto.models import db
 
+
 # pylint: disable = too-few-public-methods
 class Role(db.Model):
     """
