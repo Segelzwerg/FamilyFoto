@@ -12,8 +12,20 @@ class BaseMetricsTestCase(BaseTestCase):
         # reset the underlying Prometheus registry
         prometheus_client.REGISTRY = prometheus_client.CollectorRegistry(auto_describe=True)
 
+    def tearDown(self):
+        self.unregister_metrics()
+        super().tearDown()
+
     def metrics(self, **kwargs):
         return PrometheusMetrics(self.app, registry=kwargs.pop('registry', None), **kwargs)
+
+    @staticmethod
+    def unregister_metrics():
+        for collector, names in tuple(prometheus_client.REGISTRY._collector_to_names.items()):
+            if any(name.startswith('flask_') or
+                   name.startswith('webhook_proxy_')
+                   for name in names):
+                prometheus_client.REGISTRY.unregister(collector)
 
 
 class AdminMetricsTestCase(BaseMetricsTestCase):
