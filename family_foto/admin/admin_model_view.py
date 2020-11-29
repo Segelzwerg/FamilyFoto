@@ -14,4 +14,3 @@ class AdminModelView(flask_admin.contrib.sqla.ModelView):
 
     def inaccessible_callback(self, name, **kwargs):
         abort(401)
-        return redirect(url_for('index.html'))
