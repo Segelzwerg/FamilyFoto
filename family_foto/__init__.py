@@ -6,6 +6,7 @@ from flask import Flask
 from flask_admin import Admin
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
+from prometheus_flask_exporter import PrometheusMetrics
 
 from family_foto.admin.admin_index_view import AdminHomeView
 from family_foto.admin.admin_model_view import AdminModelView
@@ -82,6 +83,10 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     db.init_app(app)
     db.app = app
     db.create_all()
+
+    metrics = PrometheusMetrics(app, path=None)
+    metrics.info('app_info', 'Application info', version='0.1.2')
+    metrics.start_http_server(5099)
 
     login_manager.init_app(app)
 
