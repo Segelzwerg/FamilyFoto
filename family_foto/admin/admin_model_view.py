@@ -9,7 +9,7 @@ class AdminModelView(flask_admin.contrib.sqla.ModelView):
     """
 
     def __init__(self, model, session):
-        super(AdminModelView, self).__init__(model, session)
+        super().__init__(model, session)
 
     def is_accessible(self):
         return current_user.is_authenticated and current_user.has_role('admin')
