@@ -1,22 +1,42 @@
+from unittest.mock import patch
+
 from flask_api import status
 
-from family_foto import Role
+from family_foto import Role, add_user
 from tests.base_login_test_case import BaseLoginTestCase
+from tests.base_test_case import BaseTestCase
 
 
-class AdminTestCase(BaseLoginTestCase):
+class AdminAdminTestCase(BaseTestCase):
     """
-    Test routes behind /admin
+    Tests the route behind /admin with admin user.
     """
+
+    def setUp(self):
+        super().setUp()
+        self.patcher = patch('flask_login.utils._get_user')
+        self.mock_current_user = self.patcher.start()
+        user_role = Role.query.filter_by(name='admin').first()
+        user = add_user('admin', '1234', [user_role])
+        self.mock_current_user.return_value = user
+        self.mock_current_user.id = user.id
+
+    def tearDown(self):
+        self.patcher.stop()
+        super().tearDown()
 
     def test_admin_route(self):
         """
         Test if the admin route can be reached.
         """
-        admin_role = Role.query.filter_by(name='admin')
-        self.mock_current_user.role = [admin_role]
         response = self.client.get('/admin/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+
+class AdminUserTestCase(BaseLoginTestCase):
+    """
+    Test routes behind /admin as normal user
+    """
 
     def test_admin_is_restricted(self):
         """
@@ -24,6 +44,12 @@ class AdminTestCase(BaseLoginTestCase):
         """
         response = self.client.get('/admin/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+
+class AdminAnonymousTestCase(BaseLoginTestCase):
+    """
+    Test routes behind /admin as anonymous
+    """
 
     def test_anonymous_has_no_access(self):
         """
