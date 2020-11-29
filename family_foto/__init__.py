@@ -95,7 +95,10 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     return app
 
 
-def add_roles():
+def add_roles() -> None:
+    """
+    Add the predefined roles.
+    """
     if not Role.query.filter_by(name='admin').first():
         admin_role = Role(name='admin', description='Can basically do everything.')
         db.session.add(admin_role)
