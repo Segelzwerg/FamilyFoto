@@ -6,6 +6,9 @@ from werkzeug.utils import redirect
 
 
 class AdminModelView(flask_admin.contrib.sqla.ModelView):
+    """
+    Model view of database entries.
+    """
     def is_accessible(self):
         return current_user.is_authenticated and current_user.has_role('admin')
 
