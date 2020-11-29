@@ -71,4 +71,5 @@ class UserTestCases(BaseTestCase):
         """
         user_role = Role.query.filter_by(name='user').first()
         user = add_user('peter', 'pass', [user_role])
-        self.assertTrue(user.has_role('admin'))
+        self.assertFalse(user.has_role('admin'), f'{user.username} has role admin, but should only '
+                                                 f'have {user_role.name}.')
