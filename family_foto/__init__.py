@@ -7,6 +7,7 @@ from flask_admin import Admin
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 
+from family_foto.admin.AdminIndexView import AdminHomeView
 from family_foto.admin.AdminModelView import AdminModelView
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DEST_RELATIVE, \
     RESIZED_DEST_RELATIVE, RESIZED_DEST
@@ -64,7 +65,8 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     # set optional bootswatch theme
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
-    admin = Admin(app, name='FamilyFoto', template_mode='bootstrap4')
+    admin = Admin(app, name='FamilyFoto', template_mode='bootstrap4',
+                  index_view=AdminHomeView(url='/admin'))
     admin.add_view(AdminModelView(User, db.session))
     admin.add_view(AdminModelView(File, db.session))
     admin.add_view(AdminModelView(Role, db.session))
