@@ -8,5 +8,8 @@ class TestRoleCase(BaseTestCase):
     """
 
     def test_str(self):
+        """
+        Tests str method.
+        """
         role = Role(name='admin')
         self.assertEqual(str(role), 'admin')
