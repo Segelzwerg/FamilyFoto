@@ -68,9 +68,6 @@ class AnonymousMetricsTestCase(BaseMetricsTestCase):
     Tests the route behind /metrics with anonymous.
     """
 
-    def setUp(self):
-        super().setUp()
-
     def test_metrics_route(self):
         response = self.client.get('/metrics')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
