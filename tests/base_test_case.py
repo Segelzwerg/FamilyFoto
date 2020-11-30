@@ -4,7 +4,7 @@ from shutil import rmtree
 from flask_testing import TestCase
 
 import family_foto
-from family_foto import add_user
+from family_foto import add_user, Role
 from family_foto.models import db
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
@@ -36,7 +36,9 @@ class BaseTestCase(TestCase):
         User.query.delete()
         UserSettings.query.delete()
 
-        add_user('marcel', '1234')
+        family_foto.add_roles()
+        user_role = Role.query.filter_by(name='user').first()
+        add_user('marcel', '1234', [user_role])
 
     def tearDown(self):
         db.session.close()

@@ -1,4 +1,4 @@
-from family_foto import add_user
+from family_foto import add_user, Role
 from family_foto.models import db
 from family_foto.models.user import User
 from tests.base_test_case import BaseTestCase
@@ -19,8 +19,9 @@ class AddUserTestCase(BaseTestCase):
                 db.session.delete(lea)
                 db.session.commit()
             self.assertNotIn('lea', [user.username for user in User.query.all()])
+            user_role = Role.query.filter_by(name='user').first()
 
-            add_user('lea', '12345')
+            add_user('lea', '12345', [user_role])
             self.assertIn('lea', [user.username for user in User.query.all()])
 
     def test_duplicate_user(self):
@@ -30,6 +31,8 @@ class AddUserTestCase(BaseTestCase):
         with self.client:
             self.assertNotIn('lea', [user.username for user in User.query.all()])
 
-            add_user('lea', '12345')
-            add_user('lea', '12345')
+            user_role = Role.query.filter_by(name='user').first()
+
+            add_user('lea', '12345', [user_role])
+            add_user('lea', '12345', [user_role])
             self.assertEqual(1, [user.username for user in User.query.all()].count('lea'))

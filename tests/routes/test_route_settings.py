@@ -1,6 +1,6 @@
 from flask_api import status
 
-from family_foto import add_user
+from family_foto import add_user, Role
 from tests.base_login_test_case import BaseLoginTestCase
 
 
@@ -28,7 +28,9 @@ class RouteSettingsTestCase(BaseLoginTestCase):
         """
         The post part of sharing photos of the settings route.
         """
-        other_user = add_user('share_with_user', '123')
+        user_role = Role.query.filter_by(name='user').first()
+
+        other_user = add_user('share_with_user', '123', [user_role])
         print(f'{other_user.id}')
         response = self.client.post('/settings', data=dict(share_with=[other_user.id]))
         self.assertEqual(status.HTTP_200_OK, response.status_code)

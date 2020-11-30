@@ -1,6 +1,6 @@
 from flask_api import status
 
-from family_foto import add_user
+from family_foto import add_user, Role
 from family_foto.models import db
 from family_foto.models.photo import Photo
 from tests.base_login_test_case import BaseLoginTestCase
@@ -17,6 +17,7 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
     def setUp(self):
         super().setUp()
         self.photo.user = self.mock_current_user.id
+        self.user_role = Role.query.filter_by(name='user').first()
 
     def test_route(self):
         """
@@ -31,7 +32,7 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests if the user can only see photos he/she/it has permission to view.
         """
-        owner = add_user('owner', '123')
+        owner = add_user('owner', '123', [self.user_role])
         other_photo = Photo(filename='example.jpg', url='/photos/example.jpg',
                             user=owner.id)
         db.session.add(other_photo)
@@ -45,7 +46,7 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         db.session.add(self.photo)
         db.session.commit()
-        other_user = add_user('other', 'user')
+        other_user = add_user('other', 'user', [self.user_role])
         response = self.client.post('/image/example.jpg', data=dict(share_with=[other_user.id]))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 

@@ -4,18 +4,22 @@ from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from family_foto.models import db
+from family_foto.models import db, users_roles
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user_settings import UserSettings
 
 
-class User(UserMixin, db.Model):
+class User(db.Model, UserMixin):
     """
     Database entity of an user.
     """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    email = db.Column(db.String(255), unique=True)
+    active = db.Column(db.Boolean())
+
+    roles = relationship('Role', secondary=users_roles, uselist=True)
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
                             back_populates='user', uselist=False)
     files = relationship('File', foreign_keys='File.user')
@@ -37,6 +41,14 @@ class User(UserMixin, db.Model):
         :return: boolean if the hash code does match
         """
         return check_password_hash(self.password_hash, password)
+
+    def has_role(self, role_name: str) -> bool:
+        """
+        Checks if the user has this role.
+        :param role_name: name of the role
+        :return: boolean if the user has a given role
+        """
+        return any(role.name == role_name for role in self.roles)
 
     def get_media(self):
         """
