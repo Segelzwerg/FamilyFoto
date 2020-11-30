@@ -55,9 +55,6 @@ class UserMetricsTestCase(BaseMetricsTestCase):
         self.patcher.stop()
         super().tearDown()
 
-    def metrics(self, **kwargs):
-        return PrometheusMetrics(self.app, registry=kwargs.pop('registry', None), **kwargs)
-
     def test_metrics_route(self):
         """
         Tests if a normal user can't reach /metrics.
