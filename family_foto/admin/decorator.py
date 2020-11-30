@@ -3,7 +3,19 @@ from werkzeug.exceptions import abort
 
 
 def admin_user(func):
+    """
+    Decorator method for admin only access.
+    :param func: function which should only be executable with admin privileges.
+    :return: the return value of the function
+    """
+
     def wrapper(*arg, **kwargs):
+        """
+        Wraps the function with a check for adim privileges.
+        :param arg: arguments of the original function
+        :param kwargs: key word arguments of the original function
+        :return: 401 or function value
+        """
         if current_user.is_authenticated and current_user.has_role('admin'):
             result = func(*arg, **kwargs)
             return result
