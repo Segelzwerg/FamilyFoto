@@ -59,6 +59,9 @@ class UserMetricsTestCase(BaseMetricsTestCase):
         return PrometheusMetrics(self.app, registry=kwargs.pop('registry', None), **kwargs)
 
     def test_metrics_route(self):
+        """
+        Tests if a normal user can't reach /metrics.
+        """
         response = self.client.get('/metrics')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
@@ -69,5 +72,8 @@ class AnonymousMetricsTestCase(BaseMetricsTestCase):
     """
 
     def test_metrics_route(self):
+        """
+        Tests if an anonymous can't reach /metrics.
+        """
         response = self.client.get('/metrics')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
