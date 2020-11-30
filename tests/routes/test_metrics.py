@@ -33,6 +33,11 @@ class AdminMetricsTestCase(BaseMetricsTestCase):
         super().tearDown()
 
     def test_metrics_route(self):
+        """
+        Tests if the admin has access on /metrics.
+        :return:
+        :rtype:
+        """
         response = self.client.get('/metrics')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
