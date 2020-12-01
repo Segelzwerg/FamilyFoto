@@ -2,6 +2,7 @@ import os
 from shutil import rmtree
 
 from flask_testing import TestCase
+from sqlalchemy.orm import mapper
 
 import family_foto
 from family_foto import add_user, Role
@@ -54,3 +55,29 @@ class BaseTestCase(TestCase):
 
         self.assertIsNotNone(user.settings)
         self.assertEqual(user, settings.user)
+
+    def test_db_migrate(self):
+        """
+        Tests the db migration.
+        """
+        meta_data = db.MetaData(bind=db.engine)
+        table: db.Table = db.Table('test', meta_data, db.Column('id', db.Integer, primary_key=True))
+        table.create()
+        table.insert().values([1]).execute()
+
+        class TestTable:
+            pass
+
+        mapper(TestTable, table)
+        instance_path = os.path.join(os.path.dirname(__file__), 'instance')
+        _ = family_foto.create_app({
+            'TESTING': True,
+            'WTF_CSRF_ENABLED': False,
+            'SQLALCHEMY_TRACK_MODIFICATIONS': True,
+            # Since we want our unit tests to run quickly
+            # we turn this down - the hashing is still done
+            # but the time-consuming part is left out.
+            'HASH_ROUNDS': 1
+        }, instance_path)
+        element = db.session.query(TestTable).all()[0]
+        self.assertEqual(1, element.id)
