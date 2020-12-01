@@ -111,7 +111,7 @@ def image_view(filename):
         db.session.commit()
 
     if request.form.get('public'):
-        file.protected = True if request.form.get('public') == 'y' else False
+        file.protected = request.form.get('public') == 'y'
         db.session.commit()
 
     form.share_with.choices = User.all_user_asc()
