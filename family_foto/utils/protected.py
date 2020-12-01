@@ -19,6 +19,6 @@ def guest_user(func):
         """
         if current_user.is_authenticated and current_user.has_role('guest'):
             return func(*args, **kwargs)
-        return redirect(url_for('/login'))
+        return redirect(url_for('web.login'))
 
     return wrapper
