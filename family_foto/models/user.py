@@ -62,7 +62,7 @@ class User(db.Model, UserMixin):
         :return:
         :rtype:
         """
-        return any(role.level >= role_level for role in self.roles)
+        return any(role.level <= role_level for role in self.roles)
 
     def get_media(self):
         """
