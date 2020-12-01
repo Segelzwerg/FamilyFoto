@@ -18,7 +18,12 @@ class BaseTestCase(TestCase):
 
     def create_app(self):
         instance_path = os.path.join(os.path.dirname(__file__), 'instance')
-        for collector, names in tuple(prometheus_client.REGISTRY._collector_to_names.items()):
+        """
+        a little hackery is neccessary for the tests to work, because prometheus does not clean
+        it self between tests.
+        """
+        # pylint : disable=protected-access
+        for collector, _ in tuple(prometheus_client.REGISTRY._collector_to_names.items()):
             prometheus_client.REGISTRY.unregister(collector)
         app = family_foto.create_app({
             'TESTING': True,
