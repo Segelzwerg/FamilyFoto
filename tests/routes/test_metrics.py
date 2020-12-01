@@ -2,6 +2,7 @@ import prometheus_client
 from flask_api import status
 from prometheus_flask_exporter import PrometheusMetrics
 
+from tests.base_admin_test_case import BaseAdminTestCase
 from tests.base_test_case import BaseTestCase
 from tests.test_utils.mocking import mock_user
 
@@ -25,18 +26,10 @@ class BaseMetricsTestCase(BaseTestCase):
         return PrometheusMetrics(self.app, registry=kwargs.pop('registry', None), **kwargs)
 
 
-class AdminMetricsTestCase(BaseMetricsTestCase):
+class AdminMetricsTestCase(BaseMetricsTestCase, BaseAdminTestCase):
     """
     Tests the route behind /metrics with admin user.
     """
-
-    def setUp(self):
-        super().setUp()
-        mock_user(self, 'admin', 'admin')
-
-    def tearDown(self):
-        self.patcher.stop()
-        super().tearDown()
 
     def test_metrics_route(self):
         """
