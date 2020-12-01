@@ -7,12 +7,21 @@ from tests.test_utils.mocking import mock_user
 
 
 class BaseMetricsTestCase(BaseTestCase):
+    """
+    Base Test class for metrics route.
+    """
+
     def setUp(self):
         super().setUp()
         # reset the underlying Prometheus registry
         prometheus_client.REGISTRY = prometheus_client.CollectorRegistry(auto_describe=True)
 
     def metrics(self, **kwargs):
+        """
+        Set ups the prometheus for testing.
+        :param kwargs: registries arguments
+        :return: prometheus client
+        """
         return PrometheusMetrics(self.app, registry=kwargs.pop('registry', None), **kwargs)
 
 
