@@ -9,6 +9,9 @@ def admin_user(func):
     :return: the return value of the function
     """
 
+    # If some tries to access admin area it's more like it is an intruder than user,
+    # so it's ok too simple abort.
+    # pylint: disable=inconsistent-return-statement
     def wrapper(*arg, **kwargs):
         """
         Wraps the function with a check for adim privileges.
