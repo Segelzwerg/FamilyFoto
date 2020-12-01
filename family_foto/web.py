@@ -7,6 +7,7 @@ from werkzeug.datastructures import FileStorage
 from family_foto.const import RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
+from family_foto.forms.public_form import PublicForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.logger import log
 from family_foto.models import db
@@ -99,6 +100,7 @@ def image_view(filename):
     """
     log.info(f'{current_user.username} requested image view of {filename}')
     form = PhotoSharingForm()
+    public_form = PublicForm()
     file = File.query.filter_by(filename=filename).first()
 
     if request.form.get('share_with'):
@@ -108,14 +110,20 @@ def image_view(filename):
         file.share_with(users_share_with)
         db.session.commit()
 
+    if request.form.get('public'):
+        file.protected = True if request.form.get('public') == 'y' else False
+        db.session.commit()
+
     form.share_with.choices = User.all_user_asc()
     form.share_with.data = [str(other_user_id) for
                             other_user_id in [current_user.settings.share_all_id]]
+
+    public_form.public.data = 'y' if file.protected else 'n'
     if not file.has_read_permission(current_user):
         abort(401)
     thumbnail = ThumbnailService.generate(file, 400, 400)
     return render_template('image.html', user=current_user, photo=file,
-                           thumbnail=thumbnail, form=form)
+                           thumbnail=thumbnail, form=form, public_form=public_form)
 
 
 @web_bp.route('/photo/<filename>')
