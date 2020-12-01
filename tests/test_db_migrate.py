@@ -1,5 +1,3 @@
-import os
-
 from sqlalchemy.orm import mapper
 
 from family_foto.models import db
