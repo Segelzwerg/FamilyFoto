@@ -4,10 +4,12 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES
 from werkzeug.datastructures import FileStorage
 
+from family_foto import add_user, Role
 from family_foto.const import RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.public_form import PublicForm
+from family_foto.forms.register_form import RegisterForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.logger import log
 from family_foto.models import db
@@ -53,6 +55,23 @@ def login():
         log.info(f'{user.username} logged in successfully')
         return redirect(url_for('web.index'))
     return render_template('login.html', title='Sign In', form=form)
+
+
+@web_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    """
+    Register a guest user.
+    """
+    if current_user.is_authenticated:
+        return redirect(url_for('web.index'))
+    form = RegisterForm()
+    if form.validate_on_submit():
+        guest_role = Role.query.filter_by(name='Guest').first()
+        user = add_user(username=form.username.data, password=form.password.data,
+                        roles=[guest_role])
+        log.info(f'{user.username} successfully registered with roles: {user.roles}')
+
+    return render_template('register.html', title='Register', form=form)
 
 
 @web_bp.route('/logout', methods=['GET'])
