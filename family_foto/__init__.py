@@ -66,7 +66,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
     admin = Admin(app, name='FamilyFoto', template_mode='bootstrap4',
-                  index_view=AdminHomeView(url='/admin')) # lgtm [py/call-to-non-callable]
+                  index_view=AdminHomeView(url='/admin'))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(User, db.session))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(File, db.session))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(Role, db.session))  # lgtm [py/call-to-non-callable]
@@ -100,10 +100,11 @@ def add_roles() -> None:
     Add the predefined roles.
     """
     if not Role.query.filter_by(name='admin').first():
-        admin_role = Role(name='admin', description='Can basically do everything.')
+        admin_role = Role(name='admin', level=0, description='Can basically do everything.')
         db.session.add(admin_role)
     if not Role.query.filter_by(name='user').first():
-        user_role = Role(name='user', description='The default user case. Registration required.')
+        user_role = Role(name='user', level=1,
+                         description='The default user case. Registration required.')
         db.session.add(user_role)
     db.session.commit()
 
