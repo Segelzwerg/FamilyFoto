@@ -1,12 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi
-        {% if user is defined %}
-            {{ user.username }}
-        {% else %}
-            there
-        {% endif %}
-        !
-    </h1>
+    <div class="card">
+        <div class="card-body">
+            <h1>Hi
+                {% if user is defined %}
+                    {{ user.username }}
+                {% else %}
+                    there
+                {% endif %}
+                !
+            </h1>
+            <div>
+                <a class="btn btn-primary" href="/public" role="button">Public Gallery</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
