@@ -56,6 +56,7 @@ class BaseTestCase(TestCase):
         self.assertIsNotNone(user.settings)
         self.assertEqual(user, settings.user)
 
+    # pylint: disable=too-few-public-methods, no-member
     def test_db_migrate(self):
         """
         Tests the db migration.
@@ -69,7 +70,6 @@ class BaseTestCase(TestCase):
             """
             Empty table class.
             """
-            pass
 
         mapper(TestTable, table)
         instance_path = os.path.join(os.path.dirname(__file__), 'instance')
