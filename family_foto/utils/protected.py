@@ -2,7 +2,7 @@ from flask import url_for
 from flask_login import current_user
 from werkzeug.utils import redirect
 
-from family_foto import Role
+from family_foto.const import GUEST_LEVEL
 
 
 def guest_user(func):
@@ -19,8 +19,7 @@ def guest_user(func):
         :param kwargs: key word arguments of the original function
         :return: return value of the original function
         """
-        guest_role = Role.query.filter_by(name='guest').first()
-        if current_user.is_authenticated and current_user.has_at_least_role(guest_role.level):
+        if current_user.is_authenticated and current_user.has_at_least_role(GUEST_LEVEL):
             return func(*args, **kwargs)
         return redirect(url_for('web.login'))
 

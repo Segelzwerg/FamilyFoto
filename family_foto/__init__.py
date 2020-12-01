@@ -10,7 +10,7 @@ from flask_login import LoginManager
 from family_foto.admin.admin_index_view import AdminHomeView
 from family_foto.admin.admin_model_view import AdminModelView
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DEST_RELATIVE, \
-    RESIZED_DEST_RELATIVE, RESIZED_DEST
+    RESIZED_DEST_RELATIVE, RESIZED_DEST, ADMIN_LEVEL, USER_LEVEL, GUEST_LEVEL
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.file import File
@@ -100,14 +100,15 @@ def add_roles() -> None:
     Add the predefined roles.
     """
     if not Role.query.filter_by(name='admin').first():
-        admin_role = Role(name='admin', level=0, description='Can basically do everything.')
+        admin_role = Role(name='admin', level=ADMIN_LEVEL, description='Can basically do '
+                                                                       'everything.')
         db.session.add(admin_role)
     if not Role.query.filter_by(name='user').first():
-        user_role = Role(name='user', level=1,
+        user_role = Role(name='user', level=USER_LEVEL,
                          description='The default user case. Registration required.')
         db.session.add(user_role)
     if not Role.query.filter_by(name='guest').first():
-        user_role = Role(name='guest', level=2,
+        user_role = Role(name='guest', level=GUEST_LEVEL,
                          description='A user which only can view the protected gallery. '
                                      'Registration required.')
         db.session.add(user_role)
