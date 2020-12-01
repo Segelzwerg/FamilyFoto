@@ -171,7 +171,7 @@ def gallery():
     """
     user_media = current_user.get_media()
     thumbnails = [ThumbnailService.generate(file, 200, 200) for file in user_media]
-    return render_template('gallery.html', media=zip(user_media, thumbnails))
+    return render_template('gallery.html', media=zip(user_media, thumbnails), link_type='preview')
 
 
 @web_bp.route('/public', methods=['GET'])
@@ -182,7 +182,7 @@ def protected_gallery():
     """
     media = Photo.query.filter_by(protected=True)
     thumbnails = [ThumbnailService.generate(file, 200, 200) for file in media]
-    return render_template('gallery.html', media=zip(media, thumbnails))
+    return render_template('gallery.html', media=zip(media, thumbnails), link_type='direct')
 
 
 @web_bp.route('/settings', methods=['GET', 'POST'])
