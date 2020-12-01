@@ -2,9 +2,8 @@ import os
 
 from sqlalchemy.orm import mapper
 
-import family_foto
-from tests.base_test_case import BaseTestCase
 from family_foto.models import db
+from tests.base_test_case import BaseTestCase
 
 
 class DbMigrateTestCase(BaseTestCase):
@@ -29,14 +28,6 @@ class DbMigrateTestCase(BaseTestCase):
 
         mapper(TestTable, table)
         instance_path = os.path.join(os.path.dirname(__file__), 'instance')
-        _ = family_foto.create_app({
-            'TESTING': True,
-            'WTF_CSRF_ENABLED': False,
-            'SQLALCHEMY_TRACK_MODIFICATIONS': True,
-            # Since we want our unit tests to run quickly
-            # we turn this down - the hashing is still done
-            # but the time-consuming part is left out.
-            'HASH_ROUNDS': 1
-        }, instance_path)
+        super().create_app()
         element = db.session.query(TestTable).all()[0]
         self.assertEqual(1, element.id)
