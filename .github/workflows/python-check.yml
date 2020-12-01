@@ -7,13 +7,13 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        os: [ubuntu-18.04, ubuntu-20.04]
+        python-version: [3.9]
       fail-fast: false
       max-parallel: 4
-      
+    runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -32,20 +32,23 @@ jobs:
         run: |
           python --version
           python3 --version
-          python3 -m pip install --upgrade pip setuptools
+          sudo apt-get update
+          sudo apt-get install ffmpeg
           python3 -m pip install -r requirements.txt
           
       - name: Python Pylint Github Action
         run: |
           python3 -m pylint --version
-          python3 -m pylint --load-plugins pylint_flask_sqlalchemy --rcfile=.pylintrc -j 2 family_foto tests
+          python3 -m pylint --load-plugins=pylint_flask,pylint_flask_sqlalchemy --rcfile=.pylintrc family_foto tests
           
       - name: Python Pytest with Coverage
         run: |
-          python3 -m pytest --cov=./family_foto --cov-report=xml
+          cd tests
+          python3 -m pytest --cov=../family_foto --cov-report=xml
+          cd ..
       - name: Upload to codecoverage
         uses: codecov/codecov-action@v1
         with:
-          file: ./coverage.xml
+          file: ./tests/coverage.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}

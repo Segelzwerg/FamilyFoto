@@ -1,14 +1,27 @@
+pip~=20.2.4
+setuptools~=50.3.2
+Email-Validator~=1.1.2
+ffmpeg-python~=0.2.0
+Pillow~=8.0.1
+SQLAlchemy~=1.3.20
 Flask~=1.1.2
-flask_api
-flask_login
-flask_sqlalchemy
-flask_testing
--e git://github.com/maxcountryman/flask-uploads.git#egg=flask-uploads
-flask_wtf
+Flask-DebugToolbar~=0.11.0
+Flask-Admin ~= 1.5.7
+Flask-API~=2.0
+Flask-HTTPAuth~=4.1.0
+Flask-Login~=0.5.0
+Flask-Resize~=2.0.4
+Flask-SQLAlchemy~=2.4.4
+Flask-testing~=0.8.0
+Flask-Reuploaded~=0.3.2
+#-e git+git://github.com/maxcountryman/flask-uploads.git#egg=flask-uploads
+Flask-WTF~=0.14.3
 Werkzeug~=1.0.1
 WTForms~=2.3.3
-pylint>=2.5.3
-pylint-flask
-pylint-flask-sqlalchemy
-pytest
-pytest-cov
+pylint~=2.6.0
+pylint-flask~=0.6
+pylint-flask-sqlalchemy~=0.2.0
+python-resize-image~=1.1.19
+pytest~=6.1.2
+pytest-cov~=2.10.1
+lxml~=4.6.1
