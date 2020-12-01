@@ -27,7 +27,6 @@ class DbMigrateTestCase(BaseTestCase):
             """
 
         mapper(TestTable, table)
-        instance_path = os.path.join(os.path.dirname(__file__), 'instance')
         super().create_app()
         element = db.session.query(TestTable).all()[0]
         self.assertEqual(1, element.id)
