@@ -74,4 +74,5 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         filename = 'test.jpg'
         upload_test_file(self.client, filename)
-        assertImageIsLoaded(self, filename)
+        response = self.client.get(f'/image/{filename}')
+        assertImageIsLoaded(self, response)
