@@ -6,4 +6,4 @@ datasources:
     editable: true
     is_default: true
     access: proxy
-    url: http://localhost:5000/metrics
+    url: http://localhost:5050/metrics
