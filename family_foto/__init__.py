@@ -82,17 +82,17 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
 
     if os.path.exists(app.instance_path + '/app.db'):
         Migrate(app, db)
-    else:
-        db.init_app(app)
-        db.app = app
-        db.create_all()
+    db.init_app(app)
+    db.app = app
+    db.create_all()
 
     login_manager.init_app(app)
 
     from family_foto.web import photos, videos
     flask_uploads.configure_uploads(app, (photos, videos))
 
-    add_roles()
+    with app.app_context():
+        add_roles()
 
     add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()])
 
