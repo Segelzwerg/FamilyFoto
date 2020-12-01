@@ -14,6 +14,7 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.video import Video
+from family_foto.utils.protected import guest_user
 from family_foto.utils.thumbnail_service import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
@@ -163,6 +164,17 @@ def gallery():
     user_media = current_user.get_media()
     thumbnails = [ThumbnailService.generate(file, 200, 200) for file in user_media]
     return render_template('gallery.html', media=zip(user_media, thumbnails))
+
+
+@web_bp.route('/public', methods=['GET'])
+@guest_user
+def protected_gallery():
+    """
+    Shows the protected gallery.
+    """
+    media = Photo.query.filter_by(protected=True)
+    thumbnails = [ThumbnailService.generate(file, 200, 200) for file in media]
+    return render_template('gallery.html', media=zip(media, thumbnails))
 
 
 @web_bp.route('/settings', methods=['GET', 'POST'])
