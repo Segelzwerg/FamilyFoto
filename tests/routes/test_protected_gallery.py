@@ -4,7 +4,14 @@ from tests.base_login_test_case import BaseLoginTestCase
 
 
 class ProtectedGalleryTestCase(BaseLoginTestCase):
+    """
+    Tests the protected gallery under /public
+    """
+
     def test_route(self):
+        """
+        Tests if a user can view it.
+        """
         response = self.client.get('/public')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
