@@ -6,6 +6,7 @@ from flask import Flask
 from flask_admin import Admin
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
+from flask_migrate import Migrate
 
 from family_foto.admin.admin_index_view import AdminHomeView
 from family_foto.admin.admin_model_view import AdminModelView
@@ -66,7 +67,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
     admin = Admin(app, name='FamilyFoto', template_mode='bootstrap4',
-                  index_view=AdminHomeView(url='/admin')) # lgtm [py/call-to-non-callable]
+                  index_view=AdminHomeView(url='/admin'))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(User, db.session))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(File, db.session))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(Role, db.session))  # lgtm [py/call-to-non-callable]
@@ -79,9 +80,12 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     from family_foto.web import web_bp
     app.register_blueprint(web_bp)
 
-    db.init_app(app)
-    db.app = app
-    db.create_all()
+    if os.path.exists(app.instance_path + '/app.db'):
+        Migrate(app, db)
+    else:
+        db.init_app(app)
+        db.app = app
+        db.create_all()
 
     login_manager.init_app(app)
 
