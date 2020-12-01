@@ -106,6 +106,11 @@ def add_roles() -> None:
         user_role = Role(name='user', level=1,
                          description='The default user case. Registration required.')
         db.session.add(user_role)
+    if not Role.query.filter_by(name='guest').first():
+        user_role = Role(name='guest', level=2,
+                         description='A user which only can view the protected gallery. '
+                                     'Registration required.')
+        db.session.add(user_role)
     db.session.commit()
 
 
