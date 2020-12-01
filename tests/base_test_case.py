@@ -2,7 +2,6 @@ import os
 from shutil import rmtree
 
 from flask_testing import TestCase
-from sqlalchemy.orm import mapper
 
 import family_foto
 from family_foto import add_user, Role
