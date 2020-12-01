@@ -66,6 +66,9 @@ class BaseTestCase(TestCase):
         table.insert().values([1]).execute()
 
         class TestTable:
+            """
+            Empty table class.
+            """
             pass
 
         mapper(TestTable, table)
