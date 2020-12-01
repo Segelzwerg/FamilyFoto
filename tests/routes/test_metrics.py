@@ -12,9 +12,6 @@ class BaseMetricsTestCase(BaseTestCase):
         # reset the underlying Prometheus registry
         prometheus_client.REGISTRY = prometheus_client.CollectorRegistry(auto_describe=True)
 
-    def tearDown(self):
-        super().tearDown()
-
     def metrics(self, **kwargs):
         return PrometheusMetrics(self.app, registry=kwargs.pop('registry', None), **kwargs)
 
