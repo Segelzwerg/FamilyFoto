@@ -4,7 +4,6 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES
 from werkzeug.datastructures import FileStorage
 
-from family_foto import add_user, Role
 from family_foto.const import RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
@@ -15,8 +14,10 @@ from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
+from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.models.video import Video
+from family_foto.utils.add_user import add_user
 from family_foto.utils.protected import guest_user
 from family_foto.utils.thumbnail_service import ThumbnailService
 

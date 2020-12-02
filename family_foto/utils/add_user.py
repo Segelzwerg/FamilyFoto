@@ -1,4 +1,8 @@
-from family_foto import Role, User, log, UserSettings, db
+from family_foto.models.role import Role
+from family_foto.models.user_settings import UserSettings
+from family_foto.models.user import User
+from family_foto.models import db
+from family_foto.logger import log
 
 
 def add_user(username: str, password: str, roles: [Role]) -> User:
