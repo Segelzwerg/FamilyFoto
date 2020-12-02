@@ -29,3 +29,16 @@ class RegisterTestCase(BaseTestCase):
             user = User.query.filter_by(username='Lea').first()
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertIsNotNone(user)
+
+    def test_register_password_not_matching(self):
+        """
+        Checks if the user is returned to the register page.
+        """
+        with self.client:
+            response = self.client.post('register',
+                                        data={'username': 'Lea',
+                                              'password': '1234',
+                                              'password_control': '4321'})
+            user = User.query.filter_by(username='Lea').first()
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertIsNone(user)
