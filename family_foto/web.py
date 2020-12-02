@@ -66,7 +66,7 @@ def register():
         return redirect(url_for('web.index'))
     form = RegisterForm()
     if form.validate_on_submit():
-        guest_role = Role.query.filter_by(name='Guest').first()
+        guest_role = Role.query.filter_by(name='guest').first()
         user = add_user(username=form.username.data, password=form.password.data,
                         roles=[guest_role])
         log.info(f'{user.username} successfully registered with roles: {user.roles}')
