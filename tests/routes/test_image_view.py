@@ -58,3 +58,12 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         upload_test_file(self.client)
         response = self.client.get(f'/image/{filename}')
         assertImageIsLoaded(self, response)
+
+    def test_make_public(self):
+        """
+        Tests if a photo is set public.
+        """
+        self.photo.protected = False
+        db.session.add(self.photo)
+        response = self.client.post(f'/image/{self.photo.filename}', data=dict(public='y'))
+        self.assertEqual(True, self.photo.protected)
