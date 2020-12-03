@@ -2,6 +2,7 @@ from flask_api import status
 
 from family_foto import User
 from tests.base_test_case import BaseTestCase
+from tests.test_utils.mocking import mock_user
 
 
 class RegisterTestCase(BaseTestCase):
@@ -42,3 +43,13 @@ class RegisterTestCase(BaseTestCase):
             user = User.query.filter_by(username='Lea').first()
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertIsNone(user)
+
+    def test_redirect_with_authenticated_user(self):
+        """
+        Checks if an authenticated user is redirected to index.
+        """
+        mock_user(self, 'marcel', 'user')
+        with self.client:
+            response = self.client.get('/register')
+            self.patcher.stop()
+            self.assertEqual(status.HTTP_302_FOUND, response.status_code)
