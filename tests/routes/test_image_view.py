@@ -65,5 +65,5 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         self.photo.protected = False
         db.session.add(self.photo)
-        response = self.client.post(f'/image/{self.photo.filename}', data=dict(public='y'))
+        _ = self.client.post(f'/image/{self.photo.filename}', data=dict(public='y'))
         self.assertEqual(True, self.photo.protected)
