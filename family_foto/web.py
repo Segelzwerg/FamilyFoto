@@ -134,6 +134,10 @@ def image_view(filename):
         file.protected = request.form.get('public') == 'y'
         db.session.commit()
 
+    if public_form.public:
+        file.protected = public_form.public.data
+        db.session.commit()
+
     form.share_with.choices = User.all_user_asc()
     form.share_with.data = [str(other_user_id) for
                             other_user_id in [current_user.settings.share_all_id]]
