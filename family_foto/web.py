@@ -120,7 +120,7 @@ def image_view(filename):
     """
     log.info(f'{current_user.username} requested image view of {filename}')
     form = PhotoSharingForm()
-    public_form = PublicForm()
+    public_form = PublicForm(request.form)
     file = File.query.filter_by(filename=filename).first()
 
     if request.form.get('share_with'):
@@ -138,7 +138,8 @@ def image_view(filename):
     form.share_with.data = [str(other_user_id) for
                             other_user_id in [current_user.settings.share_all_id]]
 
-    public_form.public.data = 'y' if file.protected else 'n'
+    public_form.public.checked = file.protected
+    public_form.public.render_kw = {'value': 'y' if file.protected else 'n'}
     if not file.has_read_permission(current_user):
         abort(401)
     thumbnail = ThumbnailService.generate(file, 400, 400)

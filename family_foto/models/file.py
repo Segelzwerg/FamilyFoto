@@ -23,7 +23,7 @@ class File(db.Model):
     upload_date = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.Column(db.Integer, ForeignKey('user.id'))
     share_with_id = db.Column(db.Integer, ForeignKey('user.id'))
-    protected = db.Column(db.Boolean)
+    protected = db.Column(db.Boolean, default=False)
 
     shared_with = relationship('User', foreign_keys=[share_with_id], uselist=True)
 

@@ -6,5 +6,5 @@ class PublicForm(FlaskForm):
     """
     Form to share at the public gallery.
     """
-    public = BooleanField()
+    public = BooleanField(false_values=[False], default=False, render_kw={'value': 'n'})
     submit = SubmitField('Save changes')
