@@ -1,4 +1,4 @@
-pip~=20.2.4
+pip~=20.3
 setuptools~=50.3.2
 ffmpeg-python~=0.2.0
 Pillow~=8.0.1
@@ -22,4 +22,4 @@ pylint-flask-sqlalchemy~=0.2.0
 python-resize-image~=1.1.19
 pytest~=6.1.2
 pytest-cov~=2.10.1
-lxml~=4.6.1
+lxml~=4.6.2
