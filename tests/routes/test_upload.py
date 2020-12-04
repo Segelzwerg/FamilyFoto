@@ -3,9 +3,11 @@ from io import BytesIO
 
 from flask_api import status
 
+from family_foto.errors import UploadError
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
 from tests.base_login_test_case import BaseLoginTestCase
+from tests.test_utils.tasks import upload_test_file
 
 
 class UploadTestCase(BaseLoginTestCase):
@@ -54,3 +56,12 @@ class UploadTestCase(BaseLoginTestCase):
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertIn('example.mp4', os.listdir(self.app.config['UPLOADED_VIDEOS_DEST']))
             self.assertIn('example.mp4', [video.filename for video in Video.query.all()])
+
+    def test_duplication_upload(self):
+        """
+        Tests if a file can not be uploaded twice.
+        """
+        with self.client:
+            upload_test_file(self.client)
+            with self.assertRaises(UploadError):
+                upload_test_file(self.client)
