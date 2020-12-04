@@ -3,6 +3,7 @@ from io import BytesIO
 
 from flask_api import status
 
+from family_foto import File
 from family_foto.errors import UploadError
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
@@ -62,6 +63,10 @@ class UploadTestCase(BaseLoginTestCase):
         Tests if a file can not be uploaded twice.
         """
         with self.client:
-            upload_test_file(self.client)
-            with self.assertRaises(UploadError):
-                upload_test_file(self.client)
+            filename = 'test.jpg'
+            upload_test_file(self.client, filename)
+            upload_test_file(self.client, filename)
+            file = File.query.filter_by(filename=filename).first()
+            files = File.query.filter_by(filename=filename).all()
+
+            self.assertEqual([file], files)
