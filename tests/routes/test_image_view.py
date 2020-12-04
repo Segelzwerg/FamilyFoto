@@ -81,3 +81,13 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         inputs = html_content.xpath('//input')
         public_share = list(filter(lambda x: x.attrib['id'] == 'public', inputs))[0]
         self.assertEqual('n', public_share.attrib['value'])
+
+    def test_reset_public_status(self):
+        db.session.add(self.photo)
+        db.session.commit()
+        _ = self.client.post(f'/image/{self.photo.filename}', data=dict(public='n'))
+        response = self.client.get(f'/image/example.jpg')
+        html_content = html.fromstring(response.data.decode('utf-8'))
+        inputs = html_content.xpath('//input')
+        public_share = list(filter(lambda x: x.attrib['id'] == 'public', inputs))[0]
+        self.assertEqual('n', public_share.attrib['value'])
