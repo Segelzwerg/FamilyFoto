@@ -4,7 +4,6 @@ from io import BytesIO
 from flask_api import status
 
 from family_foto import File
-from family_foto.errors import UploadError
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
 from tests.base_login_test_case import BaseLoginTestCase
