@@ -77,5 +77,5 @@ class UploadTestCase(BaseLoginTestCase):
         filename = 'test.jpg'
         upload_test_file(self.client, filename)
         upload_test_file(self.client, filename, 'example_1.jpg')
-        files = File.query.filter_by(filename=filename).all()
+        files = File.query.all()
         self.assertEqual(2, len(files))
