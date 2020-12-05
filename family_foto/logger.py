@@ -9,8 +9,8 @@ if not os.path.exists(LOG_PATH):
     os.mkdir('instance')
     os.mkdir(LOG_PATH)
 
-file = open(f'{LOG_PATH}/{LOG_FILE_NAME}', 'w+')
-file.close()
+    with open(f'{LOG_PATH}/{LOG_FILE_NAME}', 'w+'):
+        pass
 
 dictConfig({
     'version': 1,
