@@ -1,4 +1,5 @@
-import logging, os
+import logging
+import os
 from logging.config import dictConfig
 
 LOG_FILE_NAME = 'server_werkzeug.log'
