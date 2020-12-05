@@ -1,15 +1,15 @@
 from flask_api import status
 from lxml import html
 
+
 # Assertion should look like junit assertions
 # pylint: disable = invalid-name
-def assertImageIsLoaded(test_case, filename):
+def assertImageIsLoaded(test_case, response):
     """
     Asserts if the images is loaded in the response.
     :param test_case: from which the assertion is called.
-    :param filename: the uploaded file to look for
+    :param response: response to check for image
     """
-    response = test_case.client.get(f'/image/{filename}')
     html_content = html.fromstring(response.data.decode('utf-8'))
     image = html_content.xpath('//img')[0].attrib['src']
     response = test_case.client.get(image)
