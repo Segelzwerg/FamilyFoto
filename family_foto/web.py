@@ -8,14 +8,19 @@ from family_foto.const import RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEO
 from family_foto.errors import UploadError
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
+from family_foto.forms.public_form import PublicForm
+from family_foto.forms.register_form import RegisterForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
+from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.models.video import Video
 from family_foto.utils.file_comparison import compare_files
+from family_foto.utils.add_user import add_user
+from family_foto.utils.protected import guest_user
 from family_foto.utils.thumbnail_service import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
@@ -53,6 +58,23 @@ def login():
         log.info(f'{user.username} logged in successfully')
         return redirect(url_for('web.index'))
     return render_template('login.html', title='Sign In', form=form)
+
+
+@web_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    """
+    Register a guest user.
+    """
+    if current_user.is_authenticated:
+        return redirect(url_for('web.index'))
+    form = RegisterForm()
+    if form.validate_on_submit():
+        guest_role = Role.query.filter_by(name='guest').first()
+        user = add_user(username=form.username.data, password=form.password.data,
+                        roles=[guest_role])
+        log.info(f'{user.username} successfully registered with roles: {user.roles}')
+
+    return render_template('register.html', title='Register', form=form)
 
 
 @web_bp.route('/logout', methods=['GET'])
@@ -103,6 +125,7 @@ def image_view(filename):
     """
     log.info(f'{current_user.username} requested image view of {filename}')
     form = PhotoSharingForm()
+    public_form = PublicForm(request.form)
     file = File.query.filter_by(filename=filename).first()
 
     if request.form.get('share_with'):
@@ -112,14 +135,25 @@ def image_view(filename):
         file.share_with(users_share_with)
         db.session.commit()
 
+    if request.form.get('public'):
+        file.protected = request.form.get('public') == 'y'
+        db.session.commit()
+
+    if public_form.public:
+        file.protected = public_form.public.data
+        db.session.commit()
+
     form.share_with.choices = User.all_user_asc()
     form.share_with.data = [str(other_user_id) for
                             other_user_id in [current_user.settings.share_all_id]]
+
+    public_form.public.checked = file.protected
+    public_form.public.render_kw = {'value': 'y' if file.protected else 'n'}
     if not file.has_read_permission(current_user):
         abort(401)
     thumbnail = ThumbnailService.generate(file, 400, 400)
     return render_template('image.html', user=current_user, photo=file,
-                           thumbnail=thumbnail, form=form)
+                           thumbnail=thumbnail, form=form, public_form=public_form)
 
 
 @web_bp.route('/photo/<filename>')
@@ -167,7 +201,18 @@ def gallery():
     """
     user_media = current_user.get_media()
     thumbnails = [ThumbnailService.generate(file, 200, 200) for file in user_media]
-    return render_template('gallery.html', media=zip(user_media, thumbnails))
+    return render_template('gallery.html', media=zip(user_media, thumbnails), link_type='preview')
+
+
+@web_bp.route('/public', methods=['GET'])
+@guest_user
+def protected_gallery():
+    """
+    Shows the protected gallery.
+    """
+    media = Photo.query.filter_by(protected=True)
+    thumbnails = [ThumbnailService.generate(file, 200, 200) for file in media]
+    return render_template('gallery.html', media=zip(media, thumbnails), link_type='direct')
 
 
 @web_bp.route('/settings', methods=['GET', 'POST'])
