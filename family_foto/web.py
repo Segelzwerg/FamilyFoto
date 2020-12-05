@@ -15,6 +15,7 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.video import Video
+from family_foto.utils.file_comparison import compare_files
 from family_foto.utils.thumbnail_service import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
@@ -74,7 +75,7 @@ def upload():
     if 'file' in request.files:
         file: FileStorage = request.files['file']
         exists: File = File.query.filter_by(filename=file.filename).first()
-        if exists:
+        if exists and compare_files(exists, file):
             raise UploadError(exists.filename, f'File already exists: {exists.filename}')
         if 'image' in file.content_type:
             filename = photos.save(file)
