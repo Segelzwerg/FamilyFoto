@@ -69,3 +69,13 @@ class UploadTestCase(BaseLoginTestCase):
             files = File.query.filter_by(filename=filename).all()
 
             self.assertEqual([file], files)
+
+    def test_upload_same_name_different_file(self):
+        """
+        Tests if a file with same name but different content can be uploaded.
+        """
+        filename = 'test.jpg'
+        upload_test_file(self.client, filename)
+        upload_test_file(self.client, filename, 'example_1.jpg')
+        files = File.query.filter_by(filename=filename).all()
+        self.assertEqual(2, len(files))
