@@ -1,3 +1,5 @@
+import hashlib
+
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
     current_app, Blueprint
 from flask_login import current_user, login_user, logout_user, login_required
@@ -5,6 +7,7 @@ from flask_uploads import UploadSet, IMAGES
 from werkzeug.datastructures import FileStorage
 
 from family_foto.const import RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
+from family_foto.errors import UploadError
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.public_form import PublicForm
@@ -94,15 +97,22 @@ def upload():
     """
     if 'file' in request.files:
         file: FileStorage = request.files['file']
+        exists: File = File.query.filter_by(filename=file.filename).first()
+        file_content = file.stream.read()
+        file_hash = hashlib.sha3_256(file_content).hexdigest()
+        file.stream.seek(0)
+        if exists and file_hash == exists.hash:
+            raise UploadError(exists.filename, f'File already exists: {exists.filename}')
         if 'image' in file.content_type:
             filename = photos.save(file)
             photo = Photo(filename=filename, user=current_user.id,
-                          url=photos.url(filename))
+                          url=photos.url(filename),
+                          hash=file_hash)
             db.session.add(photo)
         elif 'video' in file.content_type:
             filename = videos.save(file)
             video = Video(filename=filename, user=current_user.id,
-                          url=videos.url(filename))
+                          url=videos.url(filename), hash=file_hash)
             db.session.add(video)
         else:
             abort(400, f'file type {file.content_type} not supported.')
@@ -229,3 +239,12 @@ def settings():
     return render_template('user-settings.html',
                            user=current_user,
                            form=form)
+
+
+@web_bp.errorhandler(UploadError)
+def handle_upload_errors(exception):
+    """
+    Catches error during uploading
+    :param exception: of what happened
+    """
+    return render_template('upload.html', form=UploadForm(), e=exception)
