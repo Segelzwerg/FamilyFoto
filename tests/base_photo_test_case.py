@@ -28,8 +28,9 @@ class BasePhotoTestCase(BaseTestCase):
             file_hash = hashlib.sha3_256(bytes(file.read())).hexdigest()
             directory = f'{self.app.config["UPLOADED_PHOTOS_DEST"]}/{file_hash[:2]}/{file_hash}'
             os.makedirs(directory)
-            url = f'{directory}/example.jpg'
-            copied_path = copyfile(path, url)
+            url = f'{self.app.config["UPLOADED_PHOTOS_DEST_RELATIVE"]}/{file_hash[:2]}/' \
+                  f'{file_hash}/example.jpg'
+            copied_path = copyfile(path, directory + "/example.jpg")
             if not os.path.exists(copied_path):
                 raise FileNotFoundError(f'{copied_path} does not exists.')
             self.photo = Photo(filename='example.jpg', url=url, hash=file_hash)
