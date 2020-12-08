@@ -6,8 +6,7 @@ LOG_FILE_NAME = 'server_werkzeug.log'
 LOG_PATH = os.path.join('instance', 'log')
 
 if not os.path.exists(LOG_PATH):
-    os.mkdir('instance')
-    os.mkdir(LOG_PATH)
+    os.makedirs(LOG_PATH)
 
     with open(f'{LOG_PATH}/{LOG_FILE_NAME}', 'w+'):
         pass
