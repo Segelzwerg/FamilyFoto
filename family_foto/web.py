@@ -112,7 +112,7 @@ def upload():
         elif 'video' in file.content_type:
             filename = videos.save(file)
             video = Video(filename=filename, user=current_user.id,
-                          url=videos.url(filename))
+                          url=videos.url(filename), hash=hash)
             db.session.add(video)
         else:
             abort(400, f'file type {file.content_type} not supported.')
