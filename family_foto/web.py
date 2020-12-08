@@ -108,13 +108,13 @@ def upload():
         if 'image' in file.content_type:
             filename = photos.save(file, folder=sub_folder).split('/')[-1]
             photo = Photo(filename=filename, user=current_user.id,
-                          url=photos.url(filename),
+                          url=f'/photos/{sub_folder}/{filename}',
                           hash=file_hash)
             db.session.add(photo)
         elif 'video' in file.content_type:
             filename = videos.save(file, folder=sub_folder).split('/')[-1]
             video = Video(filename=filename, user=current_user.id,
-                          url=videos.url(filename), hash=file_hash)
+                          url=f'/videos/{sub_folder}/{filename}', hash=file_hash)
             db.session.add(video)
         else:
             abort(400, f'file type {file.content_type} not supported.')
