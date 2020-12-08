@@ -55,7 +55,11 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests the return value of the url property.
         """
-        self.assertEqual('/videos/example.mp4', self.video.url)
+        filename = 'example.mp4'
+        file_hash = 'abcd'
+        url = f'/videos/{file_hash[:2]}/{file_hash}/{filename}'
+        video = Video(filename=filename, url=url, hash=file_hash)
+        self.assertEqual(url, video.url)
 
     def test_video_height(self):
         """
