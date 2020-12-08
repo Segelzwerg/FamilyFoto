@@ -1,3 +1,5 @@
+import hashlib
+
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
     current_app, Blueprint
 from flask_login import current_user, login_user, logout_user, login_required
@@ -18,7 +20,6 @@ from family_foto.models.photo import Photo
 from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.models.video import Video
-from family_foto.utils.file_comparison import compare_files
 from family_foto.utils.add_user import add_user
 from family_foto.utils.protected import guest_user
 from family_foto.utils.thumbnail_service import ThumbnailService
@@ -97,12 +98,13 @@ def upload():
     if 'file' in request.files:
         file: FileStorage = request.files['file']
         exists: File = File.query.filter_by(filename=file.filename).first()
-        if exists and compare_files(exists, file):
+        if exists and hashlib.md5(file.stream.read()).hexdigest() == exists.hash:
             raise UploadError(exists.filename, f'File already exists: {exists.filename}')
         if 'image' in file.content_type:
             filename = photos.save(file)
             photo = Photo(filename=filename, user=current_user.id,
-                          url=photos.url(filename))
+                          url=photos.url(filename),
+                          hash=hashlib.md5(file.stream.read()).hexdigest())
             db.session.add(photo)
         elif 'video' in file.content_type:
             filename = videos.save(file)

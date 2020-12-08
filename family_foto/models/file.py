@@ -24,7 +24,7 @@ class File(db.Model):
     user = db.Column(db.Integer, ForeignKey('user.id'))
     share_with_id = db.Column(db.Integer, ForeignKey('user.id'))
     protected = db.Column(db.Boolean, default=False)
-
+    hash = db.Column(db.String(128))
     shared_with = relationship('User', foreign_keys=[share_with_id], uselist=True)
 
     __mapper_args__ = {
