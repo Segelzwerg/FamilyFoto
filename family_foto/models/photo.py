@@ -2,7 +2,7 @@ from PIL import Image, ExifTags
 from flask import current_app
 from sqlalchemy import ForeignKey
 
-from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE
+from family_foto.const import UPLOADED_PHOTOS_DEST
 from family_foto.models import db
 from family_foto.models.file import File
 
@@ -54,4 +54,5 @@ class Photo(File):
         """
         Returns path to photo file.
         """
-        return current_app.config[UPLOADED_PHOTOS_DEST_RELATIVE] + "/" + self.filename
+        sub_path = f'{self.hash[:2]}/{self.hash}/{self.filename}'
+        return f'{current_app.config[UPLOADED_PHOTOS_DEST]}/{sub_path}'
