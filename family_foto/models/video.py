@@ -2,7 +2,7 @@ import ffmpeg
 from flask import current_app
 from sqlalchemy import ForeignKey
 
-from family_foto.const import UPLOADED_VIDEOS_DEST
+from family_foto.const import UPLOADED_VIDEOS_DEST_RELATIVE
 from family_foto.models import db
 from family_foto.models.file import File
 
@@ -65,4 +65,4 @@ class Video(File):
         Returns path to video file.
         """
         sub_path = f'{self.hash[:2]}/{self.hash}/{self.filename}'
-        return f'{current_app.config[UPLOADED_VIDEOS_DEST]}/{sub_path}'
+        return f'{current_app.config[UPLOADED_VIDEOS_DEST_RELATIVE]}/{sub_path}'
