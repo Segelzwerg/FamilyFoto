@@ -98,13 +98,14 @@ def upload():
     if 'file' in request.files:
         file: FileStorage = request.files['file']
         exists: File = File.query.filter_by(filename=file.filename).first()
-        if exists and hashlib.md5(file.stream.read()).hexdigest() == exists.hash:
+        hash = hashlib.md5(file.stream.read()).hexdigest()
+        if exists and hash == exists.hash:
             raise UploadError(exists.filename, f'File already exists: {exists.filename}')
         if 'image' in file.content_type:
             filename = photos.save(file)
             photo = Photo(filename=filename, user=current_user.id,
                           url=photos.url(filename),
-                          hash=hashlib.md5(file.stream.read()).hexdigest())
+                          hash=hash)
             db.session.add(photo)
         elif 'video' in file.content_type:
             filename = videos.save(file)
