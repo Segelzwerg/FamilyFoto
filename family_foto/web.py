@@ -103,14 +103,16 @@ def upload():
         file.stream.seek(0)
         if exists and file_hash == exists.hash:
             raise UploadError(exists.filename, f'File already exists: {exists.filename}')
+        sub_folder = f'{file_hash[:2]}/{file_hash}'
+
         if 'image' in file.content_type:
-            filename = photos.save(file)
+            filename = photos.save(file, folder=sub_folder).split('/')[-1]
             photo = Photo(filename=filename, user=current_user.id,
                           url=photos.url(filename),
                           hash=file_hash)
             db.session.add(photo)
         elif 'video' in file.content_type:
-            filename = videos.save(file)
+            filename = videos.save(file, folder=sub_folder)
             video = Video(filename=filename, user=current_user.id,
                           url=videos.url(filename), hash=file_hash)
             db.session.add(video)
