@@ -4,6 +4,7 @@ from shutil import rmtree
 from PIL import Image
 from flask import current_app
 
+from family_foto.models.video import Video
 from family_foto.utils.thumbnail_service import ThumbnailService
 from tests.base_video_test_case import BaseVideoTestCase
 
@@ -22,8 +23,9 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests the path property.
         """
-        expected_path = 'videos/example.mp4'
-        self.assertEqual(expected_path, self.video.path)
+        filename = 'test.mp4'
+        video = Video(filename=filename, hash='abcd')
+        self.assertEqual(f'videos/ab/abcd/{filename}', video.path)
 
     def test_thumbnail_video(self):
         """
