@@ -1,12 +1,12 @@
 import hashlib
+import os
 
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
-    current_app, Blueprint
+    Blueprint, current_app
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES
 from werkzeug.datastructures import FileStorage
 
-from family_foto.const import RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
 from family_foto.errors import UploadError
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
@@ -163,41 +163,33 @@ def image_view(filename):
                            thumbnail=thumbnail, form=form, public_form=public_form)
 
 
+@web_bp.route('/photos/<hash_group>/<file_hash>/<filename>')
+@login_required
+def get_photo(hash_group, file_hash, filename):
+    return send_from_directory(f'{current_app.instance_path}/photos/{hash_group}/{file_hash}',
+                               filename)
+
+
+@web_bp.route('/videos/<hash_group>/<file_hash>/<filename>')
+@login_required
+def get_video(hash_group, file_hash, filename):
+    return send_from_directory(f'{current_app.instance_path}/video/{hash_group}/{file_hash}',
+                               filename)
+
+
+@web_bp.route('/video/<filename>')
 @web_bp.route('/photo/<filename>')
 @web_bp.route('/_uploads/photos/<filename>')
+@web_bp.route('/_uploads/videos/<filename>')
 @login_required
 def uploaded_file(filename):
     """
     Returns path of the original photo.
     :param filename: name of the file
     """
-    log.info(f'{current_user.username} requested '
-             f'{current_app.config[UPLOADED_PHOTOS_DEST]}/{filename}')
-    return send_from_directory(current_app.config[UPLOADED_PHOTOS_DEST], filename)
-
-
-@web_bp.route('/_uploads/videos/<filename>')
-@web_bp.route('/videos/<filename>')
-@login_required
-def get_video(filename):
-    """
-    Returns path of the original video.
-    :param filename: name of the file
-    """
-    log.info(f'{current_user.username} requested '
-             f'{current_app.config[UPLOADED_VIDEOS_DEST]}/{filename}')
-    return send_from_directory(current_app.config[UPLOADED_VIDEOS_DEST], filename)
-
-
-@web_bp.route('/resized-images/<filename>')
-@login_required
-def resized_photo(filename):
-    """
-    Returns the path resized image.
-    :param filename: name of the resized photo
-    """
-    log.info(f'{current_user.username} requested {current_app.config[RESIZED_DEST]}/{filename}')
-    return send_from_directory(current_app.config[RESIZED_DEST], filename)
+    file: File = File.query.filter_by(filename=filename).first()
+    log.info(f'{current_user.username} requested {file.abs_path}')
+    return send_from_directory(os.path.dirname(file.abs_path), filename)
 
 
 @web_bp.route('/gallery', methods=['GET'])
@@ -208,6 +200,7 @@ def gallery():
     """
     user_media = current_user.get_media()
     thumbnails = [ThumbnailService.generate(file, 200, 200) for file in user_media]
+    thumbnail_urls = [f'/resized-images/{thumbnail.split("/")[-1]}' for thumbnail in thumbnails]
     return render_template('gallery.html', media=zip(user_media, thumbnails), link_type='preview')
 
 
