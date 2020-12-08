@@ -33,6 +33,13 @@ class File(db.Model):
     }
 
     @property
+    def get_hash(self):
+        """
+        Returns the hash as string.
+        """
+        return str(self.hash)
+
+    @property
     @abstractmethod
     def path(self):
         """

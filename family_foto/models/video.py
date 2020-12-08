@@ -64,5 +64,5 @@ class Video(File):
         """
         Returns path to video file.
         """
-        sub_path = f'{self.hash[:2]}/{self.hash}/{self.filename}'
+        sub_path = f'{self.get_hash[:2]}/{self.get_hash}/{self.filename}'
         return f'{current_app.config[UPLOADED_VIDEOS_DEST_RELATIVE]}/{sub_path}'

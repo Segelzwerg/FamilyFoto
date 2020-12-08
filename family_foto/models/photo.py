@@ -54,5 +54,5 @@ class Photo(File):
         """
         Returns path to photo file.
         """
-        sub_path = f'{self.hash[:2]}/{self.hash}/{self.filename}'
+        sub_path = f'{self.get_hash[:2]}/{self.get_hash}/{self.filename}'
         return f'{current_app.config[UPLOADED_PHOTOS_DEST_RELATIVE]}/{sub_path}'
