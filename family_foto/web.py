@@ -166,6 +166,12 @@ def image_view(filename):
 @web_bp.route('/photos/<hash_group>/<file_hash>/<filename>')
 @login_required
 def get_photo(hash_group, file_hash, filename):
+    """
+    Returns path of saved photo or video thumbnail.
+    :param hash_group: first two chars of hash
+    :param file_hash: hash of the file
+    :param filename: name of file
+    """
     return send_from_directory(f'{current_app.instance_path}/photos/{hash_group}/{file_hash}',
                                filename)
 
@@ -173,6 +179,12 @@ def get_photo(hash_group, file_hash, filename):
 @web_bp.route('/videos/<hash_group>/<file_hash>/<filename>')
 @login_required
 def get_video(hash_group, file_hash, filename):
+    """
+    Returns path of saved video or video thumbnail.
+    :param hash_group: first two chars of hash
+    :param file_hash: hash of the file
+    :param filename: name of file
+    """
     directory = f'{current_app.instance_path}/videos/{hash_group}/{file_hash}'
     path = os.path.join(directory, filename)
     if not os.path.exists(path):
