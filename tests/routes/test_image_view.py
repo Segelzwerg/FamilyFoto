@@ -1,4 +1,5 @@
 from flask_api import status
+from lxml import html
 
 from family_foto import add_user, Role
 from family_foto.models import db
@@ -56,5 +57,41 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         filename = 'test.jpg'
         upload_test_file(self.client)
+        response = self.client.get(f'/image/{filename}')
+        assertImageIsLoaded(self, response)
 
-        assertImageIsLoaded(self, filename)
+    def test_make_public(self):
+        """
+        Tests if a photo is set public.
+        """
+        self.photo.protected = False
+        db.session.add(self.photo)
+        _ = self.client.post(f'/image/{self.photo.filename}', data=dict(public='y'))
+        self.assertEqual(True, self.photo.protected)
+
+    def test_default_is_not_public(self):
+        """
+        Tests if the marker is not set on default.
+        """
+        self.photo.protected = False
+        db.session.add(self.photo)
+        db.session.commit()
+        response = self.client.get('/image/example.jpg')
+        html_content = html.fromstring(response.data.decode('utf-8'))
+        inputs = html_content.xpath('//input')
+        public_share = list(filter(lambda x: x.attrib['id'] == 'public', inputs))[0]
+        self.assertEqual('n', public_share.attrib['value'])
+
+    def test_reset_public_status(self):
+        """
+        Tests the public access can be revoked.
+        """
+        db.session.add(self.photo)
+        db.session.commit()
+        _ = self.client.post(f'/image/{self.photo.filename}', data=dict(public='n'))
+        response = self.client.get('/image/example.jpg')
+        html_content = html.fromstring(response.data.decode('utf-8'))
+        inputs = html_content.xpath('//input')
+        public_share = list(filter(lambda x: x.attrib['id'] == 'public', inputs))[0]
+        self.assertEqual(False, self.photo.protected)
+        self.assertEqual('n', public_share.attrib['value'])
