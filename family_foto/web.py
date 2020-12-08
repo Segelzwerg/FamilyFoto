@@ -173,8 +173,11 @@ def get_photo(hash_group, file_hash, filename):
 @web_bp.route('/videos/<hash_group>/<file_hash>/<filename>')
 @login_required
 def get_video(hash_group, file_hash, filename):
-    return send_from_directory(f'{current_app.instance_path}/video/{hash_group}/{file_hash}',
-                               filename)
+    directory = f'{current_app.instance_path}/videos/{hash_group}/{file_hash}'
+    path = os.path.join(directory, filename)
+    if not os.path.exists(path):
+        raise FileExistsError(f'File does not exists: {path}')
+    return send_from_directory(directory, filename)
 
 
 @web_bp.route('/video/<filename>')
