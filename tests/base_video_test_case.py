@@ -1,3 +1,4 @@
+import hashlib
 import os
 from shutil import copyfile
 
@@ -20,9 +21,15 @@ class BaseVideoTestCase(BaseTestCase):
         File.query.delete()
         Video.query.delete()
 
-        path = os.path.join(os.path.dirname(__file__), 'data/example.mp4')
-        copied_path = copyfile(os.path.abspath(path),
-                               f'{self.app.config["UPLOADED_VIDEOS_DEST"]}/example.mp4')
-        if not os.path.exists(copied_path):
-            raise FileNotFoundError(f'{copied_path} does not exists.')
-        self.video = Video(filename='example.mp4', url='/videos/example.mp4')
+        filename = 'example.mp4'
+        path = os.path.join(os.path.dirname(__file__), f'data/{filename}')
+        with open(path, 'rb') as file:
+            file_hash = hashlib.sha3_256(bytes(file.read())).hexdigest()
+            directory = f'{self.app.config["UPLOADED_VIDEOS_DEST"]}/{file_hash[:2]}/{file_hash}'
+            os.makedirs(directory)
+            url = f'{self.app.config["UPLOADED_VIDEOS_DEST_RELATIVE"]}/{file_hash[:2]}/' \
+                  f'{file_hash}/{filename}'
+            copied_path = copyfile(path, directory + f'/{filename}')
+            if not os.path.exists(copied_path):
+                raise FileNotFoundError(f'{copied_path} does not exists.')
+            self.video = Video(filename=filename, url=url, hash=file_hash)

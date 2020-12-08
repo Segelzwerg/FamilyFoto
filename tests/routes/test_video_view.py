@@ -20,7 +20,7 @@ class VideoViewTestCase(BaseLoginTestCase, BaseVideoTestCase):
         """
         db.session.add(self.video)
         db.session.commit()
-        response = self.client.get('/image/example.mp4')
+        response = self.client.get(self.video.url)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_url(self):
@@ -28,5 +28,5 @@ class VideoViewTestCase(BaseLoginTestCase, BaseVideoTestCase):
         Tests the direct view of the video file.
         """
         with self.client:
-            response = self.client.get('/videos/example.mp4')
+            response = self.client.get(self.video.url)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
