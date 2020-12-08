@@ -112,7 +112,7 @@ def upload():
                           hash=file_hash)
             db.session.add(photo)
         elif 'video' in file.content_type:
-            filename = videos.save(file, folder=sub_folder)
+            filename = videos.save(file, folder=sub_folder).split('/')[-1]
             video = Video(filename=filename, user=current_user.id,
                           url=videos.url(filename), hash=file_hash)
             db.session.add(video)
