@@ -17,14 +17,14 @@ class File(db.Model):
     Database entity of a file.
     """
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(64), index=True, unique=True)
+    filename = db.Column(db.String(64))
     file_type = db.Column(db.String(64))
     url = db.Column(db.String(128), unique=True)
     upload_date = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.Column(db.Integer, ForeignKey('user.id'))
     share_with_id = db.Column(db.Integer, ForeignKey('user.id'))
     protected = db.Column(db.Boolean, default=False)
-    hash = db.Column(db.String(128), unique=True)
+    hash = db.Column(db.String(128), index=True, unique=True)
     shared_with = relationship('User', foreign_keys=[share_with_id], uselist=True)
 
     __mapper_args__ = {
