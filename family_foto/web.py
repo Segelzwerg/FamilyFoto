@@ -98,7 +98,9 @@ def upload():
     if 'file' in request.files:
         file: FileStorage = request.files['file']
         exists: File = File.query.filter_by(filename=file.filename).first()
-        file_hash = hashlib.sha3_256(file.stream.read()).hexdigest()
+        file_content = file.stream.read()
+        file_hash = hashlib.sha3_256(file_content).hexdigest()
+        file.stream.seek(0)
         if exists and file_hash == exists.hash:
             raise UploadError(exists.filename, f'File already exists: {exists.filename}')
         if 'image' in file.content_type:
