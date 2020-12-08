@@ -203,7 +203,6 @@ def gallery():
     """
     user_media = current_user.get_media()
     thumbnails = [ThumbnailService.generate(file, 200, 200) for file in user_media]
-    thumbnail_urls = [f'/resized-images/{thumbnail.split("/")[-1]}' for thumbnail in thumbnails]
     return render_template('gallery.html', media=zip(user_media, thumbnails), link_type='preview')
 
 
