@@ -1,3 +1,5 @@
+import os
+
 from flask_api import status
 
 from family_foto.utils.thumbnail_service import ThumbnailService
@@ -16,5 +18,6 @@ class ResizedTestCase(BasePhotoTestCase, BaseLoginTestCase):
         """
         length = 200
         ThumbnailService.generate(self.photo, length, length)
-        response = self.client.get(f'/resized-images/{length}_{length}_{self.photo.filename}')
+        response = self.client.get(f'{os.path.dirname(self.photo.path)}/{length}_{length}'
+                                   f'_{self.photo.filename}')
         self.assertEqual(status.HTTP_200_OK, response.status_code, msg=response)
