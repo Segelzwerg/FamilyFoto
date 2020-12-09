@@ -34,8 +34,7 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         Tests if the user can only see photos he/she/it has permission to view.
         """
         owner = add_user('owner', '123', [self.user_role])
-        other_photo = Photo(filename='example.jpg', url='/photos/example.jpg',
-                            user=owner.id)
+        other_photo = Photo(filename='example.jpg', user=owner.id)
         db.session.add(other_photo)
         db.session.commit()
         response = self.client.get('/image/example.jpg')

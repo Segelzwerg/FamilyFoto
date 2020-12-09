@@ -58,7 +58,7 @@ class VideoTestCase(BaseVideoTestCase):
         filename = 'example.mp4'
         file_hash = 'abcd'
         url = f'/videos/{file_hash[:2]}/{file_hash}/{filename}'
-        video = Video(filename=filename, url=url, hash=file_hash)
+        video = Video(filename=filename, hash=file_hash)
         self.assertEqual(url, video.url)
 
     def test_video_height(self):

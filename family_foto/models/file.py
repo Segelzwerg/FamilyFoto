@@ -19,7 +19,7 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(64))
     file_type = db.Column(db.String(64))
-    url = db.Column(db.String(128), unique=True)
+    # url = db.Column(db.String(128), unique=True)
     upload_date = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.Column(db.Integer, ForeignKey('user.id'))
     share_with_id = db.Column(db.Integer, ForeignKey('user.id'))
@@ -53,6 +53,13 @@ class File(db.Model):
         Returns absolute path of the photo.
         """
         return os.path.abspath(os.path.join(current_app.instance_path, self.path))
+
+    @property
+    def url(self):
+        """
+        Returns url of the file.
+        """
+        return f'/{self.path}'
 
     @property
     @abstractmethod

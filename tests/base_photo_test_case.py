@@ -33,7 +33,7 @@ class BasePhotoTestCase(BaseTestCase):
             copied_path = copyfile(path, directory + "/example.jpg")
             if not os.path.exists(copied_path):
                 raise FileNotFoundError(f'{copied_path} does not exists.')
-            self.photo = Photo(filename='example.jpg', url=url, hash=file_hash)
+            self.photo = Photo(filename='example.jpg', hash=file_hash)
 
     def test_commit(self):
         """Tests committing the file works"""

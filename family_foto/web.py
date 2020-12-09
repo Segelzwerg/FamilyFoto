@@ -108,13 +108,12 @@ def upload():
         if 'image' in file.content_type:
             filename = photos.save(file, folder=sub_folder).split('/')[-1]
             photo = Photo(filename=filename, user=current_user.id,
-                          url=f'/photos/{sub_folder}/{filename}',
                           hash=file_hash)
             db.session.add(photo)
         elif 'video' in file.content_type:
             filename = videos.save(file, folder=sub_folder).split('/')[-1]
             video = Video(filename=filename, user=current_user.id,
-                          url=f'/videos/{sub_folder}/{filename}', hash=file_hash)
+                          hash=file_hash)
             db.session.add(video)
         else:
             abort(400, f'file type {file.content_type} not supported.')
@@ -124,6 +123,7 @@ def upload():
     return render_template('upload.html', form=form, user=current_user, title='Upload')
 
 
+# TODO: multiple files can have same name
 @web_bp.route('/image/<filename>', methods=['GET', 'POST'])
 @login_required
 def image_view(filename):

@@ -1,6 +1,7 @@
 from flask_api import status
 
 from family_foto.models import db
+from family_foto.models.video import Video
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_video_test_case import BaseVideoTestCase
 

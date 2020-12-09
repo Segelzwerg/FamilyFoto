@@ -16,5 +16,5 @@ class ResizedTestCase(BasePhotoTestCase, BaseLoginTestCase):
         """
         length = 200
         ThumbnailService.generate(self.photo, length, length)
-        response = self.client.get(self.photo.url)
+        response = self.client.get(self.photo.path)
         self.assertEqual(status.HTTP_200_OK, response.status_code, msg=response)

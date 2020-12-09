@@ -32,4 +32,4 @@ class BaseVideoTestCase(BaseTestCase):
             copied_path = copyfile(path, directory + f'/{filename}')
             if not os.path.exists(copied_path):
                 raise FileNotFoundError(f'{copied_path} does not exists.')
-            self.video = Video(filename=filename, url=url, hash=file_hash)
+            self.video = Video(filename=filename, hash=file_hash)
