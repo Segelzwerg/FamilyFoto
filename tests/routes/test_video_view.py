@@ -41,3 +41,12 @@ class VideoViewTestCase(BaseLoginTestCase, BaseVideoTestCase):
         with self.client:
             with self.assertRaises(FileExistsError):
                 self.client.get('/videos/cd/cdef/non.mp4')
+
+    def test_authorized_access(self):
+        """
+        Tests if unauthorized access is denied.
+        """
+        video = Video(filename='other_file.mp4', hash='zzzz')
+        with self.client:
+            response = self.client.get(video.url)
+            self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
