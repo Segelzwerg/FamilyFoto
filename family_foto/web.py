@@ -172,6 +172,9 @@ def get_photo(hash_group, file_hash, filename):
     :param file_hash: hash of the file
     :param filename: name of file
     """
+    file: File = File.query.filter_by(hash=file_hash).first()
+    if not file.has_read_permission(current_user):
+        abort(401)
     return send_from_directory(f'{current_app.instance_path}/photos/{hash_group}/{file_hash}',
                                filename)
 
@@ -185,6 +188,9 @@ def get_video(hash_group, file_hash, filename):
     :param file_hash: hash of the file
     :param filename: name of file
     """
+    file: File = File.query.filter_by(hash=file_hash).first()
+    if not file.has_read_permission(current_user):
+        abort(401)
     directory = f'{current_app.instance_path}/videos/{hash_group}/{file_hash}'
     path = os.path.join(directory, filename)
     if not os.path.exists(path):
