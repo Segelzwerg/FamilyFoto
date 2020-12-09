@@ -1,6 +1,8 @@
 from flask_api import status
 
+from family_foto import add_user
 from family_foto.models import db
+from family_foto.models.role import Role
 from family_foto.models.video import Video
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_video_test_case import BaseVideoTestCase
@@ -14,6 +16,7 @@ class VideoViewTestCase(BaseLoginTestCase, BaseVideoTestCase):
     def setUp(self):
         super().setUp()
         self.video.user = self.mock_current_user.id
+        self.user_role = Role.query.filter_by(name='user').first()
 
     def test_video_view(self):
         """
@@ -46,7 +49,9 @@ class VideoViewTestCase(BaseLoginTestCase, BaseVideoTestCase):
         """
         Tests if unauthorized access is denied.
         """
-        video = Video(filename='other_file.mp4', hash='zzzz')
-        with self.client:
-            response = self.client.get(video.url)
-            self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        owner = add_user('owner', '123', [self.user_role])
+        video = Video(filename='other_file.mp4', hash='zzzz', user=owner.id)
+        db.session.add(video)
+        db.session.commit()
+        response = self.client.get(video.url)
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
