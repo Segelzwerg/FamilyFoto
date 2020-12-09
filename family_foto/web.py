@@ -194,8 +194,6 @@ def get_video(hash_group, file_hash, filename):
 
 @web_bp.route('/video/<filename>')
 @web_bp.route('/photo/<filename>')
-@web_bp.route('/_uploads/photos/<filename>')
-@web_bp.route('/_uploads/videos/<filename>')
 @login_required
 def uploaded_file(filename):
     """
