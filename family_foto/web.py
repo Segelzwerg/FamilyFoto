@@ -123,17 +123,16 @@ def upload():
     return render_template('upload.html', form=form, user=current_user, title='Upload')
 
 
-# TODO: multiple files can have same name
-@web_bp.route('/image/<filename>', methods=['GET', 'POST'])
+@web_bp.route('/image/<file_hash>', methods=['GET', 'POST'])
 @login_required
-def image_view(filename):
+def image_view(file_hash):
     """
     Displays an photo in the image viewer.
     """
-    log.info(f'{current_user.username} requested image view of {filename}')
+    log.info(f'{current_user.username} requested image view of file with hash {file_hash}')
     form = PhotoSharingForm()
     public_form = PublicForm(request.form)
-    file = File.query.filter_by(filename=filename).first()
+    file = File.query.filter_by(hash=file_hash).first()
 
     if request.form.get('share_with'):
         users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
@@ -193,8 +192,6 @@ def get_video(hash_group, file_hash, filename):
         abort(401)
     directory = f'{current_app.instance_path}/videos/{hash_group}/{file_hash}'
     path = os.path.join(directory, filename)
-    if not os.path.exists(path):
-        raise FileExistsError(f'File does not exists: {path}')
     return send_from_directory(directory, filename)
 
 

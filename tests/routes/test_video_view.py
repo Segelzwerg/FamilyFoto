@@ -17,13 +17,13 @@ class VideoViewTestCase(BaseLoginTestCase, BaseVideoTestCase):
         super().setUp()
         self.video.user = self.mock_current_user.id
         self.user_role = Role.query.filter_by(name='user').first()
+        db.session.add(self.video)
+        db.session.commit()
 
     def test_video_view(self):
         """
         Tests the preview of the video.
         """
-        db.session.add(self.video)
-        db.session.commit()
         response = self.client.get(self.video.url)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
@@ -34,16 +34,6 @@ class VideoViewTestCase(BaseLoginTestCase, BaseVideoTestCase):
         with self.client:
             response = self.client.get(self.video.url)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
-
-    def test_non_existing_file(self):
-        """
-        Test if exception is thrown if file does not exists.
-        :return:
-        :rtype:
-        """
-        with self.client:
-            with self.assertRaises(FileExistsError):
-                self.client.get('/videos/cd/cdef/non.mp4')
 
     def test_authorized_access(self):
         """

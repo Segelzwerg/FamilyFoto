@@ -4,6 +4,7 @@ from flask_api import status
 from flask_login import current_user
 
 from family_foto.models import db
+from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_photo_test_case import BasePhotoTestCase
@@ -75,5 +76,6 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         filename = 'test.jpg'
         upload_test_file(self.client, filename)
-        response = self.client.get(f'/image/{filename}')
+        file = File.query.filter_by(filename=filename).first()
+        response = self.client.get(f'/image/{file.hash}')
         assertImageIsLoaded(self, response)
