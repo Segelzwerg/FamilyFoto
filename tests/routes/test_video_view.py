@@ -7,7 +7,7 @@ from tests.base_video_test_case import BaseVideoTestCase
 
 class VideoViewTestCase(BaseLoginTestCase, BaseVideoTestCase):
     """
-    Tests the route of /video/<file>
+    Tests the route of /videos/<hash_group>/<file_hash>/<filename>
     """
 
     def setUp(self):
@@ -30,3 +30,13 @@ class VideoViewTestCase(BaseLoginTestCase, BaseVideoTestCase):
         with self.client:
             response = self.client.get(self.video.url)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_non_existing_file(self):
+        """
+        Test if exception is thrown if file does not exists.
+        :return:
+        :rtype:
+        """
+        with self.client:
+            with self.assertRaises(FileExistsError):
+                self.client.get('/videos/cd/cdef/non.mp4')
