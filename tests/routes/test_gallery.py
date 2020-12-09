@@ -65,7 +65,8 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         self.client.post('/upload',
                          content_type='multipart/form-data',
                          data=file)
-        response = self.client.get('/photo/foto.jpg')
+        photo: Photo = Photo.query.filter_by(filename='foto.jpg').first()
+        response = self.client.get(photo.url)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_image_is_displayed(self):
