@@ -192,19 +192,6 @@ def get_video(hash_group, file_hash, filename):
     return send_from_directory(directory, filename)
 
 
-@web_bp.route('/video/<filename>')
-@web_bp.route('/photo/<filename>')
-@login_required
-def uploaded_file(filename):
-    """
-    Returns path of the original photo.
-    :param filename: name of the file
-    """
-    file: File = File.query.filter_by(filename=filename).first()
-    log.info(f'{current_user.username} requested {file.abs_path}')
-    return send_from_directory(os.path.dirname(file.abs_path), filename)
-
-
 @web_bp.route('/gallery', methods=['GET'])
 @login_required
 def gallery():
