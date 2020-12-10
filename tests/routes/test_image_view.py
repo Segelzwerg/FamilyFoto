@@ -1,12 +1,11 @@
 from flask_api import status
-from lxml import html
 
 from family_foto import add_user, Role
 from family_foto.models import db
 from family_foto.models.photo import Photo
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_photo_test_case import BasePhotoTestCase
-from tests.test_utils.assertions import assertImageIsLoaded
+from tests.test_utils.assertions import assertImageIsLoaded, assertPublicSharing
 
 
 class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
@@ -72,23 +71,14 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         self.photo.protected = False
         db.session.add(self.photo)
         db.session.commit()
-        response = self.client.get(f'/image/{self.photo.hash}')
-        html_content = html.fromstring(response.data.decode('utf-8'))
-        inputs = html_content.xpath('//input')
-        public_share = list(filter(lambda x: x.attrib['id'] == 'public', inputs))[0]
-        self.assertEqual('n', public_share.attrib['value'])
+        assertPublicSharing(self, value='n')
 
     def test_reset_public_status(self):
         """
         Tests the public access can be revoked.
         """
         _ = self.client.post(f'/image/{self.photo.hash}', data=dict(public='n'))
-        response = self.client.get(f'/image/{self.photo.hash}')
-        html_content = html.fromstring(response.data.decode('utf-8'))
-        inputs = html_content.xpath('//input')
-        public_share = list(filter(lambda x: x.attrib['id'] == 'public', inputs))[0]
-        self.assertEqual(False, self.photo.protected)
-        self.assertEqual('n', public_share.attrib['value'])
+        assertPublicSharing(self, value='n')
 
     def test_authorized_access(self):
         """
