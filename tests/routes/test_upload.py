@@ -27,7 +27,13 @@ class UploadTestCase(BaseLoginTestCase):
                                         content_type='multipart/form-data',
                                         data=file)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
-            self.assertIn('foto.jpg', os.listdir(self.app.config['UPLOADED_PHOTOS_DEST']))
+            path = self.app.config['UPLOADED_PHOTOS_DEST']
+            dir_content = os.listdir(path)
+            path = path + '/' + dir_content[0]
+            dir_content = os.listdir(path)
+            dir_content = os.listdir(path + '/' + dir_content[0])
+
+            self.assertIn('foto.jpg', dir_content)
             self.assertIn('foto.jpg', [photo.filename for photo in Photo.query.all()])
 
     def test_upload_wrong_file_type(self):
@@ -53,8 +59,15 @@ class UploadTestCase(BaseLoginTestCase):
             response = self.client.post('/upload',
                                         content_type='multipart/form-data',
                                         data=data)
+
+            path = self.app.config['UPLOADED_VIDEOS_DEST']
+            dir_content = os.listdir(path)
+            path = path + '/' + dir_content[0]
+            dir_content = os.listdir(path)
+            dir_content = os.listdir(path + '/' + dir_content[0])
+
             self.assertEqual(status.HTTP_200_OK, response.status_code)
-            self.assertIn('example.mp4', os.listdir(self.app.config['UPLOADED_VIDEOS_DEST']))
+            self.assertIn('example.mp4', dir_content)
             self.assertIn('example.mp4', [video.filename for video in Video.query.all()])
 
     def test_duplication_upload(self):

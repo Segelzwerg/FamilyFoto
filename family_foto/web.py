@@ -1,12 +1,11 @@
 import hashlib
 
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
-    current_app, Blueprint
+    Blueprint, current_app
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES
 from werkzeug.datastructures import FileStorage
 
-from family_foto.const import RESIZED_DEST, UPLOADED_PHOTOS_DEST, UPLOADED_VIDEOS_DEST
 from family_foto.errors import UploadError
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
@@ -103,16 +102,17 @@ def upload():
         file.stream.seek(0)
         if exists and file_hash == exists.hash:
             raise UploadError(exists.filename, f'File already exists: {exists.filename}')
+        sub_folder = f'{file_hash[:2]}/{file_hash}'
+
         if 'image' in file.content_type:
-            filename = photos.save(file)
+            filename = photos.save(file, folder=sub_folder).split('/')[-1]
             photo = Photo(filename=filename, user=current_user.id,
-                          url=photos.url(filename),
                           hash=file_hash)
             db.session.add(photo)
         elif 'video' in file.content_type:
-            filename = videos.save(file)
+            filename = videos.save(file, folder=sub_folder).split('/')[-1]
             video = Video(filename=filename, user=current_user.id,
-                          url=videos.url(filename), hash=file_hash)
+                          hash=file_hash)
             db.session.add(video)
         else:
             abort(400, f'file type {file.content_type} not supported.')
@@ -122,16 +122,16 @@ def upload():
     return render_template('upload.html', form=form, user=current_user, title='Upload')
 
 
-@web_bp.route('/image/<filename>', methods=['GET', 'POST'])
+@web_bp.route('/image/<file_hash>', methods=['GET', 'POST'])
 @login_required
-def image_view(filename):
+def image_view(file_hash):
     """
     Displays an photo in the image viewer.
     """
-    log.info(f'{current_user.username} requested image view of {filename}')
+    log.info(f'{current_user.username} requested image view of file with hash {file_hash}')
     form = PhotoSharingForm()
     public_form = PublicForm(request.form)
-    file = File.query.filter_by(filename=filename).first()
+    file = File.query.filter_by(hash=file_hash).first()
 
     if request.form.get('share_with'):
         users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
@@ -161,41 +161,36 @@ def image_view(filename):
                            thumbnail=thumbnail, form=form, public_form=public_form)
 
 
-@web_bp.route('/photo/<filename>')
-@web_bp.route('/_uploads/photos/<filename>')
+@web_bp.route('/photos/<hash_group>/<file_hash>/<filename>')
 @login_required
-def uploaded_file(filename):
+def get_photo(hash_group, file_hash, filename):
     """
-    Returns path of the original photo.
-    :param filename: name of the file
+    Returns path of saved photo or video thumbnail.
+    :param hash_group: first two chars of hash
+    :param file_hash: hash of the file
+    :param filename: name of file
     """
-    log.info(f'{current_user.username} requested '
-             f'{current_app.config[UPLOADED_PHOTOS_DEST]}/{filename}')
-    return send_from_directory(current_app.config[UPLOADED_PHOTOS_DEST], filename)
+    file: File = File.query.filter_by(hash=file_hash).first()
+    if not file.has_read_permission(current_user):
+        abort(401)
+    return send_from_directory(f'{current_app.instance_path}/photos/{hash_group}/{file_hash}',
+                               filename)
 
 
-@web_bp.route('/_uploads/videos/<filename>')
-@web_bp.route('/videos/<filename>')
+@web_bp.route('/videos/<hash_group>/<file_hash>/<filename>')
 @login_required
-def get_video(filename):
+def get_video(hash_group, file_hash, filename):
     """
-    Returns path of the original video.
-    :param filename: name of the file
+    Returns path of saved video or video thumbnail.
+    :param hash_group: first two chars of hash
+    :param file_hash: hash of the file
+    :param filename: name of file
     """
-    log.info(f'{current_user.username} requested '
-             f'{current_app.config[UPLOADED_VIDEOS_DEST]}/{filename}')
-    return send_from_directory(current_app.config[UPLOADED_VIDEOS_DEST], filename)
-
-
-@web_bp.route('/resized-images/<filename>')
-@login_required
-def resized_photo(filename):
-    """
-    Returns the path resized image.
-    :param filename: name of the resized photo
-    """
-    log.info(f'{current_user.username} requested {current_app.config[RESIZED_DEST]}/{filename}')
-    return send_from_directory(current_app.config[RESIZED_DEST], filename)
+    file: File = File.query.filter_by(hash=file_hash).first()
+    if not file.has_read_permission(current_user):
+        abort(401)
+    directory = f'{current_app.instance_path}/videos/{hash_group}/{file_hash}'
+    return send_from_directory(directory, filename)
 
 
 @web_bp.route('/gallery', methods=['GET'])

@@ -18,10 +18,6 @@ class Photo(File):
         'polymorphic_identity': 'photo'
     }
 
-    @property
-    def image_view(self):
-        return f'/image/{self.filename}'
-
     def __open_image(self) -> Image.Image:
         return Image.open(self.abs_path)
 
@@ -54,4 +50,5 @@ class Photo(File):
         """
         Returns path to photo file.
         """
-        return current_app.config[UPLOADED_PHOTOS_DEST_RELATIVE] + "/" + self.filename
+        sub_path = f'{self.get_hash[:2]}/{self.get_hash}/{self.filename}'
+        return f'{current_app.config[UPLOADED_PHOTOS_DEST_RELATIVE]}/{sub_path}'
