@@ -62,6 +62,9 @@ class File(db.Model):
 
     @property
     def image_view(self):
+        """
+        Returns the url to image view.
+        """
         return f'/image/{self.hash}'
 
     @property
