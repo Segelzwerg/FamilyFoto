@@ -14,4 +14,4 @@ class TestUserApproval(BaseAdminTestCase):
         """
         with self.client:
             response = self.client.get('/admin/approval')
-            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(status.HTTP_308_PERMANENT_REDIRECT, response.status_code)
