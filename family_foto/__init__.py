@@ -8,6 +8,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_migrate import Migrate
 
+from family_foto.admin.admin_approval_view import AdminApprovalView
 from family_foto.admin.admin_index_view import AdminHomeView
 from family_foto.admin.admin_model_view import AdminModelView
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DEST_RELATIVE, \
@@ -72,6 +73,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     admin.add_view(AdminModelView(User, db.session))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(File, db.session))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(Role, db.session))  # lgtm [py/call-to-non-callable]
+    admin.add_view(AdminApprovalView(name='Approval', endpoint='approval'))
 
     _ = DebugToolbarExtension(app)
 
