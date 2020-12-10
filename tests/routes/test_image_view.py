@@ -89,3 +89,14 @@ class ImageViewTestCase(BaseLoginTestCase, BasePhotoTestCase):
         public_share = list(filter(lambda x: x.attrib['id'] == 'public', inputs))[0]
         self.assertEqual(False, self.photo.protected)
         self.assertEqual('n', public_share.attrib['value'])
+
+    def test_authorized_access(self):
+        """
+        Tests if unauthorized access is denied.
+        """
+        owner = add_user('owner', '123', [self.user_role])
+        photo = Photo(filename='other_file.mp4', hash='zzzz', user=owner.id)
+        db.session.add(photo)
+        db.session.commit()
+        response = self.client.get(photo.url)
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
