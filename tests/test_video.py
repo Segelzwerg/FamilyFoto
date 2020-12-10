@@ -83,4 +83,4 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests if the route is returned correctly.
         """
-        self.assertEqual('/image/example.mp4', self.video.image_view)
+        self.assertEqual(f'/image/{self.video.hash}', self.video.image_view)

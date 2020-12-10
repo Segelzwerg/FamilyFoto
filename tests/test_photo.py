@@ -114,7 +114,7 @@ class PhotoTestCase(BasePhotoTestCase):
         """
         Tests the image view path.
         """
-        self.assertEqual(f'/image/{self.photo.filename}', self.photo.image_view)
+        self.assertEqual(f'/image/{self.photo.hash}', self.photo.image_view)
 
     @staticmethod
     def _test_meta(expected_dict, meta):
