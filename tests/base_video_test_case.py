@@ -27,8 +27,6 @@ class BaseVideoTestCase(BaseTestCase):
             file_hash = hashlib.sha3_256(bytes(file.read())).hexdigest()
             directory = f'{self.app.config["UPLOADED_VIDEOS_DEST"]}/{file_hash[:2]}/{file_hash}'
             os.makedirs(directory)
-            url = f'{self.app.config["UPLOADED_VIDEOS_DEST_RELATIVE"]}/{file_hash[:2]}/' \
-                  f'{file_hash}/{filename}'
             copied_path = copyfile(path, directory + f'/{filename}')
             if not os.path.exists(copied_path):
                 raise FileNotFoundError(f'{copied_path} does not exists.')

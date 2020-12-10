@@ -1,5 +1,4 @@
 import hashlib
-import os
 
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
     Blueprint, current_app
@@ -191,7 +190,6 @@ def get_video(hash_group, file_hash, filename):
     if not file.has_read_permission(current_user):
         abort(401)
     directory = f'{current_app.instance_path}/videos/{hash_group}/{file_hash}'
-    path = os.path.join(directory, filename)
     return send_from_directory(directory, filename)
 
 
