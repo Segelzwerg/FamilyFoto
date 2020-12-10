@@ -61,12 +61,8 @@ class File(db.Model):
         return f'/{self.path}'
 
     @property
-    @abstractmethod
     def image_view(self):
-        """
-        Returns path to image viewer template of this photo.
-        """
-        raise NotImplementedError('Each file type has its directory.')
+        return f'/image/{self.hash}'
 
     @property
     @abstractmethod

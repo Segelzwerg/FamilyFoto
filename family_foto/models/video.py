@@ -19,10 +19,6 @@ class Video(File):
     }
 
     @property
-    def image_view(self):
-        return f'/image/{self.filename}'
-
-    @property
     def height(self) -> int:
         streams: list[dict] = self.meta['streams']
         for stream in streams:

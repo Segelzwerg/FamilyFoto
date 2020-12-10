@@ -18,10 +18,6 @@ class Photo(File):
         'polymorphic_identity': 'photo'
     }
 
-    @property
-    def image_view(self):
-        return f'/image/{self.filename}'
-
     def __open_image(self) -> Image.Image:
         return Image.open(self.abs_path)
 
