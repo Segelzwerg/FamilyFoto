@@ -7,3 +7,13 @@ class UploadError(IOError):
         self.filename = filename
         self.message = message
         super().__init__(self.message)
+
+
+class InActiveWarning(Exception):
+    """
+    Exception raised if an inactive user tries to access content.
+    """
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
