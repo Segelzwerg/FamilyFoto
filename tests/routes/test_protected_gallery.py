@@ -14,6 +14,10 @@ class ProtectedGalleryTestCase(BaseLoginTestCase):
     Tests the protected gallery under /public
     """
 
+    def setUp(self):
+        super().setUp()
+        current_user.active = True
+
     def test_route(self):
         """
         Tests if a user can view it.
