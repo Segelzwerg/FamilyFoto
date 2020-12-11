@@ -19,5 +19,6 @@ class AdminApprovalView(BaseView):
                 Approval.query.filter_by(id=approval_id).delete()
                 db.session.add(user)
             db.session.commit()
-        form.users.choices = [(approval.id, approval.user) for approval in Approval.query.all()]
+        form.users.choices = [(approval.id, User.query.filter_by(id=approval.user).first().username)
+                              for approval in Approval.query.all()]
         return self.render('admin/approval.html', approval_form=form)
