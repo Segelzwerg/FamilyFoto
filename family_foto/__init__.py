@@ -97,7 +97,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     with app.app_context():
         add_roles()
 
-    add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()])
+    add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()], active=True)
 
     return app
 
