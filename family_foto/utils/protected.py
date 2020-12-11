@@ -6,6 +6,7 @@ from werkzeug.utils import redirect
 
 from family_foto.const import GUEST_LEVEL
 from family_foto.errors import InActiveWarning
+from family_foto.logger import log
 
 
 def guest_user(func):
@@ -47,6 +48,7 @@ def is_active(func):
         """
         if current_user.is_authenticated and not current_user.active:
             message = 'This account is not activated yet. Please contact your admin.'
+            log.warning(f'{current_user.username} tried to access content without being approved.')
             return render_template('index.html', user=current_user,
                                    w=InActiveWarning(message)), 302
             return redirect(url_for('web.index', ))
