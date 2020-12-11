@@ -14,13 +14,14 @@ from family_foto.forms.register_form import RegisterForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.logger import log
 from family_foto.models import db
+from family_foto.models.approval import Approval
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.models.video import Video
 from family_foto.utils.add_user import add_user
-from family_foto.utils.protected import guest_user
+from family_foto.utils.protected import guest_user, is_active
 from family_foto.utils.thumbnail_service import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
@@ -72,6 +73,9 @@ def register():
         guest_role = Role.query.filter_by(name='guest').first()
         user = add_user(username=form.username.data, password=form.password.data,
                         roles=[guest_role])
+        approval = Approval(user=user.id)
+        db.session.add(approval)
+        db.session.commit()
         log.info(f'{user.username} successfully registered with roles: {user.roles}')
 
     return render_template('register.html', title='Register', form=form)
@@ -89,6 +93,7 @@ def logout():
 
 
 @web_bp.route('/upload', methods=['GET', 'POST'])
+@is_active
 @login_required
 def upload():
     """
@@ -123,6 +128,7 @@ def upload():
 
 
 @web_bp.route('/image/<file_hash>', methods=['GET', 'POST'])
+@is_active
 @login_required
 def image_view(file_hash):
     """
@@ -162,6 +168,7 @@ def image_view(file_hash):
 
 
 @web_bp.route('/photos/<hash_group>/<file_hash>/<filename>')
+@is_active
 @login_required
 def get_photo(hash_group, file_hash, filename):
     """
@@ -178,6 +185,7 @@ def get_photo(hash_group, file_hash, filename):
 
 
 @web_bp.route('/videos/<hash_group>/<file_hash>/<filename>')
+@is_active
 @login_required
 def get_video(hash_group, file_hash, filename):
     """
@@ -194,6 +202,7 @@ def get_video(hash_group, file_hash, filename):
 
 
 @web_bp.route('/gallery', methods=['GET'])
+@is_active
 @login_required
 def gallery():
     """
@@ -205,6 +214,7 @@ def gallery():
 
 
 @web_bp.route('/public', methods=['GET'])
+@is_active
 @guest_user
 def protected_gallery():
     """
