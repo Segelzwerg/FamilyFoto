@@ -48,7 +48,7 @@ def is_active(func):
         if current_user.is_authenticated and not current_user.active:
             message = 'This account is not activated yet. Please contact your admin.'
             return render_template('index.html', user=current_user,
-                                   w=InActiveWarning(message), status=302)
+                                   w=InActiveWarning(message)), 302
             return redirect(url_for('web.index', ))
         return func(*args, **kwargs)
 
