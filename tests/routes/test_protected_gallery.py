@@ -2,7 +2,9 @@ from flask_api import status
 
 from family_foto import File
 from tests.base_login_test_case import BaseLoginTestCase
+from tests.base_test_case import BaseTestCase
 from tests.test_utils.assertions import assertImageIsLoaded
+from tests.test_utils.mocking import mock_user
 from tests.test_utils.tasks import upload_test_file
 
 
@@ -36,3 +38,20 @@ class ProtectedGalleryTestCase(BaseLoginTestCase):
         file.protected = True
         response = self.client.get('/public')
         assertImageIsLoaded(self, response)
+
+
+class GuestUserProtectedGalleryTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        mock_user(self, 'marcel', 'guest')
+
+    def test_route(self):
+        """
+        Tests if a user can view it.
+        """
+        response = self.client.get('/public')
+        self.assertEqual(status.HTTP_302_FOUND, response.status_code)
+
+    def tearDown(self):
+        self.patcher.stop()
+        super().tearDown()
