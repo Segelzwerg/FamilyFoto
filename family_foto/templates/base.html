@@ -22,6 +22,11 @@
     {% endif %}
 </div>
 <hr>
+{% if e %}
+    <div class="alert alert-danger" role="alert">
+        {{ e.message }}
+    </div>
+{% endif %}
 {% block content %}{% endblock %}
 </body>
 </html>
