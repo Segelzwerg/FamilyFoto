@@ -20,6 +20,8 @@ def guest_user(func):
         :return: return value of the original function
         """
         if current_user.is_authenticated and current_user.has_at_least_role(GUEST_LEVEL):
+            if not current_user.active:
+                return redirect(url_for('web.index'))
             return func(*args, **kwargs)
         return redirect(url_for('web.login'))
 
