@@ -1,10 +1,11 @@
 from functools import wraps
 
-from flask import url_for
+from flask import url_for, render_template
 from flask_login import current_user
 from werkzeug.utils import redirect
 
 from family_foto.const import GUEST_LEVEL
+from family_foto.errors import InActiveWarning
 
 
 def guest_user(func):
@@ -45,7 +46,10 @@ def is_active(func):
         :return: return value of the original function
         """
         if current_user.is_authenticated and not current_user.active:
-            return redirect(url_for('web.index'))
+            message = 'This account is not activated yet. Please contact your admin.'
+            return render_template('index.html', user=current_user,
+                                   w=InActiveWarning(message), status=302)
+            return redirect(url_for('web.index', ))
         return func(*args, **kwargs)
 
     return is_active_wrapper
