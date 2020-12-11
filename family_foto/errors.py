@@ -9,7 +9,7 @@ class UploadError(IOError):
         super().__init__(self.message)
 
 
-class InActiveWarning(Exception):
+class InActiveWarning(Warning):
     """
     Exception raised if an inactive user tries to access content.
     """
