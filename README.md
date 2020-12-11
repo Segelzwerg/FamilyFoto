@@ -6,5 +6,6 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/Segelzwerg/FamilyFoto)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/segelzwerg/family-foto/arm64?label=image%3Aarm64)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/segelzwerg/family-foto/amd64?label=image%3Aamd64)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/segelzwerg/familyfoto)
 # FamilyFoto
 A self hosting photo sharing server.
