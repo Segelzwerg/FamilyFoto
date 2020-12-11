@@ -1,4 +1,5 @@
 from flask_api import status
+from flask_login import current_user
 
 from family_foto import File
 from tests.base_login_test_case import BaseLoginTestCase
@@ -45,9 +46,17 @@ class GuestUserProtectedGalleryTestCase(BaseTestCase):
         super().setUp()
         mock_user(self, 'marcel', 'guest')
 
-    def test_route(self):
+    def test_route_with_approval(self):
         """
         Tests if a user can view it.
+        """
+        current_user.active = True
+        response = self.client.get('/public')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_route_without_approval(self):
+        """
+        Tests if a user can't view it.
         """
         response = self.client.get('/public')
         self.assertEqual(status.HTTP_302_FOUND, response.status_code)
