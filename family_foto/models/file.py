@@ -105,6 +105,8 @@ class File(db.Model):
         """
         Checks if the other user has permission to view that photo.
         """
+        if self.protected:
+            return True
         if self.user == other_user.id:
             return True
         if other_user in self.shared_with:
