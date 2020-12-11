@@ -51,7 +51,6 @@ def is_active(func):
             log.warning(f'{current_user.username} tried to access content without being approved.')
             return render_template('index.html', user=current_user,
                                    w=InActiveWarning(message)), 302
-            return redirect(url_for('web.index', ))
         return func(*args, **kwargs)
 
     return is_active_wrapper
