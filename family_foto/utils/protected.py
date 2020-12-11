@@ -1,3 +1,5 @@
+from functools import wraps
+
 from flask import url_for
 from flask_login import current_user
 from werkzeug.utils import redirect
@@ -12,7 +14,8 @@ def guest_user(func):
     :return: of the original function or redirect
     """
 
-    def wrapper(*args, **kwargs):
+    @wraps(func)
+    def guest_user_wrapper(*args, **kwargs):
         """
         Wrapper of the original function
         :param args: arguments of the original function
@@ -20,9 +23,29 @@ def guest_user(func):
         :return: return value of the original function
         """
         if current_user.is_authenticated and current_user.has_at_least_role(GUEST_LEVEL):
-            if not current_user.active:
-                return redirect(url_for('web.index'))
             return func(*args, **kwargs)
         return redirect(url_for('web.login'))
 
-    return wrapper
+    return guest_user_wrapper
+
+
+def is_active(func):
+    """
+    Annotation for checking if user is active.
+    :param func: the original function to annotate
+    :return: of the original function or redirect
+    """
+
+    @wraps(func)
+    def is_active_wrapper(*args, **kwargs):
+        """
+        Wrapper of the original function
+        :param args: arguments of the original function
+        :param kwargs: key word arguments of the original function
+        :return: return value of the original function
+        """
+        if current_user.is_authenticated and not current_user.active:
+            return redirect(url_for('web.index'))
+        return func(*args, **kwargs)
+
+    return is_active_wrapper
