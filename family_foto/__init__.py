@@ -73,7 +73,8 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     admin.add_view(AdminModelView(User, db.session))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(File, db.session))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminModelView(Role, db.session))  # lgtm [py/call-to-non-callable]
-    admin.add_view(AdminApprovalView(name='Approval', endpoint='approval'))
+    admin.add_view(AdminApprovalView(name='Approval',
+                                     endpoint='approval'))  # lgtm [py/call-to-non-callable]
 
     _ = DebugToolbarExtension(app)
 
