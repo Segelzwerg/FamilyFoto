@@ -42,6 +42,10 @@ class ProtectedGalleryTestCase(BaseLoginTestCase):
 
 
 class GuestUserProtectedGalleryTestCase(BaseTestCase):
+    """
+    Tests protected gallery with a guest user.
+    """
+
     def setUp(self):
         super().setUp()
         mock_user(self, 'marcel', 'guest')

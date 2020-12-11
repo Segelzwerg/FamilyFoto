@@ -20,6 +20,9 @@ class TestUserApproval(BaseAdminTestCase):
             self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_approval_accept(self):
+        """
+        Tests if an approval accepting works,
+        """
         new_user = add_user('approve', 'no', [Role.query.filter_by(name='guest').first()])
         new_user_approval = Approval(id=1, user=new_user.id)
         db.session.add(new_user_approval)

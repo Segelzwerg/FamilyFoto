@@ -10,8 +10,15 @@ from family_foto.models.user import User
 
 
 class AdminApprovalView(BaseView):
+    """
+    View class for user approval list.
+    """
+
     @expose('/', methods=['GET', 'POST'])
     def index(self):
+        """
+        Returns the template and has approval logic.
+        """
         form = ApprovalForm()
         if request.method == 'POST':
             for approval_id in form.users.data:
