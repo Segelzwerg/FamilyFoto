@@ -179,7 +179,7 @@ def get_photo(hash_group, file_hash, filename):
     """
     file: File = File.query.filter_by(hash=file_hash).first()
     if not file.has_read_permission(current_user):
-        log.warning(F'{current_user.username} tried to access {file.name} without permission.')
+        log.warning(F'{current_user.username} tried to access {file.filename} without permission.')
         abort(401)
     return send_from_directory(f'{current_app.instance_path}/photos/{hash_group}/{file_hash}',
                                filename)
@@ -197,7 +197,7 @@ def get_video(hash_group, file_hash, filename):
     """
     file: File = File.query.filter_by(hash=file_hash).first()
     if not file.has_read_permission(current_user):
-        log.warning(F'{current_user.username} tried to access {file.name} without permission.')
+        log.warning(F'{current_user.username} tried to access {file.filename} without permission.')
         abort(401)
     directory = f'{current_app.instance_path}/videos/{hash_group}/{file_hash}'
     return send_from_directory(directory, filename)
