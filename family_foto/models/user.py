@@ -108,6 +108,12 @@ class User(db.Model, UserMixin):
             self.token = auth_token
         return self.token
 
+    def approve(self):
+        """
+        Approve user by activating they.
+        """
+        self.active = True
+
     @staticmethod
     def all_user_asc():
         """

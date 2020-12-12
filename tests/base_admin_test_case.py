@@ -1,18 +1,15 @@
-from flask_login import current_user
-
 from tests.base_test_case import BaseTestCase
 from tests.test_utils.mocking import mock_user
 
 
-class BaseLoginTestCase(BaseTestCase):
+class BaseAdminTestCase(BaseTestCase):
     """
-    Test Case that provides a logged in user mock.
+    Test case for admin mocked on current_user
     """
 
     def setUp(self):
         super().setUp()
-        mock_user(self, 'marcel', 'user')
-        current_user.active = True
+        mock_user(self, 'admin', 'admin')
 
     def tearDown(self):
         self.patcher.stop()
