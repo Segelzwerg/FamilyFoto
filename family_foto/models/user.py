@@ -10,7 +10,7 @@ from family_foto.models.auth_token import AuthToken
 from family_foto.models.user_settings import UserSettings
 
 
-class User(db.Model, UserMixin):
+class User(UserMixin, db.Model): # lgtm [py/missing-equals]
     """
     Database entity of an user.
     """
