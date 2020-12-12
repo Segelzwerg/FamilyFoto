@@ -4,6 +4,7 @@ from shutil import rmtree
 from PIL import Image
 from flask import current_app
 
+from family_foto.models.video import Video
 from family_foto.utils.thumbnail_service import ThumbnailService
 from tests.base_video_test_case import BaseVideoTestCase
 
@@ -22,8 +23,9 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests the path property.
         """
-        expected_path = 'videos/example.mp4'
-        self.assertEqual(expected_path, self.video.path)
+        filename = 'test.mp4'
+        video = Video(filename=filename, hash='abcd')
+        self.assertEqual(f'videos/ab/abcd/{filename}', video.path)
 
     def test_thumbnail_video(self):
         """
@@ -53,7 +55,11 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests the return value of the url property.
         """
-        self.assertEqual('/videos/example.mp4', self.video.url)
+        filename = 'example.mp4'
+        file_hash = 'abcd'
+        url = f'/videos/{file_hash[:2]}/{file_hash}/{filename}'
+        video = Video(filename=filename, hash=file_hash)
+        self.assertEqual(url, video.url)
 
     def test_video_height(self):
         """
@@ -77,4 +83,4 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests if the route is returned correctly.
         """
-        self.assertEqual('/image/example.mp4', self.video.image_view)
+        self.assertEqual(f'/image/{self.video.hash}', self.video.image_view)

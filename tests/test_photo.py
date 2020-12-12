@@ -2,7 +2,7 @@ import os
 
 from flask import current_app
 
-from family_foto import add_user
+from family_foto import add_user, Role
 from family_foto.models.photo import Photo
 from family_foto.utils.thumbnail_service import ThumbnailService
 from tests.base_photo_test_case import BasePhotoTestCase
@@ -15,8 +15,9 @@ class PhotoTestCase(BasePhotoTestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = add_user('marcel', '123')
-        self.other_user = add_user('lea', '654')
+        self.user_role = Role.query.filter_by(name='user').first()
+        self.user = add_user('marcel', '123', [self.user_role])
+        self.other_user = add_user('lea', '654', [self.user_role])
         self.photo.user = self.user.id
 
     def test_path(self):
@@ -24,8 +25,8 @@ class PhotoTestCase(BasePhotoTestCase):
         Tests the path property.
         """
         filename = 'test.jpg'
-        photo = Photo(filename=filename, url='/photos/test.jpg')
-        self.assertEqual(f'photos/{filename}', photo.path)
+        photo = Photo(filename=filename, hash='abcd')
+        self.assertEqual(f'photos/ab/abcd/{filename}', photo.path)
 
     def test_sharing_via_all(self):
         """
@@ -56,7 +57,7 @@ class PhotoTestCase(BasePhotoTestCase):
         """
         Tests sharing for an individual photo with multiple users.
         """
-        third_user = add_user('third', '3')
+        third_user = add_user('third', '3', [self.user_role])
         self.photo.share_with([self.other_user, third_user])
         self.assertTrue(self.photo.has_read_permission(self.other_user),
                         msg=f'{self.other_user} has no permission for this photo by {self.user}.')
@@ -113,7 +114,7 @@ class PhotoTestCase(BasePhotoTestCase):
         """
         Tests the image view path.
         """
-        self.assertEqual(f'/image/{self.photo.filename}', self.photo.image_view)
+        self.assertEqual(f'/image/{self.photo.hash}', self.photo.image_view)
 
     @staticmethod
     def _test_meta(expected_dict, meta):
