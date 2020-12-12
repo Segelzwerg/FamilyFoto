@@ -1,22 +1,13 @@
 from flask_api import status
 
+from tests.base_admin_test_case import BaseAdminTestCase
 from tests.base_login_test_case import BaseLoginTestCase
-from tests.base_test_case import BaseTestCase
-from tests.test_utils.mocking import mock_user
 
 
-class AdminAdminTestCase(BaseTestCase):
+class AdminAdminTestCase(BaseAdminTestCase):
     """
     Tests the route behind /admin with admin user.
     """
-
-    def setUp(self):
-        super().setUp()
-        mock_user(self, 'admin', 'admin')
-
-    def tearDown(self):
-        self.patcher.stop()
-        super().tearDown()
 
     def test_admin_route(self):
         """
