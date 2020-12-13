@@ -1,7 +1,7 @@
+import hashlib
 import os
 from shutil import rmtree, copyfile
 
-from family_foto.models import db
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from tests.base_test_case import BaseTestCase
@@ -22,15 +22,12 @@ class BasePhotoTestCase(BaseTestCase):
         Photo.query.delete()
 
         path = os.path.join(os.path.dirname(__file__), 'data/example.jpg')
-        copied_path = copyfile(path, f'{self.app.config["UPLOADED_PHOTOS_DEST"]}/example.jpg')
-        if not os.path.exists(copied_path):
-            raise FileNotFoundError(f'{copied_path} does not exists.')
-        self.photo = Photo(filename='example.jpg', url='/photos/example.jpg')
 
-    def test_commit(self):
-        """Tests committing the file works"""
-        db.session.add(self.photo)
-        db.session.commit()
-
-        photo = Photo.query.get(self.photo.id)
-        self.assertEqual(self.photo, photo)
+        with open(path, 'rb') as file:
+            file_hash = hashlib.sha3_256(bytes(file.read())).hexdigest()
+            directory = f'{self.app.config["UPLOADED_PHOTOS_DEST"]}/{file_hash[:2]}/{file_hash}'
+            os.makedirs(directory)
+            copied_path = copyfile(path, directory + "/example.jpg")
+            if not os.path.exists(copied_path):
+                raise FileNotFoundError(f'{copied_path} does not exists.')
+            self.photo = Photo(filename='example.jpg', hash=file_hash)

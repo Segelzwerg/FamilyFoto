@@ -1,10 +1,11 @@
 from typing import List
 
+import deprecation
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from family_foto.models import db
+from family_foto.models import db, users_roles
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user_settings import UserSettings
 
@@ -16,6 +17,10 @@ class User(UserMixin, db.Model): # lgtm [py/missing-equals]
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    email = db.Column(db.String(255), unique=True)
+    active = db.Column(db.Boolean())
+
+    roles = relationship('Role', secondary=users_roles, uselist=True)
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
                             back_populates='user', uselist=False)
     files = relationship('File', foreign_keys='File.user')
@@ -37,6 +42,27 @@ class User(UserMixin, db.Model): # lgtm [py/missing-equals]
         :return: boolean if the hash code does match
         """
         return check_password_hash(self.password_hash, password)
+
+    @deprecation.deprecated(deprecated_in='0.2', removed_in='1.0',
+                            current_version=deprecation.__version__,
+                            details='Use has_at_least_role_instead')
+    def has_role(self, role_name: str) -> bool:
+        """
+        Checks if the user has this role.
+        :param role_name: name of the role
+        :return: boolean if the user has a given role
+        """
+        return any(role.name == role_name for role in self.roles)
+
+    def has_at_least_role(self, role_level: int):
+        """
+        Checks if a user has at least role.
+        :param role_level:
+        :type role_level:
+        :return:
+        :rtype:
+        """
+        return any(role.level <= role_level for role in self.roles)
 
     def get_media(self):
         """
@@ -81,6 +107,12 @@ class User(UserMixin, db.Model): # lgtm [py/missing-equals]
             auth_token = AuthToken.create_token(self)
             self.token = auth_token
         return self.token
+
+    def approve(self):
+        """
+        Approve user by activating they.
+        """
+        self.active = True
 
     @staticmethod
     def all_user_asc():

@@ -7,7 +7,8 @@
             <div class="card">
                 {% if photo is not none %}
                     <a href="{{ photo.url }}">
-                        <img src="{{ thumbnail }}" alt="File could not be loaded: {{ photo.filename }}">
+                        <img src="{{ thumbnail }}"
+                             alt="File could not be loaded: {{ photo.filename }}">
                     </a>
                 {% endif %}
             </div>
@@ -37,6 +38,21 @@
         </div>
         <div class="col-auto">
             {% include 'fragments/photo-sharing.html' %}
+            <div class="card" id="Public Access">
+                <div class="card-body">
+                    <h2 class="card-title">Public Access</h2>
+                    <form action="" method="post">
+                        <div class="form-check">
+                            {{ public_form.public }}
+                            {{ public_form.public.label }}
+                        </div>
+                        <p class="align-self-lg-end">
+                            {{ public_form.submit(class="btn btn-primary") }}
+                        </p>
+                    </form>
+                </div>
+            </div>
         </div>
+
     </div>
 {% endblock %}
