@@ -24,7 +24,7 @@ class PromoteUserTestCase(BaseLoginTestCase):
 
     def test_admin_is_restricted(self):
         """
-        Tests if a normal user can not view /admin
+        Tests if a normal user can not view /admin/promote
         """
         response = self.client.get('/admin/promote', follow_redirects=True)
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
@@ -32,7 +32,7 @@ class PromoteUserTestCase(BaseLoginTestCase):
 
 class PromoteAnonymousTestCase(BaseLoginTestCase):
     """
-    Test routes behind /admin as anonymous
+    Test routes behind /admin/promote as anonymous
     """
 
     def test_anonymous_has_no_access(self):
