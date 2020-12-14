@@ -19,10 +19,6 @@ class Video(File):
     }
 
     @property
-    def image_view(self):
-        return f'/image/{self.filename}'
-
-    @property
     def height(self) -> int:
         streams: list[dict] = self.meta['streams']
         for stream in streams:
@@ -64,4 +60,5 @@ class Video(File):
         """
         Returns path to video file.
         """
-        return current_app.config[UPLOADED_VIDEOS_DEST_RELATIVE] + "/" + self.filename
+        sub_path = f'{self.get_hash[:2]}/{self.get_hash}/{self.filename}'
+        return f'{current_app.config[UPLOADED_VIDEOS_DEST_RELATIVE]}/{sub_path}'

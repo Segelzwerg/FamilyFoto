@@ -3,9 +3,11 @@ from io import BytesIO
 
 from flask_api import status
 
+from family_foto import File
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
 from tests.base_login_test_case import BaseLoginTestCase
+from tests.test_utils.tasks import upload_test_file
 
 
 class UploadTestCase(BaseLoginTestCase):
@@ -25,7 +27,13 @@ class UploadTestCase(BaseLoginTestCase):
                                         content_type='multipart/form-data',
                                         data=file)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
-            self.assertIn('foto.jpg', os.listdir(self.app.config['UPLOADED_PHOTOS_DEST']))
+            path = self.app.config['UPLOADED_PHOTOS_DEST']
+            dir_content = os.listdir(path)
+            path = path + '/' + dir_content[0]
+            dir_content = os.listdir(path)
+            dir_content = os.listdir(path + '/' + dir_content[0])
+
+            self.assertIn('foto.jpg', dir_content)
             self.assertIn('foto.jpg', [photo.filename for photo in Photo.query.all()])
 
     def test_upload_wrong_file_type(self):
@@ -51,6 +59,36 @@ class UploadTestCase(BaseLoginTestCase):
             response = self.client.post('/upload',
                                         content_type='multipart/form-data',
                                         data=data)
+
+            path = self.app.config['UPLOADED_VIDEOS_DEST']
+            dir_content = os.listdir(path)
+            path = path + '/' + dir_content[0]
+            dir_content = os.listdir(path)
+            dir_content = os.listdir(path + '/' + dir_content[0])
+
             self.assertEqual(status.HTTP_200_OK, response.status_code)
-            self.assertIn('example.mp4', os.listdir(self.app.config['UPLOADED_VIDEOS_DEST']))
+            self.assertIn('example.mp4', dir_content)
             self.assertIn('example.mp4', [video.filename for video in Video.query.all()])
+
+    def test_duplication_upload(self):
+        """
+        Tests if a file can not be uploaded twice.
+        """
+        with self.client:
+            filename = 'test.jpg'
+            upload_test_file(self.client, filename)
+            upload_test_file(self.client, filename)
+            file = File.query.filter_by(filename=filename).first()
+            files = File.query.filter_by(filename=filename).all()
+
+            self.assertEqual([file], files)
+
+    def test_upload_same_name_different_file(self):
+        """
+        Tests if a file with same name but different content can be uploaded.
+        """
+        filename = 'test.jpg'
+        upload_test_file(self.client, filename)
+        upload_test_file(self.client, filename, 'example_1.jpg')
+        files = File.query.all()
+        self.assertEqual(2, len(files))

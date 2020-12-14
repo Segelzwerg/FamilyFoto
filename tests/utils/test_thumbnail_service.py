@@ -1,3 +1,4 @@
+import os
 from unittest.mock import Mock, patch
 
 import ffmpeg
@@ -17,7 +18,7 @@ class TestThumbnailService(BaseMediaTestCase):
         Tests the thumbnail service for a photo.
         """
         path = ThumbnailService.generate(self.photo)
-        self.assertEqual('/resized-images/400_400_example.jpg', path)
+        self.assertEqual(f'/{os.path.dirname(self.photo.path)}/400_400_example.jpg', path)
 
     def test_generate_from_video(self):
         """
