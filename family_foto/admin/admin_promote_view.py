@@ -1,14 +1,15 @@
 from flask import request
-from flask_admin import BaseView, expose
+from flask_admin import expose
 from flask_login import current_user
 
+from family_foto.admin.admin_access import AdminAccess
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.role import Role
 from family_foto.models.user import User
 
 
-class AdminPromoteView(BaseView):
+class AdminPromoteView(AdminAccess):
     """
     View class for user role promotions.
     """
