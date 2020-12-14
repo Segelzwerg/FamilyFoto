@@ -11,6 +11,7 @@ from flask_migrate import Migrate
 from family_foto.admin.admin_approval_view import AdminApprovalView
 from family_foto.admin.admin_index_view import AdminHomeView
 from family_foto.admin.admin_model_view import AdminModelView
+from family_foto.admin.admin_promote_view import AdminPromoteView
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DEST_RELATIVE, \
     RESIZED_DEST_RELATIVE, RESIZED_DEST, ADMIN_LEVEL, USER_LEVEL, GUEST_LEVEL
 from family_foto.logger import log
@@ -75,6 +76,8 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     admin.add_view(AdminModelView(Role, db.session))  # lgtm [py/call-to-non-callable]
     admin.add_view(AdminApprovalView(name='Approval',  # lgtm [py/call-to-non-callable]
                                      endpoint='approval'))  # lgtm [py/call-to-non-callable]
+    admin.add_view(AdminPromoteView(name='Promotion',  # lgtm [py/call-to-non-callable]
+                                    endpoint='promote'))  # lgtm [py/call-to-non-callable]
 
     _ = DebugToolbarExtension(app)
 
