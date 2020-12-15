@@ -5,7 +5,7 @@ from family_foto import Role, add_user
 
 def mock_user(test_case, user_name, role_name, active=None) -> None:
     """
-    Mocks a user on current_cuser
+    Mocks a user on current_user
     :param test_case: test case class, where the user should be mocked
     :param user_name: name of the mocked user
     :param role_name: string of the role name

@@ -5,7 +5,7 @@ from werkzeug.exceptions import abort
 
 class AdminAccess(BaseView):
     """
-    Gate keeper for admin only,
+    Gate keeper for admin only.
     """
 
     def is_accessible(self):
