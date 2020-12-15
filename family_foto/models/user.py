@@ -7,10 +7,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from family_foto.models import db, users_roles
 from family_foto.models.auth_token import AuthToken
+from family_foto.models.role import Role
 from family_foto.models.user_settings import UserSettings
 
 
-class User(UserMixin, db.Model): # lgtm [py/missing-equals]
+class User(UserMixin, db.Model):  # lgtm [py/missing-equals]
     """
     Database entity of an user.
     """
@@ -42,6 +43,13 @@ class User(UserMixin, db.Model): # lgtm [py/missing-equals]
         :return: boolean if the hash code does match
         """
         return check_password_hash(self.password_hash, password)
+
+    def add_role(self, role: Role) -> None:
+        """
+        Adds a role to an user.
+        :param role: to add
+        """
+        self.roles.append(role)
 
     @deprecation.deprecated(deprecated_in='0.2', removed_in='1.0',
                             current_version=deprecation.__version__,
