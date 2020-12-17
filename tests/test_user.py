@@ -14,6 +14,12 @@ class UserTestCases(BaseTestCase):
         self.user_role: Role = Role.query.filter_by(name='user').first()
         self.user: User = add_user('user', '123', [self.user_role])
 
+    def test_repr(self):
+        """
+        Tests representation of user.
+        """
+        self.assertEqual('<User user>', str(self.user))
+
     def test_all_user_asc(self):
         """
         Tests all users are returned in ascending order.
