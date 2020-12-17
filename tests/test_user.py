@@ -5,14 +5,14 @@ from tests.base_test_case import BaseTestCase
 
 
 class UserTestCases(BaseTestCase):
+    """
+    Test the behaviour of the User Entity.
+    """
+
     def setUp(self):
         self.admin_role: Role = Role.query.filter_by(name='admin').first()
         self.user_role: Role = Role.query.filter_by(name='user').first()
         self.user: User = add_user('user', '123', [self.user_role])
-
-    """
-    Test the behaviour of the User Entity.
-    """
 
     def test_all_user_asc(self):
         """
