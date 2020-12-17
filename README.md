@@ -38,7 +38,7 @@ with `ARCHITECTURE` being one of `{"amd64", "arm64"}`.
  change the image tag in the docker-compose file to
  
  ```dockerfile
-    image: segelzwerg/family-foto:arm64-vX.X.X
+    image: segelzwerg/family-foto:arm64-X.X.X
 ```
 However this is only supported for up from `v0.3.0`. All tags can e found
 [here](https://hub.docker.com/r/segelzwerg/family-foto/tags).
