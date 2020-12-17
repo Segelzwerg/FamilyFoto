@@ -240,6 +240,14 @@ def settings():
         log.info(f'{current_user} requests to share photos with {users_share_with}')
         current_user.share_all_with(users_share_with)
         db.session.commit()
+    elif new_password := request.form.get('new_password'):
+        old_password = request.form.get('old_password')
+        repeat_new_password = request.form.get('repeat_new_password')
+        if current_user.check_password(old_password):
+            if new_password == repeat_new_password:
+                current_user.set_password(new_password)
+                db.session.add(current_user)
+                db.session.commit()
     form.share_with.choices = User.all_user_asc()
     form.share_with.data = [str(other_user_id) for
                             other_user_id in [current_user.settings.share_all_id]]
