@@ -6,7 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES
 from werkzeug.datastructures import FileStorage
 
-from family_foto.errors import UploadError
+from family_foto.errors import UploadError, PasswordError
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.public_form import PublicForm
@@ -234,6 +234,7 @@ def settings():
     Handles all user settings requests.
     """
     form = PhotoSharingForm()
+    error = None
     if request.form.get('share_with'):
         users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
             'share_with')]
@@ -248,12 +249,17 @@ def settings():
                 current_user.set_password(new_password)
                 db.session.add(current_user)
                 db.session.commit()
+            else:
+                error = PasswordError('New passwords does not match.')
+        else:
+            error = PasswordError('Old password is wrong.')
     form.share_with.choices = User.all_user_asc()
     form.share_with.data = [str(other_user_id) for
                             other_user_id in [current_user.settings.share_all_id]]
     return render_template('user-settings.html',
                            user=current_user,
-                           form=form)
+                           form=form,
+                           e=error)
 
 
 @web_bp.errorhandler(UploadError)
