@@ -15,6 +15,12 @@ class UserSettingsTestCase(BaseTestCase):
 
         self.user = add_user('settings_user', 'settings', [self.user_role])
 
+    def test_repr(self):
+        """
+        Tests representation of user.
+        """
+        self.assertEqual('<UserSettings of <User settings_user>>', str(self.user.settings))
+
     def test_relation(self):
         """
         Tests if the id are set correctly.

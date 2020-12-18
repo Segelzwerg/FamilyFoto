@@ -28,7 +28,7 @@ class RegisterTestCase(BaseTestCase):
                                               'password': '1234',
                                               'password_control': '1234'})
             user = User.query.filter_by(username='Lea').first()
-            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(status.HTTP_302_FOUND, response.status_code)
             self.assertIsNotNone(user)
 
     def test_register_password_not_matching(self):
