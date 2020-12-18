@@ -41,13 +41,14 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       - name: Get Version
+        id: version
         run: |
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
 
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          echo "${VERSION}"
+          echo ::set-output name=docker_tags::${VERSION}
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
@@ -57,8 +58,8 @@ jobs:
           platforms: linux/${{ matrix.arch }}
           tags: |
             segelzwerg/family-foto:latest
-            segelzwerg/family-foto:${VERSION}
+            segelzwerg/family-foto:${{ steps.version.outputs.docker_tags }}
             ghcr.io/segelzwerg/family-foto:latest
-            ghcr.io/segelzwerg/family-foto:${VERSION}
+            ghcr.io/segelzwerg/family-foto:${{ steps.version.outputs.docker_tags }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
