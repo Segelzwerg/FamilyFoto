@@ -1,3 +1,5 @@
+import base64
+
 import prometheus_client
 from flask_api import status
 from prometheus_flask_exporter import PrometheusMetrics
@@ -34,10 +36,14 @@ class AdminMetricsTestCase(BaseMetricsTestCase, BaseAdminTestCase):
     def test_metrics_route(self):
         """
         Tests if the admin has access on /metrics.
-        :return:
-        :rtype:
         """
-        response = self.client.get('/metrics', data=dict(username='admin', password='1234'))
+        username = 'admin'
+        password = '1234'
+        headers = {
+            'Authorization': 'Basic {0}'.format(base64.b64encode(bytes(
+                f"{username}:{password}", 'utf-8')).decode('utf-8'))
+        }
+        response = self.client.get('/metrics', headers=headers)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
 
