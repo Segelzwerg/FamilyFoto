@@ -47,12 +47,13 @@ def admin_auth(func):
         :param kwargs: key word arguments of the original function
         :return: 401 or function value
         """
-        username = request.form.get('username')
-        password = request.form.get('password')
-        admin: User = User.query.filter_by(username=username).first()
-        if username == 'admin' and admin.check_password(password):
-            result = func(*arg, **kwargs)
-            return result
+        if request.authorization:
+            username = request.authorization.username
+            password = request.authorization.password
+            admin: User = User.query.filter_by(username=username).first()
+            if username == 'admin' and admin.check_password(password):
+                result = func(*arg, **kwargs)
+                return result
         abort(401)
 
     return wrapper
