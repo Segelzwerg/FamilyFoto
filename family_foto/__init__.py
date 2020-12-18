@@ -13,7 +13,7 @@ from family_foto.admin.admin_approval_view import AdminApprovalView
 from family_foto.admin.admin_index_view import AdminHomeView
 from family_foto.admin.admin_model_view import AdminModelView
 from family_foto.admin.admin_promote_view import AdminPromoteView
-from family_foto.admin.decorator import admin_user, admin_auth
+from family_foto.admin.decorator import admin_auth
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DEST_RELATIVE, \
     RESIZED_DEST_RELATIVE, RESIZED_DEST, ADMIN_LEVEL, USER_LEVEL, GUEST_LEVEL
 from family_foto.logger import log
