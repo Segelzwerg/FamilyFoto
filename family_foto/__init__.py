@@ -3,12 +3,12 @@ from typing import Any
 
 import flask_uploads
 from flask import Flask, request
-from flask_admin import Admin
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from prometheus_flask_exporter import PrometheusMetrics
 
+from family_foto.admin.admin import create_admin
 from family_foto.admin.admin_approval_view import AdminApprovalView
 from family_foto.admin.admin_index_view import AdminHomeView
 from family_foto.admin.admin_model_view import AdminModelView
@@ -71,15 +71,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     # set optional bootswatch theme
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
-    admin = Admin(app, name='FamilyFoto', template_mode='bootstrap4',
-                  index_view=AdminHomeView(url='/admin'))  # lgtm [py/call-to-non-callable]
-    admin.add_view(AdminModelView(User, db.session))  # lgtm [py/call-to-non-callable]
-    admin.add_view(AdminModelView(File, db.session))  # lgtm [py/call-to-non-callable]
-    admin.add_view(AdminModelView(Role, db.session))  # lgtm [py/call-to-non-callable]
-    admin.add_view(AdminApprovalView(name='Approval',  # lgtm [py/call-to-non-callable]
-                                     endpoint='approval'))  # lgtm [py/call-to-non-callable]
-    admin.add_view(AdminPromoteView(name='Promotion',  # lgtm [py/call-to-non-callable]
-                                    endpoint='promote'))  # lgtm [py/call-to-non-callable]
+    create_admin(app)
 
     _ = DebugToolbarExtension(app)
 
