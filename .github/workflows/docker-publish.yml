@@ -40,13 +40,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
-      - name: Get Version
-        run: |
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
@@ -58,6 +51,6 @@ jobs:
             segelzwerg/family-foto:latest
             segelzwerg/family-foto:$VERSION
             ghcr.io/segelzwerg/family-foto:latest
-            ghcr.io/segelzwerg/family-foto:$VERSION
+            ghcr.io/segelzwerg/family-foto:${{ github.ref }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
