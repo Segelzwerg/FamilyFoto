@@ -1,0 +1,22 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+    <div class="card">
+        <h1 class="card-title">Promote users</h1>
+        <div class="card-body">
+            {% for user in users %}
+                <form action="" method="post">
+                    <div>
+                        {{ user.username }}
+                        {% for role in user.roles %}
+                            {{ role.name }}
+                        {% endfor %}
+                        {% for role in roles %}
+                            <input class="btn btn-primary" type="submit" name="{{ user.id }}"
+                                   value="{{ role.name }}" id="{{ user.id }}">
+                        {% endfor %}
+                    </div>
+                </form>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

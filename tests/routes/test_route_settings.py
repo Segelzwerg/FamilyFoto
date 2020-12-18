@@ -1,4 +1,5 @@
 from flask_api import status
+from flask_login import current_user
 
 from family_foto import add_user, Role
 from tests.base_login_test_case import BaseLoginTestCase
@@ -34,3 +35,40 @@ class RouteSettingsTestCase(BaseLoginTestCase):
         print(f'{other_user.id}')
         response = self.client.post('/settings', data=dict(share_with=[other_user.id]))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_change_password(self):
+        """
+        Tests if the password can be changed.
+        """
+        new_password = '4567'
+        data = dict(old_password='1234', new_password=new_password,
+                    repeat_new_password=new_password)
+        response = self.client.post('/settings', data=data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertTrue(current_user.check_password(new_password))
+
+    def test_change_password_unequal(self):
+        """
+        Tests the new password does not match.
+        """
+        new_password = '4567'
+        old_password = '1234'
+        data = dict(old_password=old_password, new_password=new_password,
+                    repeat_new_password=new_password + '1')
+        response = self.client.post('/settings', data=data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertTrue(current_user.check_password(old_password))
+        self.assertFalse(current_user.check_password(new_password))
+
+    def test_change_password_old_wrong(self):
+        """
+        Tests the new password does not match.
+        """
+        new_password = '4567'
+        old_password = '1234'
+        data = dict(old_password=old_password + '1', new_password=new_password,
+                    repeat_new_password=new_password)
+        response = self.client.post('/settings', data=data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertTrue(current_user.check_password(old_password))
+        self.assertFalse(current_user.check_password(new_password))

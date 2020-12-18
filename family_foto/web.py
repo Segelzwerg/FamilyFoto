@@ -6,7 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask_uploads import UploadSet, IMAGES
 from werkzeug.datastructures import FileStorage
 
-from family_foto.errors import UploadError
+from family_foto.errors import UploadError, PasswordError
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.public_form import PublicForm
@@ -77,6 +77,7 @@ def register():
         db.session.add(approval)
         db.session.commit()
         log.info(f'{user.username} successfully registered with roles: {user.roles}')
+        return redirect(url_for('web.login'))
 
     return render_template('register.html', title='Register', form=form)
 
@@ -234,18 +235,32 @@ def settings():
     Handles all user settings requests.
     """
     form = PhotoSharingForm()
+    error = None
     if request.form.get('share_with'):
         users_share_with = [User.query.get(int(user_id)) for user_id in request.form.getlist(
             'share_with')]
         log.info(f'{current_user} requests to share photos with {users_share_with}')
         current_user.share_all_with(users_share_with)
         db.session.commit()
+    elif new_password := request.form.get('new_password'):
+        old_password = request.form.get('old_password')
+        repeat_new_password = request.form.get('repeat_new_password')
+        if current_user.check_password(old_password):
+            if new_password == repeat_new_password:
+                current_user.set_password(new_password)
+                db.session.add(current_user)
+                db.session.commit()
+            else:
+                error = PasswordError('New passwords does not match.')
+        else:
+            error = PasswordError('Old password is wrong.')
     form.share_with.choices = User.all_user_asc()
     form.share_with.data = [str(other_user_id) for
                             other_user_id in [current_user.settings.share_all_id]]
     return render_template('user-settings.html',
                            user=current_user,
-                           form=form)
+                           form=form,
+                           e=error)
 
 
 @web_bp.errorhandler(UploadError)

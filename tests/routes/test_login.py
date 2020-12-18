@@ -41,3 +41,17 @@ class LoginTestCase(BaseTestCase):
                                         follow_redirects=True)
             self.assertTrue(status.is_success(response.status_code))
             self.assertTrue(current_user.is_anonymous)
+
+    def test_login_twice(self):
+        """
+        Test user is redirect if tries to login again.
+        """
+        with self.client:
+            self.client.post('/login',
+                             data={'username': 'marcel',
+                                   'password': '1234'},
+                             follow_redirects=True)
+            response = self.client.post('/login',
+                                        data={'username': 'marcel',
+                                              'password': '12345'})
+            self.assertEqual(status.HTTP_302_FOUND, response.status_code)
