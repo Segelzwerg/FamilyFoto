@@ -1,7 +1,8 @@
 from flask import request
-from flask_admin import BaseView, expose
+from flask_admin import expose
 from flask_login import current_user
 
+from family_foto.admin.admin_access import AdminAccess
 from family_foto.forms.approval_form import ApprovalForm
 from family_foto.logger import log
 from family_foto.models import db
@@ -9,7 +10,7 @@ from family_foto.models.approval import Approval
 from family_foto.models.user import User
 
 
-class AdminApprovalView(BaseView):
+class AdminApprovalView(AdminAccess):
     """
     View class for user approval list.
     """

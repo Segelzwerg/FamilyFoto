@@ -90,3 +90,13 @@ class UserTestCases(BaseTestCase):
         user_role = Role.query.filter_by(name='user').first()
         user = add_user('user', 'pass', [admin_role])
         self.assertTrue(user.has_at_least_role(user_role.level))
+
+    def test_add_role(self):
+        """
+        Tests if adding a role works.
+        """
+        admin_role: Role = Role.query.filter_by(name='admin').first()
+        user_role: Role = Role.query.filter_by(name='user').first()
+        user = add_user('user', 'pass', [user_role])
+        user.add_role(admin_role)
+        self.assertTrue(user.has_at_least_role(admin_role.level))
