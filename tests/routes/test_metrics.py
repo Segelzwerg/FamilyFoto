@@ -37,7 +37,7 @@ class AdminMetricsTestCase(BaseMetricsTestCase, BaseAdminTestCase):
         :return:
         :rtype:
         """
-        response = self.client.get('/metrics')
+        response = self.client.get('/metrics', data=dict(username='admin', password='1234'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
 
