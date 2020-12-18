@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 3s
+
+  external_labels:
+    monitor: 'family-foto'
+
+rule_files:
+
+scrape_configs:
+  - job_name: 'prometheus'
+
+    static_configs:
+      - targets: [ 'localhost:9090' ]
+
+  - job_name: 'family-foto'
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'family-foto:5000' ]
+    basic_auth:
+      username: admin
+      password: admin
