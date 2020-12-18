@@ -54,9 +54,9 @@ jobs:
           push: true
           file: ./{{ arch }}.dockerfile
           tags: |
-            segelzwerg/family-foto:latest
-            segelzwerg/family-foto:{{ $VERSION }}
-            ghcr.io/segelzwerg/family-foto:latest
-            ghcr.io/segelzwerg/family-foto:{{ $VERSION }}
+            segelzwerg/family-foto:{{ arch }}-latest
+            segelzwerg/family-foto:{{ arch }}-$VERSION
+            ghcr.io/segelzwerg/family-foto:{{ arch }}-latest
+            ghcr.io/segelzwerg/family-foto:{{ arch }}-$VERSION
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
