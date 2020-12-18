@@ -11,9 +11,19 @@ class UploadError(IOError):
 
 class InActiveWarning(Warning):
     """
-    Exception raised if an inactive user tries to access content.
+    Warning raised if an inactive user tries to access content.
     """
 
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
+
+
+class PasswordError(Exception):
+    """
+    Exception raised if some was wrong with the password.
+    """
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(message)
