@@ -77,6 +77,7 @@ def register():
         db.session.add(approval)
         db.session.commit()
         log.info(f'{user.username} successfully registered with roles: {user.roles}')
+        return redirect(url_for('web.login'))
 
     return render_template('register.html', title='Register', form=form)
 
