@@ -1,6 +1,7 @@
 import os
 from shutil import rmtree
 
+import prometheus_client
 from flask_testing import TestCase
 
 import family_foto
@@ -16,8 +17,15 @@ class BaseTestCase(TestCase):
     Basic Test Case that setups the flask app with a db.
     """
 
+    # a little hackery is neccessary for the tests to work, because prometheus does not clean
+    # it self between tests.
+
+    # pylint: disable=protected-access
     def create_app(self):
         instance_path = os.path.join(os.path.dirname(__file__), 'instance')
+
+        for collector, _ in tuple(prometheus_client.REGISTRY._collector_to_names.items()):
+            prometheus_client.REGISTRY.unregister(collector)
         app = family_foto.create_app({
             'TESTING': True,
             'WTF_CSRF_ENABLED': False,
