@@ -14,10 +14,10 @@ jobs:
   push:
     strategy:
       matrix:
-        arch: [amd64, arm64]
-        registry: [docker.pkg.github.com, ghcr.io]
+        arch: [ amd64, arm64 ]
+        registry: [ docker.pkg.github.com, ghcr.io ]
       fail-fast: false
-      
+
     runs-on: ubuntu-latest
 
     steps:
@@ -29,7 +29,14 @@ jobs:
       - name: Install arm64 build support
         run: sudo apt-get install qemu binfmt-support qemu-user-static
       - name: Build the Docker image
-        run: docker build . --file ${{ matrix.arch }}.dockerfile --tag segelzwerg/family-foto:${{ matrix.arch }}
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          docker build . --file ${{ matrix.arch }}.dockerfile --tag segelzwerg/family-foto:${{ matrix.arch }}-$VERSION
+          docker build . --file ${{ matrix.arch }}.dockerfile --tag segelzwerg/family-foto:${{ matrix.arch }}-latest
 
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
