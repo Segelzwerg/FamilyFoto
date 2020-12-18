@@ -28,31 +28,35 @@ jobs:
         run: sudo apt-get install build-essential
       - name: Install arm64 build support
         run: sudo apt-get install qemu binfmt-support qemu-user-static
-      - name: Build the Docker image
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+      - name: Get Version
         run: |
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
 
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          docker build . --file ${{ matrix.arch }}.dockerfile --tag segelzwerg/family-foto:${{ matrix.arch }}-$VERSION
-          docker build . --file ${{ matrix.arch }}.dockerfile --tag segelzwerg/family-foto:${{ matrix.arch }}-latest
-
-      - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-
-      - name: Push image
-        run: |
-          IMAGE_ID=${{ matrix.registry }}/${{ github.repository }}/$IMAGE_NAME
-
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
-          docker push segelzwerg/family-foto:${{ matrix.arch }}-$VERSION
-          docker push segelzwerg/family-foto:${{ matrix.arch }}-latest
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          file: ./{{ arch }}.dockerfile
+          tags: |
+          segelzwerg/family-foto:latest
+          segelzwerg/family-foto:{{ $VERSION }}
+          ghcr.io/segelzwerg/family-foto:latest
+          ghcr.io/segelzwerg/family-foto:{{ $VERSION }}
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
