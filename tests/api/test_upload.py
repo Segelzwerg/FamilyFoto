@@ -8,6 +8,10 @@ from tests.base_login_test_case import BaseLoginTestCase
 
 
 class ApiUploadTestCase(BaseLoginTestCase):
+    """
+    Tests the upload via API.
+    """
+
     def setUp(self):
         super().setUp()
         self.video_filename = 'example.mp4'
@@ -18,10 +22,6 @@ class ApiUploadTestCase(BaseLoginTestCase):
                                        self.photo_filename)
 
         self.token = current_user.get_token()
-
-    """
-    Tests the upload via API.
-    """
 
     def test_upload_photo(self):
         """
