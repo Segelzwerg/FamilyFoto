@@ -53,7 +53,8 @@ jobs:
           file: ./${{ matrix.arch }}.dockerfile
           platforms: linux/${{ matrix.arch }}
           tags: |
-            segelzwerg/family-foto:latest
-            segelzwerg/family-foto:${{ steps.version.outputs.docker_tags }}
+            segelzwerg/family-foto:${{ matrix.arch }}
+            segelzwerg/family-foto:${{ matrix.arch }}-latest
+            segelzwerg/family-foto:${{ matrix.arch }}-${{ steps.version.outputs.docker_tags }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
