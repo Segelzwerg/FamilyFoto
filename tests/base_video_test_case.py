@@ -16,8 +16,6 @@ class BaseVideoTestCase(BaseTestCase):
         super().setUp()
         if not os.path.exists(self.app.config['UPLOADED_VIDEOS_DEST']):
             os.mkdir(self.app.config['UPLOADED_VIDEOS_DEST'])
-        if not os.path.exists(self.app.config['RESIZED_DEST']):
-            os.mkdir(self.app.config['RESIZED_DEST'])
         File.query.delete()
         Video.query.delete()
 

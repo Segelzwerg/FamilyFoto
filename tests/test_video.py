@@ -1,5 +1,4 @@
 import os
-from shutil import rmtree
 
 from PIL import Image
 from flask import current_app
@@ -32,23 +31,10 @@ class VideoTestCase(BaseVideoTestCase):
         Tests the rendering of the thumbnail of the video.
         """
         path = ThumbnailService.generate(self.video, 200, 200)
-        path = os.path.join(os.path.dirname(current_app.config['RESIZED_DEST']), path.lstrip('/'))
+        path = os.path.join(os.path.dirname(current_app.config['UPLOADED_VIDEOS_DEST']),
+                            path.lstrip('/'))
         image = Image.open(path)
         self.assertTrue(os.path.isfile(path), msg=f'{path} does not exist.')
-        self.assertEqual(200, image.width)
-
-    def test_thumbnail_dir_not_exists(self):
-        """
-        Tests the creation of thumbnail if the thumbnail directory does not exist.
-        """
-        if os.path.exists(self.app.config['RESIZED_DEST']):
-            rmtree(self.app.config['RESIZED_DEST'])
-
-        path = ThumbnailService.generate(self.video, 200, 200)
-        path = os.path.join(os.path.dirname(current_app.config['RESIZED_DEST']), path.lstrip('/'))
-
-        image = Image.open(path)
-        self.assertTrue(os.path.exists(path), msg=f'{path} does not exist.')
         self.assertEqual(200, image.width)
 
     def test_video_url(self):

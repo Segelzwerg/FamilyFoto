@@ -15,7 +15,7 @@ from family_foto.admin.admin_model_view import AdminModelView
 from family_foto.admin.admin_promote_view import AdminPromoteView
 from family_foto.admin.decorator import admin_auth
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DEST_RELATIVE, \
-    RESIZED_DEST_RELATIVE, RESIZED_DEST, ADMIN_LEVEL, USER_LEVEL, GUEST_LEVEL
+    ADMIN_LEVEL, USER_LEVEL, GUEST_LEVEL
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.file import File
@@ -59,8 +59,6 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
                                                       app.config[UPLOADED_PHOTOS_DEST_RELATIVE])
     app.config['UPLOADED_VIDEOS_DEST'] = os.path.join(app.instance_path,
                                                       app.config[UPLOADED_VIDEOS_DEST_RELATIVE])
-    app.config[RESIZED_DEST] = os.path.join(app.instance_path,
-                                            app.config[RESIZED_DEST_RELATIVE])
 
     # ensure the instance folder exists
     try:
