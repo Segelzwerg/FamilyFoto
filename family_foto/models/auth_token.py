@@ -24,12 +24,10 @@ class AuthToken(db.Model):
         """
         return {'token': self.token}
 
-    def check(self, user_id) -> bool:
+    def check(self) -> bool:
         """
         Checks if the an AuthToken is still valid.
         """
-        if self.user.id != user_id:
-            return False
         return self.expiration > datetime.utcnow()
 
     def revoke(self) -> None:
