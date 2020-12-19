@@ -96,7 +96,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
 
     login_manager.init_app(app)
 
-    from family_foto.web import photos, videos
+    from family_foto.services.upload_service import photos, videos
     flask_uploads.configure_uploads(app, (photos, videos))
 
     with app.app_context():
