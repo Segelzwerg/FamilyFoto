@@ -244,7 +244,7 @@ def settings():
         db.session.commit()
     elif new_password := request.form.get('new_password'):
         old_password = request.form.get('old_password')
-        repeat_new_password = request.form.get('repeat_new_password')
+        repeat_new_password = request.form.get('new_password_repeat')
         if current_user.check_password(old_password):
             if new_password == repeat_new_password:
                 current_user.set_password(new_password)
@@ -254,6 +254,8 @@ def settings():
                 error = PasswordError('New passwords does not match.')
         else:
             error = PasswordError('Old password is wrong.')
+            log.warning(f'{current_user} tried to change password, but the old one was wrong.')
+
     form.share_with.choices = User.all_user_asc()
     form.share_with.data = [str(other_user_id) for
                             other_user_id in [current_user.settings.share_all_id]]

@@ -42,7 +42,7 @@ class RouteSettingsTestCase(BaseLoginTestCase):
         """
         new_password = '4567'
         data = dict(old_password='1234', new_password=new_password,
-                    repeat_new_password=new_password)
+                    new_password_repeat=new_password)
         response = self.client.post('/settings', data=data)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertTrue(current_user.check_password(new_password))
@@ -54,7 +54,7 @@ class RouteSettingsTestCase(BaseLoginTestCase):
         new_password = '4567'
         old_password = '1234'
         data = dict(old_password=old_password, new_password=new_password,
-                    repeat_new_password=new_password + '1')
+                    new_password_repeat=new_password + '1')
         response = self.client.post('/settings', data=data)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertTrue(current_user.check_password(old_password))
@@ -67,7 +67,7 @@ class RouteSettingsTestCase(BaseLoginTestCase):
         new_password = '4567'
         old_password = '1234'
         data = dict(old_password=old_password + '1', new_password=new_password,
-                    repeat_new_password=new_password)
+                    new_password_repeat=new_password)
         response = self.client.post('/settings', data=data)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertTrue(current_user.check_password(old_password))
