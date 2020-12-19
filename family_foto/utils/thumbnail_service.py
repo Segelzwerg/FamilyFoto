@@ -38,7 +38,7 @@ class ThumbnailService:
         return f'/{os.path.relpath(path, os.path.dirname(current_app.config["RESIZED_DEST"]))}'
 
     @staticmethod
-    def video_thumbnail(file, height, width):
+    def video_thumbnail(file: Video, height: int, width: int):
         """
         Generates the thumbnail for a video.
         :param file: to be resized
@@ -46,9 +46,7 @@ class ThumbnailService:
         :param height: the height of the thumbnail
         :return: url to the thumbnail resource
         """
-        if not os.path.exists(current_app.config["RESIZED_DEST"]):
-            os.mkdir(current_app.config["RESIZED_DEST"])
-        path = f'{current_app.config["RESIZED_DEST"]}/{width}_{height}_{file.filename}.jpg'
+        path = os.path.join(os.path.dirname(file.abs_path), f'{width}_{height}_{file.filename}.jpg')
 
         if os.path.exists(path):
             log.warning(f'Thumbnail already exists: {path}')
