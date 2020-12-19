@@ -1,13 +1,16 @@
-from flask import Blueprint, jsonify
+from typing import Union
+
+from flask import Blueprint, jsonify, request
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_login import current_user
-from werkzeug.datastructures import FileStorage
 
 from family_foto.api.errors import error_response
+from family_foto.api.success import success_response
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user import User
+from family_foto.services.upload_service import upload_file
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -52,12 +55,14 @@ def basic_auth_error(status):
 
 
 @token_auth.verify_token
-def verify_token(token: AuthToken):
+def verify_token(token: Union[AuthToken, str]):
     """
     Verifies the current token.
     :param token: token to validate
     """
-    return token.check(current_user.id) if token else None
+    if isinstance(token, str):
+        token = AuthToken.query.filter_by(token=token).first()
+    return token.check() if token else None
 
 
 @token_auth.error_handler
@@ -71,9 +76,10 @@ def token_auth_error(status: int):
 
 @api_bp.route('/upload', methods=['POST'])
 @token_auth.login_required
-def upload_file(files: [FileStorage]):
+def upload():
     """
     Uploads files via api.
     """
-    for file in files:
+    for file in request.files.getlist('files'):
         upload_file(file)
+    return success_response()
