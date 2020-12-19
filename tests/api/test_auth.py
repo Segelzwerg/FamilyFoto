@@ -3,7 +3,7 @@ from base64 import b64encode
 from flask_api import status
 from flask_login import current_user
 
-from family_foto.api.auth import verify_token
+from family_foto.api import verify_token
 from family_foto.models.auth_token import AuthToken
 from tests.base_login_test_case import BaseLoginTestCase
 
