@@ -5,9 +5,7 @@ COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
 COPY ./requirements.txt requirements.txt
 RUN uname -a
 RUN apt-get update -qq
-RUN apt-get install build-essential git -yq
-# this is temporary until opencv-python is released on pypi with arm64 support
-# RUN pip install --default-timeout=1000 git+https://github.com/skvark/opencv-python.git
+RUN apt-get install build-essential ffmpeg -yq
 RUN pip install --default-timeout=1000 -r requirements.txt
 WORKDIR /app
 ENV FLASK_APP family_foto
