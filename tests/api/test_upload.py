@@ -67,3 +67,18 @@ class ApiUploadTestCase(BaseLoginTestCase):
         video.close()
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(2, len(File.query.all()))
+
+    def test_upload_invalid_token(self):
+        """
+        Test with invalid token.
+        """
+
+        file = open(self.photo_path, 'rb')
+        data = dict(files=[(file, self.photo_filename)])
+        response = self.client.post('/api/upload',
+                                    headers={'Authorization': f'Bearer abcd'},
+                                    content_type='multipart/form-data',
+                                    data=data)
+        file.close()
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        self.assertEqual(0, len(File.query.all()))
