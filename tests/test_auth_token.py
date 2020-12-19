@@ -53,7 +53,7 @@ class TestAuthTokenTestCase(BaseTestCase):
         Test that a token is not expired.
         """
         token = AuthToken.create_token(self.user, 300)
-        self.assertTrue(token.check(self.user.id), msg=f'{token} should not have expired yet.')
+        self.assertTrue(token.check(), msg=f'{token} should not have expired yet.')
 
     @mock.patch('family_foto.models.auth_token.datetime')
     def test_token_expired(self, mock_datetime):
@@ -63,7 +63,7 @@ class TestAuthTokenTestCase(BaseTestCase):
         mock_datetime.utcnow = mock.Mock(return_value=datetime(1901, 12, 21))
         token = AuthToken.create_token(self.user, 100)
         mock_datetime.utcnow = mock.Mock(return_value=datetime(1901, 12, 21, 0, 1, 50))
-        self.assertFalse(token.check(self.user.id))
+        self.assertFalse(token.check())
 
     def test_wrong_id(self):
         """
@@ -71,7 +71,7 @@ class TestAuthTokenTestCase(BaseTestCase):
         """
         other_user = add_user('other', 'user', [self.user_role])
         token = AuthToken.create_token(other_user, 100)
-        self.assertFalse(token.check(self.user.id))
+        self.assertFalse(token.check())
 
     def test_revoke_token(self):
         """
@@ -79,4 +79,4 @@ class TestAuthTokenTestCase(BaseTestCase):
         """
         token = AuthToken.create_token(self.user, 6000)
         token.revoke()
-        self.assertFalse(token.check(self.user.id), msg=f'{token} is still valid.')
+        self.assertFalse(token.check(), msg=f'{token} is still valid.')
