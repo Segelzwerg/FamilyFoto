@@ -55,7 +55,5 @@ jobs:
           tags: |
             segelzwerg/family-foto:latest
             segelzwerg/family-foto:${{ steps.version.outputs.docker_tags }}
-            ghcr.io/segelzwerg/family-foto:latest
-            ghcr.io/segelzwerg/family-foto:${{ steps.version.outputs.docker_tags }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
