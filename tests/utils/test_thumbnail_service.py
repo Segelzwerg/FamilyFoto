@@ -25,7 +25,7 @@ class TestThumbnailService(BaseMediaTestCase):
         Tests the thumbnail service for a video.
         """
         path = ThumbnailService.generate(self.video)
-        self.assertEqual('/resized-images/400_400_example.mp4.jpg', path)
+        self.assertEqual(f'/{os.path.dirname(self.video.path)}/400_400_example.mp4.jpg', path)
 
     def test_generate_unsupported_type(self):
         """
