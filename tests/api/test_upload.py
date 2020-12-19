@@ -12,6 +12,9 @@ class ApiUploadTestCase(BaseLoginTestCase):
     """
 
     def test_upload_photo(self):
+        """
+        Test upload of a photo from API.
+        """
         token = current_user.get_token()
         filename = 'example.jpg'
 
