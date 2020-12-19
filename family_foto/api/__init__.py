@@ -1,5 +1,3 @@
-from typing import Union
-
 from flask import Blueprint, jsonify, request
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_login import current_user
@@ -55,7 +53,7 @@ def basic_auth_error(status):
 
 
 @token_auth.verify_token
-def verify_token(token: Union[AuthToken, str]):
+def verify_token(token: [AuthToken, str]):
     """
     Verifies the current token.
     :param token: token to validate
