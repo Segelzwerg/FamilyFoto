@@ -19,10 +19,8 @@ services:
   # Grafana for visualization
   grafana:
     image: grafana/grafana:7.3.6-ubuntu
+    user: "docker"
     volumes:
-      - ./grafana/config.ini:/etc/grafana/grafana.ini
-      - ./grafana/datasource.yaml:/etc/grafana/provisioning/datasources/default.yaml
-      - ./grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/default.yaml
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - /media/usb/grafana:/var/lib/grafana
     ports:
       - 3000:3000

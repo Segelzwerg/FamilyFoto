@@ -42,3 +42,14 @@ with `ARCHITECTURE` being one of `{"amd64", "arm64"}`.
 ```
 However this is only supported for up from `v0.3.1`. All tags can be found
 [here](https://hub.docker.com/r/segelzwerg/family-foto/tags).
+
+## Trouble Shooting
+### Grafana
+#### Permission
+```shell script
+GF_PATHS_DATA='/var/lib/grafana' is not writable.
+You may have issues with file permissions, more information here: http://docs.grafana.org/installation/docker/#migration-from-a-previous-version-of-the-docker-container-to-5-1-or-later
+mkdir: cannot create directory '/var/lib/grafana/plugins': Permission denied
+```
+The you try to run `docker-compose` with `sudo`. If that does not work, add folder permission to
+ `/media/usb/grafana`.
