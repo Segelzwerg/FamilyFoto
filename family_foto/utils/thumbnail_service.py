@@ -35,7 +35,7 @@ class ThumbnailService:
             log.error(message)
             raise TypeError(message)
 
-        return f'/{os.path.relpath(path, os.path.dirname(current_app.config["RESIZED_DEST"]))}'
+        return f'/{os.path.relpath(path, os.path.dirname(current_app.config["UPLOADED_PHOTOS_DEST"]))}'
 
     @staticmethod
     def video_thumbnail(file: Video, height: int, width: int):

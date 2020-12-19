@@ -106,7 +106,7 @@ class PhotoTestCase(BasePhotoTestCase):
         Tests if photos are correctly resized.
         """
         resized_path = ThumbnailService.generate(self.photo)
-        path = os.path.join(os.path.dirname(current_app.config['RESIZED_DEST']),
+        path = os.path.join(os.path.dirname(current_app.config['UPLOADED_PHOTOS_DEST']),
                             resized_path.lstrip('/'))
         self.assertTrue(os.path.isfile(path), msg=f'{path} does not exist.')
 

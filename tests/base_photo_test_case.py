@@ -1,6 +1,6 @@
 import hashlib
 import os
-from shutil import rmtree, copyfile
+from shutil import copyfile
 
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
@@ -16,8 +16,6 @@ class BasePhotoTestCase(BaseTestCase):
         super().setUp()
         if not os.path.exists(self.app.config['UPLOADED_PHOTOS_DEST']):
             os.mkdir(self.app.config['UPLOADED_PHOTOS_DEST'])
-        if os.path.exists(self.app.config['RESIZED_DEST']):
-            rmtree(self.app.config['RESIZED_DEST'])
         File.query.delete()
         Photo.query.delete()
 
