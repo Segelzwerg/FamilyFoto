@@ -90,3 +90,18 @@ class ApiUploadTestCase(BaseTestCase):
         file.close()
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
         self.assertEqual(0, len(File.query.all()))
+
+    def test_upload_without_user_id(self):
+        """
+        Test with invalid token.
+        """
+
+        file = open(self.photo_path, 'rb')
+        data = dict(files=[(file, self.photo_filename)])
+        response = self.client.post('/api/upload',
+                                    headers={'Authorization': 'Bearer abcd'},
+                                    content_type='multipart/form-data',
+                                    data=data)
+        file.close()
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        self.assertEqual(0, len(File.query.all()))
