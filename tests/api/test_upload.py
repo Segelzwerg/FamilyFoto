@@ -1,13 +1,15 @@
 import os
+from base64 import b64encode
 
 from flask_api import status
-from flask_login import current_user
 
+from family_foto import add_user
 from family_foto.models.file import File
-from tests.base_login_test_case import BaseLoginTestCase
+from family_foto.models.role import Role
+from tests.base_test_case import BaseTestCase
 
 
-class ApiUploadTestCase(BaseLoginTestCase):
+class ApiUploadTestCase(BaseTestCase):
     """
     Tests the upload via API.
     """
@@ -21,7 +23,9 @@ class ApiUploadTestCase(BaseLoginTestCase):
         self.photo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data',
                                        self.photo_filename)
 
-        self.token = current_user.get_token()
+        self.user = add_user('api_user', '213', [Role.query.filter_by(name='user').first()])
+        credentials = b64encode(b'api_user:213').decode('utf-8')
+        self.client.post('/api/token', headers={'Authorization': f'Basic {credentials}'})
 
     def test_upload_photo(self):
         """
@@ -31,7 +35,8 @@ class ApiUploadTestCase(BaseLoginTestCase):
         file = open(self.photo_path, 'rb')
         data = dict(files=[(file, self.photo_filename)])
         response = self.client.post('/api/upload',
-                                    headers={'Authorization': f'Bearer {self.token.token}'},
+                                    headers={'Authorization': f'Bearer {self.user.token.token}',
+                                             'user_id': self.user.id},
                                     content_type='multipart/form-data',
                                     data=data)
         file.close()
@@ -45,7 +50,8 @@ class ApiUploadTestCase(BaseLoginTestCase):
         file = open(self.video_path, 'rb')
         data = dict(files=[(file, self.video_filename)])
         response = self.client.post('/api/upload',
-                                    headers={'Authorization': f'Bearer {self.token.token}'},
+                                    headers={'Authorization': f'Bearer {self.user.token.token}',
+                                             'user_id': self.user.id},
                                     content_type='multipart/form-data',
                                     data=data)
         file.close()
@@ -60,7 +66,8 @@ class ApiUploadTestCase(BaseLoginTestCase):
         video = open(self.video_path, 'rb')
         data = dict(files=[(photo, self.photo_filename), (video, self.video_filename)])
         response = self.client.post('/api/upload',
-                                    headers={'Authorization': f'Bearer {self.token.token}'},
+                                    headers={'Authorization': f'Bearer {self.user.token.token}',
+                                             'user_id': self.user.id},
                                     content_type='multipart/form-data',
                                     data=data)
         photo.close()
@@ -76,7 +83,8 @@ class ApiUploadTestCase(BaseLoginTestCase):
         file = open(self.photo_path, 'rb')
         data = dict(files=[(file, self.photo_filename)])
         response = self.client.post('/api/upload',
-                                    headers={'Authorization': f'Bearer abcd'},
+                                    headers={'Authorization': f'Bearer abcd',
+                                             'user_id': self.user.id},
                                     content_type='multipart/form-data',
                                     data=data)
         file.close()
