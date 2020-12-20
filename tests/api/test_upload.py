@@ -83,7 +83,7 @@ class ApiUploadTestCase(BaseTestCase):
         file = open(self.photo_path, 'rb')
         data = dict(files=[(file, self.photo_filename)])
         response = self.client.post('/api/upload',
-                                    headers={'Authorization': f'Bearer abcd',
+                                    headers={'Authorization': 'Bearer abcd',
                                              'user_id': self.user.id},
                                     content_type='multipart/form-data',
                                     data=data)
