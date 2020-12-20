@@ -71,7 +71,7 @@ class TestAuthTokenTestCase(BaseTestCase):
         """
         other_user = add_user('other', 'user', [self.user_role])
         token = AuthToken.create_token(other_user, 100)
-        self.assertFalse(token.check())
+        self.assertFalse(token.check(), msg=f'{token} expected to be invalid, but it was.')
 
     def test_revoke_token(self):
         """
