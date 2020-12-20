@@ -62,7 +62,7 @@ def verify_token(token: [AuthToken, str]):
         token = AuthToken.query.filter_by(token=token).first()
     if user_id := request.headers.get('USER_ID'):
         return token.check(int(user_id)) if token else None
-    return error_response(401, 'Token can only verified with an user id.')
+    return None
 
 
 @token_auth.error_handler
