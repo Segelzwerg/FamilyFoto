@@ -1,10 +1,6 @@
-import hashlib
-
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
     Blueprint, current_app
 from flask_login import current_user, login_user, logout_user, login_required
-from flask_uploads import UploadSet, IMAGES
-from werkzeug.datastructures import FileStorage
 
 from family_foto.errors import UploadError, PasswordError
 from family_foto.forms.login_form import LoginForm
@@ -19,16 +15,14 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.role import Role
 from family_foto.models.user import User
-from family_foto.models.video import Video
+from family_foto.services.upload_service import upload_file
 from family_foto.utils.add_user import add_user
-from family_foto.utils.protected import guest_user, is_active
+from family_foto.utils.protected import is_active, guest_user
 from family_foto.utils.thumbnail_service import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
 
-VIDEOS = ('mp4',)
-photos = UploadSet('photos', IMAGES)
-videos = UploadSet('videos', VIDEOS)
+
 
 
 @web_bp.route('/')
@@ -98,32 +92,12 @@ def logout():
 @login_required
 def upload():
     """
-    Uploads a photo or with no passed on renders uploads view.
+    Uploads photo(s) or video(s) or with no passed on renders uploads view.
     """
     if 'file' in request.files:
-        file: FileStorage = request.files['file']
-        exists: File = File.query.filter_by(filename=file.filename).first()
-        file_content = file.stream.read()
-        file_hash = hashlib.sha3_256(file_content).hexdigest()
-        file.stream.seek(0)
-        if exists and file_hash == exists.hash:
-            raise UploadError(exists.filename, f'File already exists: {exists.filename}')
-        sub_folder = f'{file_hash[:2]}/{file_hash}'
+        for file in request.files.getlist('file'):
+            upload_file(file)
 
-        if 'image' in file.content_type:
-            filename = photos.save(file, folder=sub_folder).split('/')[-1]
-            photo = Photo(filename=filename, user=current_user.id,
-                          hash=file_hash)
-            db.session.add(photo)
-        elif 'video' in file.content_type:
-            filename = videos.save(file, folder=sub_folder).split('/')[-1]
-            video = Video(filename=filename, user=current_user.id,
-                          hash=file_hash)
-            db.session.add(video)
-        else:
-            abort(400, f'file type {file.content_type} not supported.')
-        db.session.commit()
-        log.info(f'{current_user.username} uploaded {filename}')
     form = UploadForm()
     return render_template('upload.html', form=form, user=current_user, title='Upload')
 

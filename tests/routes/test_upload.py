@@ -92,3 +92,24 @@ class UploadTestCase(BaseLoginTestCase):
         upload_test_file(self.client, filename, 'example_1.jpg')
         files = File.query.all()
         self.assertEqual(2, len(files))
+
+    def test_upload_multiple(self):
+        """
+        Tests if a uploading multiple files at once works.
+        """
+        photo_filename = 'example.jpg'
+        video_filename = 'example.mp4'
+        photo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data',
+                                  photo_filename)
+        video_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data',
+                                  video_filename)
+        photo = open(photo_path, 'rb')
+        video = open(video_path, 'rb')
+        data = dict(file=[(photo, photo_filename), (video, video_filename)])
+        self.client.post('/upload',
+                         content_type='multipart/form-data',
+                         data=data)
+        photo.close()
+        video.close()
+        files = File.query.all()
+        self.assertEqual(2, len(files))
