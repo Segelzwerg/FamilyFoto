@@ -92,7 +92,7 @@ def logout():
 @login_required
 def upload():
     """
-    Uploads a photo or with no passed on renders uploads view.
+    Uploads photo(s) or video(s) or with no passed on renders uploads view.
     """
     if 'file' in request.files:
         for file in request.files.getlist('file'):
