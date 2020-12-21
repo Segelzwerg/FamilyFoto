@@ -1,5 +1,5 @@
 pip~=20.3
-setuptools~=51.0.0
+setuptools~=51.1.0
 deprecation~=2.1.0
 Email-Validator~=1.1.2
 ffmpeg-python~=0.2.0
