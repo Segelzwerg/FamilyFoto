@@ -24,7 +24,7 @@ class AuthToken(db.Model):
         """
         return {'token': self.token}
 
-    def check(self, user_id) -> bool:
+    def check(self, user_id: int) -> bool:
         """
         Checks if the an AuthToken is still valid.
         """
