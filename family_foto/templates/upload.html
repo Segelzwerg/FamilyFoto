@@ -10,7 +10,7 @@
                     {{ form.hidden_tag() }}
                     <div class="custom-file">
                         {{ form.file.label(class="custom-file-label") }}<br>
-                        {{ form.file(size=32, class="custom-file-input") }}
+                        {{ form.file(size=32, class="custom-file-input", multiple="") }}
                     </div>
                     <p>{{ form.submit(class="btn btn-primary") }}</p>
                 </div>
