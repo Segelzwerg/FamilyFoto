@@ -24,7 +24,8 @@ def get_token():
     :return: an AuthToken in a json
     """
     token = basic_auth.current_user().get_token()
-    db.session.commit()
+    if not AuthToken.query.get(token.id):
+        db.session.commit()
     log.info(f'{current_user} requested AuthToken.')
     return jsonify(token.to_dict())
 
