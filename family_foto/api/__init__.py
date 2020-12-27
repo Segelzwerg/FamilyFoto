@@ -51,7 +51,7 @@ def basic_auth_error(status):
     Returns the custom error message for a given error code.
     :param status: integer of the error code
     """
-    log.warning(status);
+    log.warning(status)
     return error_response(status)
 
 
@@ -65,6 +65,7 @@ def verify_token(token: [AuthToken, str]):
         token = AuthToken.query.filter_by(token=token).first()
     if user_id := request.headers.get('USER_ID'):
         return token.check(int(user_id)) if token else None
+    log.warning(f'Requested token for user with id {user_id} is invalid.')
     return None
 
 
