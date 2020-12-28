@@ -26,7 +26,8 @@ def get_token():
     token = basic_auth.current_user().get_token()
     if not AuthToken.query.get(token.id):
         db.session.commit()
-    log.info(f'{current_user} requested AuthToken.')
+    user = current_user if current_user.is_authenticated else User.query.get(token.user_id)
+    log.info(f'{user} requested AuthToken.')
     return jsonify(token.to_dict())
 
 
