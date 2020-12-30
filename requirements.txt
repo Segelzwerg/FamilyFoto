@@ -1,5 +1,5 @@
 pip~=20.3
-setuptools~=51.1.0
+setuptools~=51.1.1
 deprecation~=2.1.0
 Email-Validator~=1.1.2
 ffmpeg-python~=0.2.0
@@ -14,7 +14,7 @@ Flask-Login~=0.5.0
 Flask-Migrate~=2.5.3
 Flask-Resize~=2.0.4
 Flask-SQLAlchemy~=2.4.4
-Flask-testing~=0.8.0
+Flask-testing~=0.8.1
 Flask-Reuploaded~=0.3.2
 #-e git+git://github.com/maxcountryman/flask-uploads.git#egg=flask-uploads
 Flask-WTF~=0.14.3
