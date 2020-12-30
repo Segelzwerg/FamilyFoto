@@ -111,10 +111,19 @@ class User(UserMixin, db.Model):  # lgtm [py/missing-equals]
         Retrieves a new token or the current one.
         :return: an AuthToken
         """
-        if self.token is None or not self.token.check(self.id):
-            auth_token = AuthToken.create_token(self)
-            self.token = auth_token
+
+        if self.token is None:
+            self._create_token()
+        elif not self.token.check(self.id):
+            AuthToken.query.filter_by(id=self.token.id).delete()
+            self._create_token()
+        db.session.add(self.token)
+        db.session.commit()
         return self.token
+
+    def _create_token(self):
+        auth_token = AuthToken.create_token(self)
+        self.token = auth_token
 
     def approve(self):
         """

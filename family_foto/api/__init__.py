@@ -5,7 +5,6 @@ from flask_login import current_user
 from family_foto.api.errors import error_response
 from family_foto.api.success import success_response
 from family_foto.logger import log
-from family_foto.models import db
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user import User
 from family_foto.services.upload_service import upload_file
@@ -24,8 +23,6 @@ def get_token():
     :return: an AuthToken in a json
     """
     token = basic_auth.current_user().get_token()
-    if not AuthToken.query.get(token.id):
-        db.session.commit()
     user = current_user if current_user.is_authenticated else User.query.get(token.user_id)
     log.info(f'{user} requested AuthToken.')
     return jsonify(token.to_dict())

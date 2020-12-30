@@ -1,4 +1,5 @@
 from family_foto import add_user, Role
+from family_foto.models import db
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user import User
 from tests.base_test_case import BaseTestCase
@@ -60,6 +61,18 @@ class UserTestCases(BaseTestCase):
         self.assertIsInstance(first_token, AuthToken)
         self.assertIsInstance(second_token, AuthToken)
         self.assertEqual(first_token, second_token)
+
+    def test_get_auth_token_expired(self):
+        """
+        Tests what happens if token is expired.
+        """
+        user = User(id=33, username='other')
+        db.session.add(user)
+        first_token = AuthToken.create_token(user, 0)
+        db.session.commit()
+        second_token = user.get_token()
+
+        self.assertNotEqual(first_token, second_token)
 
     def test_user_has_role(self):
         """
