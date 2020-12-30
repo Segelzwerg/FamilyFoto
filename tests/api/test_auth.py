@@ -19,6 +19,9 @@ class ApiAuthTestCase(BaseLoginTestCase):
             response = self.client.post('/api/token',
                                         headers={'Authorization': f'Basic {credentials}'})
 
+            self.assertIn('token', response.json)
+            self.assertIn('userId', response.json)
+            self.assertIn('token', response.json['token'])
             self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_wrong_password(self):

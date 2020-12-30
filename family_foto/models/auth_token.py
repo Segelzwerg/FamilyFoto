@@ -22,7 +22,8 @@ class AuthToken(db.Model):
         """
         Returns the auth token as dict.
         """
-        return {'token': self.token}
+        return {'token': {'token': self.token},
+                'userId': self.user_id}
 
     def check(self, user_id: int) -> bool:
         """

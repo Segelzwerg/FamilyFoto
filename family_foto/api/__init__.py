@@ -5,7 +5,6 @@ from flask_login import current_user
 from family_foto.api.errors import error_response
 from family_foto.api.success import success_response
 from family_foto.logger import log
-from family_foto.models import db
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user import User
 from family_foto.services.upload_service import upload_file
@@ -24,9 +23,9 @@ def get_token():
     :return: an AuthToken in a json
     """
     token = basic_auth.current_user().get_token()
-    db.session.commit()
-    log.info(f'{current_user} requested AuthToken.')
-    return jsonify({'token': token.to_dict()})
+    user = current_user if current_user.is_authenticated else User.query.get(token.user_id)
+    log.info(f'{user} requested AuthToken.')
+    return jsonify(token.to_dict())
 
 
 @basic_auth.verify_password
@@ -39,7 +38,9 @@ def verify_password(username: str, password: str) -> [None, User]:
     """
     user = User.query.filter_by(username=username).first()
     if user and user.check_password(password):
+        log.info(f'{user} logged in via API.')
         return user
+    log.warning(f'Wrong password for {user.username} from API.')
     return None
 
 
@@ -49,6 +50,7 @@ def basic_auth_error(status):
     Returns the custom error message for a given error code.
     :param status: integer of the error code
     """
+    log.warning(status)
     return error_response(status)
 
 
@@ -62,6 +64,7 @@ def verify_token(token: [AuthToken, str]):
         token = AuthToken.query.filter_by(token=token).first()
     if user_id := request.headers.get('USER_ID'):
         return token.check(int(user_id)) if token else None
+    log.warning(f'Requested token for user with id {user_id} is invalid.')
     return None
 
 

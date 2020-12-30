@@ -3,6 +3,7 @@ from datetime import datetime
 from unittest import mock
 
 from family_foto import add_user, Role
+from family_foto.models import db
 from family_foto.models.auth_token import AuthToken
 from tests.base_test_case import BaseTestCase
 
@@ -81,3 +82,11 @@ class TestAuthTokenTestCase(BaseTestCase):
         token = AuthToken.create_token(self.user, 6000)
         token.revoke()
         self.assertFalse(token.check(self.user.id), msg=f'{token} is still valid.')
+
+    def test_save_token(self):
+        """
+        Tests the token creation.
+        """
+        token = AuthToken.create_token(self.user, 100)
+        db.session.add(token)
+        db.session.commit()
