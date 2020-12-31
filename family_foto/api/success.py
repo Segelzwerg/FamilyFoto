@@ -10,7 +10,7 @@ def success_response(errors: [FamilyFotoServerError]):
     """
     payload: dict = {'success': HTTP_STATUS_CODES.get(200)}
     if len(errors) > 0:
-        payload.update({'error': errors})
+        payload.update({'error': [error.message for error in errors]})
     response = jsonify(payload)
     response.status_code = 200
     return response
