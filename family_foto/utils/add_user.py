@@ -1,3 +1,5 @@
+from sqlite3 import OperationalError
+
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.role import Role
@@ -29,8 +31,8 @@ def add_user(username: str, password: str, roles: [Role], active=False) -> User:
     db.session.add(user)
     try:
         db.session.commit()
-    except Exception as e:
+    except OperationalError as op_error:
         db.session.rollback()
-        log.error(e)
+        log.error(op_error)
     log.info(f'{user.username} registered.')
     return user

@@ -1,6 +1,7 @@
 import hashlib
 import os
 from concurrent.futures.thread import ThreadPoolExecutor
+from sqlite3 import OperationalError
 
 from flask_login import current_user
 from flask_uploads import IMAGES, UploadSet
@@ -77,8 +78,8 @@ class UploadService:
                     if not os.path.exists(final_path):
                         os.makedirs(os.path.dirname(final_path))
                     file.save(dst=final_path)
-                except Exception as e:
-                    log.error(e)
+                except OperationalError as op_error:
+                    log.error(op_error)
             photo = Photo(filename=file.filename, user=self._user.id,
                           hash=file_hash)
             session.add(photo)
@@ -90,8 +91,8 @@ class UploadService:
                     if not os.path.exists(final_path):
                         os.makedirs(os.path.dirname(final_path))
                     file.save(dst=final_path)
-                except Exception as e:
-                    log.error(e)
+                except OperationalError as op_error:
+                    log.error(op_error)
             video = Video(filename=file.filename, user=self._user.id,
                           hash=file_hash)
             session.add(video)
@@ -103,9 +104,9 @@ class UploadService:
         try:
             session.commit()
             log.info(f'{self._user.username} uploaded {file.filename}')
-        except Exception as e:
+        except OperationalError as op_error:
             session.rollback()
-            log.error(e)
+            log.error(op_error)
         finally:
             session.close()
             Session.remove()
