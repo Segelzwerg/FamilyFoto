@@ -149,4 +149,3 @@ def load_user(user_id: int):
     :return: An user if exists.
     """
     return User.query.get(int(user_id))
-
