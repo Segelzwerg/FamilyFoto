@@ -9,6 +9,9 @@ class FamilyFotoServerError(Exception):
 
     @property
     def message(self):
+        """
+        :returns: the message of the error
+        """
         return self._message
 
 
