@@ -5,11 +5,10 @@ def init_celery(celery, app):
     :param app: the app calling the celery worker
     """
     celery.conf.update(app.config)
-    TaskBase = celery.Task
 
-    class ContextTask(TaskBase):
+    class ContextTask(celery.Task):
         def __call__(self, *args, **kwargs):
             with app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
+                return celery.TaskBase.__call__(self, *args, **kwargs)
 
     celery.Task = ContextTask
