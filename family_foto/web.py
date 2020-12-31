@@ -242,7 +242,7 @@ def settings():
     return render_template('user-settings.html',
                            user=current_user,
                            form=form,
-                           e=error)
+                           e=[error])
 
 
 @web_bp.errorhandler(UploadError)
