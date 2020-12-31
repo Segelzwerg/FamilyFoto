@@ -99,10 +99,12 @@ def upload():
     app = current_app._get_current_object()
     uploader = UploadService(files, current_user.id, app)
     upload_errors = uploader.upload()
-
+    status_code = 200
+    if len(upload_errors) == len(files):
+        status_code = 400
     form = UploadForm()
     return render_template('upload.html', form=form, user=current_user, title='Upload',
-                           e=upload_errors)
+                           e=upload_errors), status_code
 
 
 @web_bp.route('/image/<file_hash>', methods=['GET', 'POST'])
