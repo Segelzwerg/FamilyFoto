@@ -52,7 +52,7 @@ class TestThumbnailService(BaseMediaTestCase):
             _ = ThumbnailService.generate(self.photo)
             resize.assert_not_called()
 
-    @patch('family_foto.utils.thumbnail_service.ThumbnailService._resized_frame',
+    @patch('family_foto.services.thumbnail_service.ThumbnailService._resized_frame',
            Mock(side_effect=ffmpeg.Error(cmd='input', stdout=True, stderr=True)))
     def test_thumbnail_fail(self):
         """
