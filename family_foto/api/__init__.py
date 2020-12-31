@@ -86,6 +86,7 @@ def upload():
     files = request.files.getlist('files')
     if user_id := request.headers.get('USER_ID'):
         user_id = int(user_id)
+    # pylint = disable:protected-access
     app = current_app._get_current_object()
     uploader = UploadService(files, user_id, app)
     upload_errors = uploader.upload()
