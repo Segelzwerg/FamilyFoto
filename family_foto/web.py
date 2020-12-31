@@ -94,9 +94,10 @@ def upload():
     """
     Uploads photo(s) or video(s) or with no passed on renders uploads view.
     """
-    files = request.files.getlist('files')
+    files = request.files.getlist('file')
 
-    uploader = UploadService(files, current_user.id)
+    app = current_app._get_current_object()
+    uploader = UploadService(files, current_user.id, app)
     uploader.upload()
 
     form = UploadForm()
