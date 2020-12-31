@@ -19,22 +19,15 @@ class UploadTestCase(BaseLoginTestCase):
         """
         Tests if a jpg can be uploaded.
         """
-        with self.client:
-            file = dict(
-                file=(BytesIO(b'my file contents'), "foto.jpg"),
-            )
-            response = self.client.post('/upload',
-                                        content_type='multipart/form-data',
-                                        data=file)
-            self.assertEqual(status.HTTP_200_OK, response.status_code)
-            path = self.app.config['UPLOADED_PHOTOS_DEST']
-            dir_content = os.listdir(path)
-            path = path + '/' + dir_content[0]
-            dir_content = os.listdir(path)
-            dir_content = os.listdir(path + '/' + dir_content[0])
-
-            self.assertIn('foto.jpg', dir_content)
-            self.assertIn('foto.jpg', [photo.filename for photo in Photo.query.all()])
+        response = upload_test_file(self.client)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        path = self.app.config['UPLOADED_PHOTOS_DEST']
+        dir_content = os.listdir(path)
+        path = path + '/' + dir_content[0]
+        dir_content = os.listdir(path)
+        dir_content = os.listdir(path + '/' + dir_content[0])
+        self.assertIn('test.jpg', dir_content)
+        self.assertIn('test.jpg', [photo.filename for photo in Photo.query.all()])
 
     def test_upload_wrong_file_type(self):
         """
@@ -55,10 +48,7 @@ class UploadTestCase(BaseLoginTestCase):
         Tests if upload of a video works.
         """
         with self.client:
-            data = dict(file=(BytesIO(b'my file contents'), 'example.mp4'))
-            response = self.client.post('/upload',
-                                        content_type='multipart/form-data',
-                                        data=data)
+            response = upload_test_file(self.client)
 
             path = self.app.config['UPLOADED_VIDEOS_DEST']
             dir_content = os.listdir(path)
