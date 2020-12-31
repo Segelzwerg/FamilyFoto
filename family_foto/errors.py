@@ -39,6 +39,3 @@ class PasswordError(FamilyFotoServerError):
     """
     Exception raised if some was wrong with the password.
     """
-
-    def __init__(self, message):
-        super().__init__(message)
