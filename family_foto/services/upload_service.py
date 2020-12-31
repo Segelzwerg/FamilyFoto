@@ -4,8 +4,6 @@ from concurrent.futures.thread import ThreadPoolExecutor
 
 from flask_login import current_user
 from flask_uploads import IMAGES, UploadSet
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
 
 from family_foto.const import MAX_UPLOAD_WORKERS
 from family_foto.errors import UploadError
@@ -14,6 +12,7 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.video import Video
+from family_foto.utils.session import create_session
 
 VIDEOS = ('mp4',)
 photos = UploadSet('photos', IMAGES)
@@ -58,10 +57,7 @@ class UploadService:
         :param file: to be uploaded
         """
         log.info(f'Start uploading {file.filename}')
-        engine = create_engine(self._app.config['DATABASE_URL_TEMPLATE'])
-        session_factory = sessionmaker(bind=engine)
-        Session = scoped_session(session_factory)
-        session = Session()
+        Session, session = create_session(self._app)
         exists = session.query(File).filter_by(filename=file.filename).first()
         file_content = file.stream.read()
         file_hash = hashlib.sha3_256(file_content).hexdigest()
