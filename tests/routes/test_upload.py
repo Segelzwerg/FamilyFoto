@@ -48,7 +48,9 @@ class UploadTestCase(BaseLoginTestCase):
         Tests if upload of a video works.
         """
         with self.client:
-            response = upload_test_file(self.client)
+            response = upload_test_file(self.client,
+                                        filename='example.mp4',
+                                        original_filename='example.mp4')
 
             path = self.app.config['UPLOADED_VIDEOS_DEST']
             dir_content = os.listdir(path)
