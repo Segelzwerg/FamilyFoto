@@ -6,7 +6,6 @@ from flask_login import current_user
 from flask_uploads import IMAGES, UploadSet
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from werkzeug.exceptions import abort
 
 from family_foto.const import MAX_UPLOAD_WORKERS
 from family_foto.errors import UploadError
@@ -45,13 +44,14 @@ class UploadService:
             raise UploadError(filename=self._files[0].filename,
                               message=message)
 
-    def upload(self) -> None:
+    def upload(self) -> list[UploadError, None]:
         """
         Starts uploading the all files.
         """
         with ThreadPoolExecutor(max_workers=MAX_UPLOAD_WORKERS) as executor:
-            executor.map(self._upload_file, self._files)
+            results = list(executor.map(self._upload_file, self._files))
             executor.shutdown(wait=True)
+            return [error for error in results if error is not None]
 
     def _upload_file(self, file):
         """
@@ -71,7 +71,7 @@ class UploadService:
         if exists and file_hash == exists.hash:
             message = f'File already exists: {exists.filename}'
             log.info(message)
-            raise UploadError(exists.filename, message)
+            return UploadError(exists.filename, message)
         sub_folder = f'{file_hash[:2]}/{file_hash}'
         if 'image' in file.content_type:
             with self._app.app_context():
@@ -102,7 +102,7 @@ class UploadService:
         else:
             message = f'file type {file.content_type} not supported.'
             log.info(message)
-            abort(400, message)
+            return UploadError(filename=file.filename, message=message)
         session.commit()
         Session.remove()
         log.info(f'{self._user.username} uploaded {file.filename}')
