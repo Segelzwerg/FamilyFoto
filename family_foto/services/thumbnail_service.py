@@ -24,6 +24,9 @@ class ThumbnailService:
 
     @celery.task(bind=True)
     def generate_all(self):
+        """
+        Generates thumbnails for a it's files.
+        """
         current = 0
         total = 0
         thumbnails = []
