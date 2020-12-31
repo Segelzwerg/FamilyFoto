@@ -15,12 +15,13 @@ photos = UploadSet('photos', IMAGES)
 videos = UploadSet('videos', VIDEOS)
 
 
-def upload_file(file, user_id: [int, None] = None):
+def upload_file(file, user_id: [int, None] = None) -> [None, UploadError]:
     """
     Uploads one file to the server.
     :param file: to be uploaded
     :param user_id: optional the owner of the file. If not given the program will check for a
     current_user instance. If that is not given it cannot upload the file.
+    :returns nothing or and upload error.
     """
     if user_id is None and current_user.is_authenticated:
         user_id = current_user.id
@@ -34,7 +35,7 @@ def upload_file(file, user_id: [int, None] = None):
     file_hash = hashlib.sha3_256(file_content).hexdigest()
     file.stream.seek(0)
     if exists and file_hash == exists.hash:
-        raise UploadError(exists.filename, f'File already exists: {exists.filename}')
+        return UploadError(exists.filename, f'File already exists: {exists.filename}')
     sub_folder = f'{file_hash[:2]}/{file_hash}'
     if 'image' in file.content_type:
         filename = photos.save(file, folder=sub_folder).split('/')[-1]
