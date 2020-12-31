@@ -94,12 +94,14 @@ def upload():
     """
     Uploads photo(s) or video(s) or with no passed on renders uploads view.
     """
+    error = None
     if 'file' in request.files:
         for file in request.files.getlist('file'):
-            upload_file(file)
+            error = upload_file(file)
 
     form = UploadForm()
-    return render_template('upload.html', form=form, user=current_user, title='Upload')
+    return render_template('upload.html', form=form, user=current_user, title='Upload',
+                           e=error)
 
 
 @web_bp.route('/image/<file_hash>', methods=['GET', 'POST'])
