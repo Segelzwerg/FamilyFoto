@@ -1,4 +1,6 @@
+import os
 from io import BytesIO
+from shutil import rmtree
 
 from flask_api import status
 from flask_login import current_user
@@ -28,6 +30,8 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests that gets all photos from an user.
         """
+        rmtree(os.path.join(self.app.instance_path, 'photos'))
+
         upload_test_file(self.client)
         photos = current_user.get_media()
         all_photos = Photo.query.all()
@@ -55,13 +59,9 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests if original photo can be retrieved.
         """
-        file = dict(
-            file=(BytesIO(b'my file contents'), "foto.jpg"),
-        )
-        self.client.post('/upload',
-                         content_type='multipart/form-data',
-                         data=file)
-        photo: Photo = Photo.query.filter_by(filename='foto.jpg').first()
+        rmtree(os.path.join(self.app.instance_path, 'photos'))
+        upload_test_file(self.client)
+        photo: Photo = Photo.query.filter_by(filename='test.jpg').first()
         response = self.client.get(photo.url)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
@@ -69,6 +69,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests the images in the gallery are displayed.
         """
+        rmtree(os.path.join(self.app.instance_path, 'photos'))
         filename = 'test.jpg'
         upload_test_file(self.client, filename)
         file = File.query.filter_by(filename=filename).first()
