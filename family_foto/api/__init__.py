@@ -88,5 +88,5 @@ def upload():
         user_id = int(user_id)
     app = current_app._get_current_object()
     uploader = UploadService(files, user_id, app)
-    uploader.upload()
-    return success_response()
+    upload_errors = uploader.upload()
+    return success_response(upload_errors)
