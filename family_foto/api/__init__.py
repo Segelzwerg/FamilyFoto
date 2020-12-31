@@ -7,7 +7,7 @@ from family_foto.api.success import success_response
 from family_foto.logger import log
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user import User
-from family_foto.services.upload_service import upload_file
+from family_foto.services.upload_service import UploadService
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -83,8 +83,9 @@ def upload():
     """
     Uploads files via api.
     """
-    for file in request.files.getlist('files'):
-        if user_id := request.headers.get('USER_ID'):
-            user_id = int(user_id)
-        upload_file(file, user_id if user_id else None)
+    files = request.files.getlist('files')
+    if user_id := request.headers.get('USER_ID'):
+        user_id = int(user_id)
+    uploader = UploadService(files, user_id)
+    uploader.upload()
     return success_response()
