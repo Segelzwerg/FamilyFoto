@@ -25,9 +25,11 @@
 </div>
 <hr>
 {% if e %}
+    {% for error in e %}
     <div class="alert alert-danger" role="alert">
-        {{ e.message }}
+        {{ error.message }}
     </div>
+    {% endfor %}
 {% endif %}
 {% if w %}
     <div class="alert alert-warning" role="alert">
