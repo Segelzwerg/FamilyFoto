@@ -106,9 +106,10 @@ class UploadService:
             return UploadError(filename=file.filename, message=message)
         try:
             session.commit()
-        except:
+            log.info(f'{self._user.username} uploaded {file.filename}')
+        except Exception as e:
             session.rollback()
+            log.error(e)
         finally:
             session.close()
             Session.remove()
-        log.info(f'{self._user.username} uploaded {file.filename}')
