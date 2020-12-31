@@ -2,6 +2,7 @@ import os
 import random
 
 import ffmpeg
+from celery import current_task
 from flask import current_app
 
 from family_foto import celery
@@ -31,8 +32,8 @@ class ThumbnailService:
         total = 0
         thumbnails = []
         for file in self._files:
-            self.update_state(state='PROGRESS', meta={'current': current, 'total': total,
-                                                      'status': 'progress'})
+            current_task.update_state(state='PROGRESS', meta={'current': current, 'total': total,
+                                                              'status': 'progress'})
             thumbnails.append(ThumbnailService.generate(file, self._width, self._height))
         return {'current': current, 'total': total, 'status': 'done', 'result': thumbnails}
 
