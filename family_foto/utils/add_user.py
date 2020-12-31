@@ -27,6 +27,10 @@ def add_user(username: str, password: str, roles: [Role], active=False) -> User:
 
     db.session.add(user_settings)
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        log.error(e)
     log.info(f'{user.username} registered.')
     return user
