@@ -2,6 +2,7 @@ import os
 from typing import Any
 
 import flask_uploads
+from celery import Celery
 from flask import Flask, request
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -14,6 +15,7 @@ from family_foto.admin.admin_index_view import AdminHomeView
 from family_foto.admin.admin_model_view import AdminModelView
 from family_foto.admin.admin_promote_view import AdminPromoteView
 from family_foto.admin.decorator import admin_auth
+from family_foto.celery.celery import init_celery
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE, UPLOADED_VIDEOS_DEST_RELATIVE, \
     ADMIN_LEVEL, USER_LEVEL, GUEST_LEVEL
 from family_foto.logger import log
@@ -25,6 +27,17 @@ from family_foto.models.user_settings import UserSettings
 from family_foto.utils.add_user import add_user
 
 login_manager = LoginManager()
+
+
+def make_celery():
+    """
+    Creates a Celery instance.
+    """
+    redis_uri = 'redis://localhost:6379'
+    return Celery('FamilyFoto', backend=redis_uri, broker=redis_uri)
+
+
+celery = make_celery()
 
 
 # pylint: disable=import-outside-toplevel
@@ -103,6 +116,8 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
         add_roles()
 
     add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()], active=True)
+
+    init_celery(celery, app)
 
     return app
 
