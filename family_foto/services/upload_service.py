@@ -42,7 +42,7 @@ class UploadService:
             raise UploadError(filename=self._files[0].filename,
                               message=message)
 
-    def upload(self) -> list[UploadError, None]:
+    def upload(self) -> [UploadError, None]:
         """
         Starts uploading the all files.
         """
