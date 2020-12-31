@@ -83,8 +83,9 @@ def upload():
     """
     Uploads files via api.
     """
+    error = None
     for file in request.files.getlist('files'):
         if user_id := request.headers.get('USER_ID'):
             user_id = int(user_id)
-        upload_file(file, user_id if user_id else None)
-    return success_response()
+        error = upload_file(file, user_id if user_id else None)
+    return success_response(error)
