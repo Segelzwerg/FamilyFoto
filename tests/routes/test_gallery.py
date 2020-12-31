@@ -28,12 +28,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests that gets all photos from an user.
         """
-        file = dict(
-            file=(BytesIO(b'my file contents'), "foto.jpg"),
-        )
-        self.client.post('/upload',
-                         content_type='multipart/form-data',
-                         data=file)
+        upload_test_file(self.client)
         photos = current_user.get_media()
         all_photos = Photo.query.all()
         self.assertListEqual(photos, all_photos)
