@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_login import current_user
 
@@ -86,6 +86,7 @@ def upload():
     files = request.files.getlist('files')
     if user_id := request.headers.get('USER_ID'):
         user_id = int(user_id)
-    uploader = UploadService(files, user_id)
+    app = current_app._get_current_object()
+    uploader = UploadService(files, user_id, app)
     uploader.upload()
     return success_response()
