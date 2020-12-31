@@ -28,6 +28,12 @@ class ApiUploadTestCase(BaseTestCase):
         self.client.post('/api/token', headers={'Authorization': f'Basic {credentials}'})
 
     def upload(self, file, filename):
+        """
+        Uploads a file to the server.
+        :param file: to be uploaded
+        :param filename: name of the file
+        :return: the response from the server.
+        """
         data = dict(files=[(file, filename)])
         response = self.client.post('/api/upload',
                                     headers={'Authorization': f'Bearer {self.user.token.token}',
