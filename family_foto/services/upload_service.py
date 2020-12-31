@@ -20,7 +20,6 @@ photos = UploadSet('photos', IMAGES)
 videos = UploadSet('videos', VIDEOS)
 
 
-
 class UploadService:
     """
     Handles uploads of media files.
@@ -71,6 +70,7 @@ class UploadService:
         if exists and file_hash == exists.hash:
             message = f'File already exists: {exists.filename}'
             log.info(message)
+            Session.remove()
             return UploadError(exists.filename, message)
         sub_folder = f'{file_hash[:2]}/{file_hash}'
         if 'image' in file.content_type:
@@ -102,7 +102,13 @@ class UploadService:
         else:
             message = f'file type {file.content_type} not supported.'
             log.info(message)
+            Session.remove()
             return UploadError(filename=file.filename, message=message)
-        session.commit()
-        Session.remove()
+        try:
+            session.commit()
+        except:
+            session.rollback()
+        finally:
+            session.close()
+            Session.remove()
         log.info(f'{self._user.username} uploaded {file.filename}')
