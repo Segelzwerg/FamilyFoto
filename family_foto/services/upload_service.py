@@ -11,7 +11,6 @@ from werkzeug.exceptions import abort
 from family_foto.const import MAX_UPLOAD_WORKERS
 from family_foto.errors import UploadError
 from family_foto.logger import log
-from family_foto.models import db
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
@@ -99,7 +98,7 @@ class UploadService:
                     log.error(e)
             video = Video(filename=file.filename, user=self._user.id,
                           hash=file_hash)
-            db.session.add(video)
+            session.add(video)
         else:
             message = f'file type {file.content_type} not supported.'
             log.info(message)
