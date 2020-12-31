@@ -1,7 +1,7 @@
 from flask_api import status
 
 from family_foto.models import db
-from family_foto.utils.thumbnail_service import ThumbnailService
+from family_foto.services.thumbnail_service import ThumbnailService
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_photo_test_case import BasePhotoTestCase
 

@@ -15,10 +15,10 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.role import Role
 from family_foto.models.user import User
+from family_foto.services.thumbnail_service import ThumbnailService
 from family_foto.services.upload_service import upload_file
 from family_foto.utils.add_user import add_user
 from family_foto.utils.protected import is_active, guest_user
-from family_foto.utils.thumbnail_service import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
 

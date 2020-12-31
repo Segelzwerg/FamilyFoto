@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 
 import ffmpeg
 
-from family_foto.utils.thumbnail_service import ThumbnailService
+from family_foto.services.thumbnail_service import ThumbnailService
 from tests.base_media_test_case import BaseMediaTestCase
 from tests.test_utils.test_classes import UnsupportedFileType
 

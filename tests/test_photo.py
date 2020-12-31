@@ -4,7 +4,7 @@ from flask import current_app
 
 from family_foto import add_user, Role
 from family_foto.models.photo import Photo
-from family_foto.utils.thumbnail_service import ThumbnailService
+from family_foto.services.thumbnail_service import ThumbnailService
 from tests.base_photo_test_case import BasePhotoTestCase
 
 
