@@ -95,7 +95,7 @@ def upload():
     Uploads photo(s) or video(s) or with no passed on renders uploads view.
     """
     files = request.files.getlist('file')
-
+    # pylint = disable:protected-access
     app = current_app._get_current_object()
     uploader = UploadService(files, current_user.id, app)
     upload_errors = uploader.upload()
