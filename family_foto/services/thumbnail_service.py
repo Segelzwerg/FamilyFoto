@@ -4,6 +4,7 @@ import random
 import ffmpeg
 from flask import current_app
 
+from family_foto import celery
 from family_foto.logger import log
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
@@ -15,6 +16,22 @@ class ThumbnailService:
     """
     Creates thumbnails for a media file.
     """
+
+    def __init__(self, files, width: int, height: int):
+        self._files: [File] = files
+        self._width = width
+        self._height = height
+
+    @celery.task(bind=True)
+    def generate_all(self):
+        current = 0
+        total = 0
+        thumbnails = []
+        for file in self._files:
+            self.update_state(state='PROGRESS', meta={'current': current, 'total': total,
+                                                      'status': 'progress'})
+            thumbnails.append(ThumbnailService.generate(file, self._width, self._height))
+        return {'current': current, 'total': total, 'status': 'done', 'result': thumbnails}
 
     @staticmethod
     def generate(file: File, width=400, height=400):
