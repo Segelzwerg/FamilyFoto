@@ -59,6 +59,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests if original photo can be retrieved.
         """
+        db.session.close()
         rmtree(os.path.join(self.app.instance_path, 'photos'))
         upload_test_file(self.client)
         photo: Photo = Photo.query.filter_by(filename='test.jpg').first()
@@ -69,6 +70,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests the images in the gallery are displayed.
         """
+        db.session.close()
         rmtree(os.path.join(self.app.instance_path, 'photos'))
         filename = 'test.jpg'
         upload_test_file(self.client, filename)
