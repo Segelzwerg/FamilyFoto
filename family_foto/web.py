@@ -16,7 +16,7 @@ from family_foto.models.photo import Photo
 from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.services.thumbnail_service import ThumbnailService
-from family_foto.services.upload_service import upload_file
+from family_foto.services.upload_service import UploadService
 from family_foto.utils.add_user import add_user
 from family_foto.utils.protected import is_active, guest_user
 
@@ -94,9 +94,10 @@ def upload():
     """
     Uploads photo(s) or video(s) or with no passed on renders uploads view.
     """
-    if 'file' in request.files:
-        for file in request.files.getlist('file'):
-            upload_file(file)
+    files = request.files.getlist('files')
+
+    uploader = UploadService(files, current_user.id)
+    uploader.upload()
 
     form = UploadForm()
     return render_template('upload.html', form=form, user=current_user, title='Upload')
