@@ -58,6 +58,8 @@ class UploadService:
         :param file: to be uploaded
         """
         log.info(f'Start uploading {file.filename}')
+        # this is intentional to shadow the outer scope package
+        # pylint: disable=invalid-name
         Session, session = create_session(self._app)
         exists = session.query(File).filter_by(filename=file.filename).first()
         file_content = file.stream.read()
