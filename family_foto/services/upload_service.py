@@ -46,7 +46,8 @@ class UploadService:
         else:
             message = 'Could not associate user to files.'
             log.warning(message)
-            raise UploadError(filename=self._files[0].filename,
+            filename = self._files[0].filename if self._files else 'No file given'
+            raise UploadError(filename=filename,
                               message=message)
 
     def upload(self) -> List[Optional[UploadError]]:
