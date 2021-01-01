@@ -39,7 +39,7 @@ class UploadService:
         self._files = files
         if user_id is None and current_user.is_authenticated:
             self._user = current_user
-        elif user_id is not None:
+        elif user_id is not None and User.query.get(user_id) is not None:
             self._user = User.query.get(user_id)
         else:
             message = 'Could not associate user to files.'
