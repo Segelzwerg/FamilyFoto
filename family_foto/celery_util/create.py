@@ -6,6 +6,7 @@ def init_celery(celery, app):
     """
     celery.conf.update(app.config)
 
+    # pylint: disable=too-few-methods
     class ContextTask(celery.Task):
         """
         A task that has the app context forced pushed.
