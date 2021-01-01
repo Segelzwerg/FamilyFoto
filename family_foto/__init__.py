@@ -2,7 +2,6 @@ import os
 from typing import Any
 
 import flask_uploads
-from celery import Celery
 from flask import Flask, request
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -26,7 +25,6 @@ from family_foto.models.user_settings import UserSettings
 from family_foto.utils.add_user import add_user
 
 login_manager = LoginManager()
-celery_worker = Celery('FamilyFoto', broker=f'amqp://localhost')
 
 
 # pylint: disable=import-outside-toplevel
@@ -42,7 +40,6 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY') or 'very-secret-key',
         DATABASE_URL_TEMPLATE=f'sqlite:///{app.instance_path}/app.db',
-        CELERY_RESULT_BACKEND=f'db+sqlite:///{app.instance_path}/celery.db',
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         UPLOADED_PHOTOS_DEST_RELATIVE='photos',
         UPLOADED_VIDEOS_DEST_RELATIVE='videos',
@@ -107,7 +104,6 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
 
     add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()], active=True)
 
-    celery_worker.conf.update(app.config)
     return app
 
 

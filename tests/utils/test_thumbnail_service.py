@@ -2,6 +2,7 @@ import os
 from unittest.mock import Mock, patch
 
 import ffmpeg
+import pytest
 
 from family_foto.services.thumbnail_service import generate, generate_all
 from tests.base_media_test_case import BaseMediaTestCase
@@ -61,10 +62,12 @@ class TestThumbnailService(BaseMediaTestCase):
         with self.assertRaisesRegex(IOError, 'Could not read frames from'):
             _ = generate(self.video)
 
-    def test_async_task(self):
+    @pytest.mark.asyncio
+    async def test_async_task(self):
         """
         Test the basic thumbnail service functionality.
         """
         files = [self.photo.id]
-        response = generate_all.delay(files, 200, 200)
-        print(response.status)
+        await generate_all(files, 200, 200)
+        path = f'/{os.path.dirname(self.photo.path)}/400_400_example.jpg'
+        self.assertTrue(os.path.exists(path))

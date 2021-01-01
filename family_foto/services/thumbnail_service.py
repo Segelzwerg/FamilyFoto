@@ -4,7 +4,6 @@ import random
 import ffmpeg
 from flask import current_app
 
-from family_foto import celery_worker
 from family_foto.logger import log
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
@@ -12,20 +11,15 @@ from family_foto.models.video import Video
 from family_foto.utils import image
 
 
-@celery_worker.task(bind=True)
-def generate_all(self, file_ids: [int], width: int, height: int):
+async def generate_all(file_ids: [int], width: int, height: int):
     """
     Generates thumbnails for a it's files.
     """
-    current = 0
-    total = 0
     thumbnails = []
     files: [File] = File.query.filter_by(File.id.in_(file_ids)).all()
     for file in files:
-        self.update_state(state='PROGRESS', meta={'current': current, 'total': total,
-                                                  'status': 'progress'})
         thumbnails.append(generate(file, width, height))
-    return {'current': current, 'total': total, 'status': 'done', 'result': thumbnails}
+    return thumbnails
 
 
 def generate(file: File, width=400, height=400):
