@@ -1,5 +1,4 @@
 import os
-from io import BytesIO
 from shutil import rmtree
 
 from flask_api import status
@@ -43,12 +42,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         Tests that it does not get the others.
         """
         db.session.close()
-        file = dict(
-            file=(BytesIO(b'my file contents'), "foto.jpg"),
-        )
-        self.client.post('/upload',
-                         content_type='multipart/form-data',
-                         data=file)
+        upload_test_file(self.client)
         other_photo = Photo(filename='other-photo.jpg', user=2)
         db.session.add(other_photo)
         db.session.commit()
