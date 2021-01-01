@@ -11,15 +11,13 @@ from family_foto.models.video import Video
 from family_foto.utils import image
 
 
-async def generate_all(file_ids: [int], width: int, height: int):
+async def generate_all(file_ids: [int], width: int, height: int) -> None:
     """
     Generates thumbnails for a it's files.
     """
-    thumbnails = []
-    files: [File] = File.query.filter_by(File.id.in_(file_ids)).all()
+    files: [File] = File.query.filter(File.id.in_(file_ids)).all()
     for file in files:
-        thumbnails.append(generate(file, width, height))
-    return thumbnails
+        generate(file, width, height)
 
 
 def generate(file: File, width=400, height=400):
