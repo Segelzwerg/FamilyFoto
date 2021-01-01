@@ -8,6 +8,7 @@ from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
 
 
+# pylint: disable=unsubscriptable-object]
 def add_user(username: str, password: str, roles: [Role], active=False) -> Optional[User]:
     """
     This registers an user.
