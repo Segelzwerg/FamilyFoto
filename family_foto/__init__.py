@@ -37,7 +37,7 @@ def make_celery():
     return Celery('FamilyFoto', backend=redis_uri, broker=redis_uri)
 
 
-celery = make_celery()
+celery_worker = make_celery()
 
 
 # pylint: disable=import-outside-toplevel
@@ -117,7 +117,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
 
     add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()], active=True)
 
-    init_celery(celery, app)
+    init_celery(celery_worker, app)
 
     return app
 

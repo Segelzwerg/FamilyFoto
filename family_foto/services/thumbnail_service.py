@@ -5,7 +5,7 @@ import ffmpeg
 from celery import current_task
 from flask import current_app
 
-from family_foto import celery
+from family_foto import celery_worker
 from family_foto.logger import log
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
@@ -23,7 +23,7 @@ class ThumbnailService:
         self._width = width
         self._height = height
 
-    @celery.task(bind=True)
+    @celery_worker.task(bind=True)
     def generate_all(self):
         """
         Generates thumbnails for a it's files.

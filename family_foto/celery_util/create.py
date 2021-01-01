@@ -1,8 +1,8 @@
 def init_celery(celery, app):
     """
-    Initializes a celery worker.
+    Initializes a celery_worker worker.
     :param celery: Celery Instance
-    :param app: the app calling the celery worker
+    :param app: the app calling the celery_worker worker
     """
     celery.conf.update(app.config)
 
