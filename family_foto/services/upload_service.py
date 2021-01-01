@@ -90,6 +90,8 @@ class UploadService:
         file_id = self._try_commit_file(Session, file, saved_file, session)
         return file_id
 
+    # this is intentional to shadow the outer scope package
+    # pylint: disable=invalid-name
     def _try_commit_file(self, Session, file, saved_file, session):
         file_id = None
         try:
@@ -101,8 +103,6 @@ class UploadService:
             log.error(op_error)
         finally:
             session.close()
-            # this is intentional to shadow the outer scope package
-            # pylint: disable=invalid-name
             Session.remove()
         return file_id
 
