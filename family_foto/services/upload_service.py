@@ -21,6 +21,7 @@ VIDEOS = ('mp4',)
 photos = UploadSet('photos', IMAGES)
 videos = UploadSet('videos', VIDEOS)
 
+
 # pylint: disable=too-few-public-methods
 class UploadService:
     """
