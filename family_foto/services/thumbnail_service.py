@@ -16,7 +16,7 @@ async def generate_all(file_ids: List[int], width: int, height: int) -> None:
     """
     Generates thumbnails for a it's files.
     """
-    files: [File] = File.query.filter(File.id.in_(file_ids)).all()
+    files: List[File] = File.query.filter(File.id.in_(file_ids)).all()
     for file in files:
         generate(file, width, height)
 
