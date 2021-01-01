@@ -29,6 +29,7 @@ class UploadService:
     """
     Handles uploads of media files.
     """
+
     # pylint: disable=unsubscriptable-object]
     def __init__(self, files: List[FileStorage], user_id: Optional[int], app):
         """
@@ -113,14 +114,11 @@ class UploadService:
 
     def _upload_video(self, file, file_hash, session, sub_folder):
         with self._app.app_context():
-            try:
-                path = self._app.config['UPLOADED_VIDEOS_DEST']
-                final_path = os.path.join(path, sub_folder, file.filename)
-                if not os.path.exists(final_path):
-                    os.makedirs(os.path.dirname(final_path))
-                file.save(dst=final_path)
-            except OperationalError as op_error:
-                log.error(op_error)
+            path = self._app.config['UPLOADED_VIDEOS_DEST']
+            final_path = os.path.join(path, sub_folder, file.filename)
+            if not os.path.exists(final_path):
+                os.makedirs(os.path.dirname(final_path))
+            file.save(dst=final_path)
         video = Video(filename=file.filename, user=self._user.id,
                       hash=file_hash)
         session.add(video)
@@ -128,15 +126,12 @@ class UploadService:
 
     def _upload_photo(self, file, file_hash, session, sub_folder):
         with self._app.app_context():
-            try:
-                path = self._app.config['UPLOADED_PHOTOS_DEST']
-                final_path = os.path.join(path, sub_folder, file.filename)
-                dirname = os.path.dirname(final_path)
-                if not os.path.exists(dirname):
-                    os.makedirs(dirname)
-                file.save(dst=final_path)
-            except OperationalError as op_error:
-                log.error(op_error)
+            path = self._app.config['UPLOADED_PHOTOS_DEST']
+            final_path = os.path.join(path, sub_folder, file.filename)
+            dirname = os.path.dirname(final_path)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            file.save(dst=final_path)
         photo = Photo(filename=file.filename, user=self._user.id,
                       hash=file_hash)
         session.add(photo)
