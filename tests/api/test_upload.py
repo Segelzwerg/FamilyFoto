@@ -132,9 +132,9 @@ class ApiUploadTestCase(BaseTestCase):
                                   photo_filename)
         file = open(photo_path, 'rb')
         data = dict(files=[(file, photo_filename)])
-        response = self.client.post('/api/upload',
-                                    headers={'Authorization': f'Bearer {self.user.token.token}',
-                                             'user_id': self.user.id},
-                                    content_type='multipart/form-data',
-                                    data=data)
+        self.client.post('/api/upload',
+                         headers={'Authorization': f'Bearer {self.user.token.token}',
+                                  'user_id': self.user.id},
+                         content_type='multipart/form-data',
+                         data=data)
         self.assertEqual(len(File.query.all()), 0)
