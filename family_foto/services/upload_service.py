@@ -7,6 +7,7 @@ from typing import List, Optional
 
 from flask_login import current_user
 from flask_uploads import IMAGES, UploadSet
+from werkzeug.datastructures import FileStorage
 
 from family_foto.const import MAX_UPLOAD_WORKERS
 from family_foto.errors import UploadError
@@ -29,7 +30,7 @@ class UploadService:
     Handles uploads of media files.
     """
     # pylint: disable=unsubscriptable-object]
-    def __init__(self, files: List[File], user_id: Optional[int], app):
+    def __init__(self, files: List[FileStorage], user_id: Optional[int], app):
         """
         :param files: is a list of files to be uploaded.
         :param user_id: optional. If not given the program will check for a
