@@ -3,7 +3,8 @@ from io import BytesIO
 
 from flask_api import status
 
-from family_foto import File
+from family_foto.models import db
+from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
 from tests.base_login_test_case import BaseLoginTestCase
@@ -79,6 +80,7 @@ class UploadTestCase(BaseLoginTestCase):
         """
         Tests if a file with same name but different content can be uploaded.
         """
+        db.session.close()
         filename = 'test.jpg'
         upload_test_file(self.client, filename)
         upload_test_file(self.client, filename, 'example_1.jpg')
