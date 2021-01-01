@@ -126,8 +126,9 @@ class UploadService:
             try:
                 path = self._app.config['UPLOADED_PHOTOS_DEST']
                 final_path = os.path.join(path, sub_folder, file.filename)
-                if not os.path.exists(final_path):
-                    os.makedirs(os.path.dirname(final_path))
+                dirname = os.path.dirname(final_path)
+                if not os.path.exists(dirname):
+                    os.makedirs(dirname)
                 file.save(dst=final_path)
             except OperationalError as op_error:
                 log.error(op_error)
