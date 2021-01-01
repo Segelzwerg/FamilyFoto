@@ -1,10 +1,12 @@
+from typing import List
+
 from flask import jsonify
 from werkzeug.http import HTTP_STATUS_CODES
 
 from family_foto.errors import FamilyFotoServerError
 
 
-def success_response(errors: [FamilyFotoServerError]):
+def success_response(errors: List[FamilyFotoServerError]):
     """
     Returns a success response.
     """
