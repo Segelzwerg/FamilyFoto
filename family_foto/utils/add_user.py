@@ -1,4 +1,5 @@
 from sqlite3 import OperationalError
+from typing import Optional
 
 from family_foto.logger import log
 from family_foto.models import db
@@ -7,7 +8,7 @@ from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
 
 
-def add_user(username: str, password: str, roles: [Role], active=False) -> User:
+def add_user(username: str, password: str, roles: [Role], active=False) -> Optional[User]:
     """
     This registers an user.
     :param username: name of the user
@@ -31,8 +32,9 @@ def add_user(username: str, password: str, roles: [Role], active=False) -> User:
     db.session.add(user)
     try:
         db.session.commit()
+        log.info(f'{user.username} registered.')
     except OperationalError as op_error:
         db.session.rollback()
         log.error(op_error)
-    log.info(f'{user.username} registered.')
+        return None
     return user
