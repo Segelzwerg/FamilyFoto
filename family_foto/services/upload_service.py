@@ -21,7 +21,7 @@ VIDEOS = ('mp4',)
 photos = UploadSet('photos', IMAGES)
 videos = UploadSet('videos', VIDEOS)
 
-
+# pylint: disable=too-few-public-methods
 class UploadService:
     """
     Handles uploads of media files.
@@ -98,7 +98,7 @@ class UploadService:
         finally:
             session.close()
             Session.remove()
-            return file_id
+        return file_id
 
     def _upload_video(self, file, file_hash, session, sub_folder):
         with self._app.app_context():
