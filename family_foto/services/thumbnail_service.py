@@ -1,5 +1,6 @@
 import os
 import random
+from typing import List
 
 import ffmpeg
 from flask import current_app
@@ -11,7 +12,7 @@ from family_foto.models.video import Video
 from family_foto.utils import image
 
 
-async def generate_all(file_ids: [int], width: int, height: int) -> None:
+async def generate_all(file_ids: List[int], width: int, height: int) -> None:
     """
     Generates thumbnails for a it's files.
     """

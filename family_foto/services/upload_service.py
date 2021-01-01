@@ -3,6 +3,7 @@ import hashlib
 import os
 from concurrent.futures.thread import ThreadPoolExecutor
 from sqlite3 import OperationalError
+from typing import List, Optional
 
 from flask_login import current_user
 from flask_uploads import IMAGES, UploadSet
@@ -28,7 +29,7 @@ class UploadService:
     Handles uploads of media files.
     """
 
-    def __init__(self, files: [File], user_id: [int, None], app):
+    def __init__(self, files: List[File], user_id: Optional[int], app):
         """
         :param files: is a list of files to be uploaded.
         :param user_id: optional. If not given the program will check for a
@@ -46,7 +47,7 @@ class UploadService:
             raise UploadError(filename=self._files[0].filename,
                               message=message)
 
-    def upload(self) -> [UploadError, None]:
+    def upload(self) -> List[Optional[UploadError]]:
         """
         Starts uploading the all files.
         """
