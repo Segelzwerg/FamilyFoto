@@ -95,8 +95,6 @@ class UploadService:
         except OperationalError as op_error:
             session.rollback()
             log.error(op_error)
-        except Exception as e:
-            log.error(e)
         finally:
             session.close()
             Session.remove()
