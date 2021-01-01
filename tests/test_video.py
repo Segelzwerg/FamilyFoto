@@ -4,7 +4,7 @@ from PIL import Image
 from flask import current_app
 
 from family_foto.models.video import Video
-from family_foto.services.thumbnail_service import ThumbnailService
+from family_foto.services.thumbnail_service import generate
 from tests.base_video_test_case import BaseVideoTestCase
 
 
@@ -30,7 +30,7 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests the rendering of the thumbnail of the video.
         """
-        path = ThumbnailService.generate(self.video, 200, 200)
+        path = generate(self.video, 200, 200)
         path = os.path.join(os.path.dirname(current_app.config['UPLOADED_VIDEOS_DEST']),
                             path.lstrip('/'))
         image = Image.open(path)
