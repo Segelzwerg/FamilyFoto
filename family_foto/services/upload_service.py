@@ -96,18 +96,20 @@ class UploadService:
     # this is intentional to shadow the outer scope package
     # pylint: disable=invalid-name
     def _try_commit_file(self, Session, file, saved_file, session):
-        file_id = None
+        response = None
         try:
             session.commit()
-            file_id = saved_file.id
+            response = saved_file.id
             log.info(f'{self._user.username} uploaded {file.filename}')
         except OperationalError as op_error:
             session.rollback()
             log.error(op_error)
+            response = UploadError(file.filename, 'There was a database error. See log for more '
+                                                  'information.')
         finally:
             session.close()
             Session.remove()
-        return file_id
+        return response
 
     def _upload_video(self, file, file_hash, session, sub_folder):
         with self._app.app_context():
