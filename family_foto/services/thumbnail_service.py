@@ -2,15 +2,25 @@ import os
 import random
 
 import ffmpeg
-from celery import current_task
+from celery import current_task, Celery
 from flask import current_app
 
-from family_foto import celery_worker
 from family_foto.logger import log
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
 from family_foto.utils import image
+
+
+def make_celery():
+    """
+    Creates a Celery instance.
+    """
+    redis_uri = 'redis://localhost:6379'
+    return Celery('FamilyFoto', backend=redis_uri, broker=redis_uri)
+
+
+celery_worker = make_celery()
 
 
 class ThumbnailService:
