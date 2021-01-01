@@ -30,6 +30,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests that gets all photos from an user.
         """
+        db.session.close()
         rmtree(os.path.join(self.app.instance_path, 'photos'))
 
         upload_test_file(self.client)
@@ -41,6 +42,7 @@ class GalleryTestCase(BaseLoginTestCase, BasePhotoTestCase):
         """
         Tests that it does not get the others.
         """
+        db.session.close()
         file = dict(
             file=(BytesIO(b'my file contents'), "foto.jpg"),
         )
