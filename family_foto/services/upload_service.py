@@ -73,31 +73,9 @@ class UploadService:
             return UploadError(exists.filename, message)
         sub_folder = f'{file_hash[:2]}/{file_hash}'
         if 'image' in file.content_type:
-            with self._app.app_context():
-                try:
-                    path = self._app.config['UPLOADED_PHOTOS_DEST']
-                    final_path = os.path.join(path, sub_folder, file.filename)
-                    if not os.path.exists(final_path):
-                        os.makedirs(os.path.dirname(final_path))
-                    file.save(dst=final_path)
-                except OperationalError as op_error:
-                    log.error(op_error)
-            photo = Photo(filename=file.filename, user=self._user.id,
-                          hash=file_hash)
-            session.add(photo)
+            self._upload_photo(file, file_hash, session, sub_folder)
         elif 'video' in file.content_type:
-            with self._app.app_context():
-                try:
-                    path = self._app.config['UPLOADED_VIDEOS_DEST']
-                    final_path = os.path.join(path, sub_folder, file.filename)
-                    if not os.path.exists(final_path):
-                        os.makedirs(os.path.dirname(final_path))
-                    file.save(dst=final_path)
-                except OperationalError as op_error:
-                    log.error(op_error)
-            video = Video(filename=file.filename, user=self._user.id,
-                          hash=file_hash)
-            session.add(video)
+            self._upload_video(file, file_hash, session, sub_folder)
         else:
             message = f'file type {file.content_type} not supported.'
             log.info(message)
@@ -112,3 +90,31 @@ class UploadService:
         finally:
             session.close()
             Session.remove()
+
+    def _upload_video(self, file, file_hash, session, sub_folder):
+        with self._app.app_context():
+            try:
+                path = self._app.config['UPLOADED_VIDEOS_DEST']
+                final_path = os.path.join(path, sub_folder, file.filename)
+                if not os.path.exists(final_path):
+                    os.makedirs(os.path.dirname(final_path))
+                file.save(dst=final_path)
+            except OperationalError as op_error:
+                log.error(op_error)
+        video = Video(filename=file.filename, user=self._user.id,
+                      hash=file_hash)
+        session.add(video)
+
+    def _upload_photo(self, file, file_hash, session, sub_folder):
+        with self._app.app_context():
+            try:
+                path = self._app.config['UPLOADED_PHOTOS_DEST']
+                final_path = os.path.join(path, sub_folder, file.filename)
+                if not os.path.exists(final_path):
+                    os.makedirs(os.path.dirname(final_path))
+                file.save(dst=final_path)
+            except OperationalError as op_error:
+                log.error(op_error)
+        photo = Photo(filename=file.filename, user=self._user.id,
+                      hash=file_hash)
+        session.add(photo)
