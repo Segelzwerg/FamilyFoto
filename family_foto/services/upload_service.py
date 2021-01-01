@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import os
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -13,6 +14,7 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.user import User
 from family_foto.models.video import Video
+from family_foto.services.thumbnail_service import generate_all
 from family_foto.utils.session import create_session
 
 VIDEOS = ('mp4',)
@@ -50,7 +52,11 @@ class UploadService:
         with ThreadPoolExecutor(max_workers=MAX_UPLOAD_WORKERS) as executor:
             results = list(executor.map(self._upload_file, self._files))
             executor.shutdown(wait=True)
-            return [error for error in results if error is not None]
+            file_ids = [response for response in results if isinstance(response, int)]
+            loop = asyncio.new_event_loop()
+            task = loop.create_task(generate_all(file_ids, 200, 200))
+            loop.run_until_complete(task)
+            return [response for response in results if not isinstance(response, int)]
 
     def _upload_file(self, file):
         """
@@ -73,23 +79,28 @@ class UploadService:
             return UploadError(exists.filename, message)
         sub_folder = f'{file_hash[:2]}/{file_hash}'
         if 'image' in file.content_type:
-            self._upload_photo(file, file_hash, session, sub_folder)
+            saved_file = self._upload_photo(file, file_hash, session, sub_folder)
         elif 'video' in file.content_type:
-            self._upload_video(file, file_hash, session, sub_folder)
+            saved_file = self._upload_video(file, file_hash, session, sub_folder)
         else:
             message = f'file type {file.content_type} not supported.'
             log.info(message)
             Session.remove()
             return UploadError(filename=file.filename, message=message)
+        file_id = None
         try:
             session.commit()
+            file_id = saved_file.id
             log.info(f'{self._user.username} uploaded {file.filename}')
         except OperationalError as op_error:
             session.rollback()
             log.error(op_error)
+        except Exception as e:
+            log.error(e)
         finally:
             session.close()
             Session.remove()
+            return file_id
 
     def _upload_video(self, file, file_hash, session, sub_folder):
         with self._app.app_context():
@@ -104,6 +115,7 @@ class UploadService:
         video = Video(filename=file.filename, user=self._user.id,
                       hash=file_hash)
         session.add(video)
+        return video
 
     def _upload_photo(self, file, file_hash, session, sub_folder):
         with self._app.app_context():
@@ -118,3 +130,4 @@ class UploadService:
         photo = Photo(filename=file.filename, user=self._user.id,
                       hash=file_hash)
         session.add(photo)
+        return photo
