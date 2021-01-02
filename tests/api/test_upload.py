@@ -27,19 +27,28 @@ class ApiUploadTestCase(BaseTestCase):
         credentials = b64encode(b'api_user:213').decode('utf-8')
         self.client.post('/api/token', headers={'Authorization': f'Basic {credentials}'})
 
+    def upload(self, file, filename):
+        """
+        Uploads a file to the server.
+        :param file: to be uploaded
+        :param filename: name of the file
+        :return: the response from the server.
+        """
+        data = dict(files=[(file, filename)])
+        response = self.client.post('/api/upload',
+                                    headers={'Authorization': f'Bearer {self.user.token.token}',
+                                             'user_id': self.user.id},
+                                    content_type='multipart/form-data',
+                                    data=data)
+        return response
+
     def test_upload_photo(self):
         """
         Test upload of a photo from API.
         """
 
         file = open(self.photo_path, 'rb')
-        data = dict(files=[(file, self.photo_filename)])
-        response = self.client.post('/api/upload',
-                                    headers={'Authorization': f'Bearer {self.user.token.token}',
-                                             'user_id': self.user.id},
-                                    content_type='multipart/form-data',
-                                    data=data)
-        file.close()
+        response = self.upload(file, self.photo_filename)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(1, len(File.query.all()))
 
@@ -48,13 +57,17 @@ class ApiUploadTestCase(BaseTestCase):
         Test upload of a video from API.
         """
         file = open(self.video_path, 'rb')
-        data = dict(files=[(file, self.video_filename)])
-        response = self.client.post('/api/upload',
-                                    headers={'Authorization': f'Bearer {self.user.token.token}',
-                                             'user_id': self.user.id},
-                                    content_type='multipart/form-data',
-                                    data=data)
-        file.close()
+        response = self.upload(file, self.video_filename)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(1, len(File.query.all()))
+
+    def test_duplicate_upload(self):
+        """
+        Tests error is no longer thrown for duplicate uploads.
+        """
+        self.upload(open(self.photo_path, 'rb'), self.photo_filename)
+        response = self.upload(open(self.photo_path, 'rb'), self.photo_filename)
+
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(1, len(File.query.all()))
 

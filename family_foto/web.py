@@ -2,7 +2,7 @@ from flask import redirect, url_for, render_template, request, send_from_directo
     Blueprint, current_app
 from flask_login import current_user, login_user, logout_user, login_required
 
-from family_foto.errors import UploadError, PasswordError
+from family_foto.errors import PasswordError
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.public_form import PublicForm
@@ -94,12 +94,16 @@ def upload():
     """
     Uploads photo(s) or video(s) or with no passed on renders uploads view.
     """
+    errors = []
     if 'file' in request.files:
         for file in request.files.getlist('file'):
-            upload_file(file)
+            possible_error = upload_file(file)
+            if possible_error is not None:
+                errors.append(possible_error)
 
     form = UploadForm()
-    return render_template('upload.html', form=form, user=current_user, title='Upload')
+    return render_template('upload.html', form=form, user=current_user, title='Upload',
+                           e=errors)
 
 
 @web_bp.route('/image/<file_hash>', methods=['GET', 'POST'])
@@ -238,13 +242,4 @@ def settings():
     return render_template('user-settings.html',
                            user=current_user,
                            form=form,
-                           e=error)
-
-
-@web_bp.errorhandler(UploadError)
-def handle_upload_errors(exception):
-    """
-    Catches error during uploading
-    :param exception: of what happened
-    """
-    return render_template('upload.html', form=UploadForm(), e=exception)
+                           e=[error])
