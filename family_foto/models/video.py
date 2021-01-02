@@ -39,19 +39,31 @@ class Video(File):
 
     @property
     def creation_datetime(self):
+        """
+        :return: a datetime object of creation date.
+        """
         creation_time = self.meta['format']['tags']['creation_time'].split('.')[0]
         return datetime.strptime(creation_time, '%Y-%m-%dT%H:%M:%S')
 
     @property
     def year(self):
+        """
+        :return: year of creation
+        """
         return self.creation_datetime.year
 
     @property
     def month(self):
+        """
+        :return: month of creation
+        """
         return self.creation_datetime.month
 
     @property
     def day(self):
+        """
+        :return: day of creation
+        """
         return self.creation_datetime.day
 
     @property

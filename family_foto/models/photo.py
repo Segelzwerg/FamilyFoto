@@ -37,18 +37,30 @@ class Photo(File):
 
     @property
     def creation_datetime(self):
+        """
+        :return: a datetime object of creation date.
+        """
         return datetime.strptime(self.meta['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
 
     @property
     def year(self):
+        """
+        :return: year of creation
+        """
         return self.creation_datetime.year
 
     @property
     def month(self):
+        """
+        :return: month of creation
+        """
         return self.creation_datetime.month
 
     @property
     def day(self):
+        """
+        :return: day of creation
+        """
         return self.creation_datetime.day
 
     @property
