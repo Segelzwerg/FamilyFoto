@@ -59,6 +59,24 @@ class VideoTestCase(BaseVideoTestCase):
         """
         self.assertEqual(1920, self.video.width)
 
+    def test_image_year(self):
+        """
+        Tests the year of creation.
+        """
+        self.assertEqual(self.video.year, 2015)
+
+    def test_image_month(self):
+        """
+        Tests the month of creation.
+        """
+        self.assertEqual(self.video.month, 8)
+
+    def test_image_day(self):
+        """
+        Tests the day of creation.
+        """
+        self.assertEqual(self.video.day, 7)
+
     def test_video_frame_count(self):
         """
         Tests the frame count property.
