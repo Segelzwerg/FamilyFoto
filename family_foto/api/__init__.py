@@ -30,6 +30,7 @@ def get_token():
     return jsonify(token.to_dict())
 
 
+# pylint: disable=unsubscriptable-object
 @basic_auth.verify_password
 def verify_password(username: str, password: str) -> Optional[User]:
     """
@@ -56,6 +57,7 @@ def basic_auth_error(status):
     return error_response(status)
 
 
+# pylint: disable=unsubscriptable-object
 @token_auth.verify_token
 def verify_token(token: Union[AuthToken, str]):
     """
