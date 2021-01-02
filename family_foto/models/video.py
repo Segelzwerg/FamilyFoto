@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import ffmpeg
 from flask import current_app
 from sqlalchemy import ForeignKey
@@ -11,7 +13,6 @@ class Video(File):
     """
     Class of the video entity.
     """
-
     id = db.Column(db.Integer, ForeignKey('file.id'), primary_key=True)
 
     __mapper_args__ = {
@@ -35,6 +36,23 @@ class Video(File):
                 return int(stream['width'])
 
         raise RuntimeError('could not read width from video file')
+
+    @property
+    def creation_datetime(self):
+        creation_time = self.meta['format']['tags']['creation_time'].split('.')[0]
+        return datetime.strptime(creation_time, '%Y-%m-%dT%H:%M:%S')
+
+    @property
+    def year(self):
+        return self.creation_datetime.year
+
+    @property
+    def month(self):
+        return self.creation_datetime.month
+
+    @property
+    def day(self):
+        return self.creation_datetime.day
 
     @property
     def frame_count(self) -> int:
