@@ -116,6 +116,24 @@ class PhotoTestCase(BasePhotoTestCase):
         """
         self.assertEqual(f'/image/{self.photo.hash}', self.photo.image_view)
 
+    def test_image_year(self):
+        """
+        Tests the year of creation.
+        """
+        self.assertEqual(self.photo.year, 2020)
+
+    def test_image_month(self):
+        """
+        Tests the month of creation.
+        """
+        self.assertEqual(self.photo.month, 8)
+
+    def test_image_day(self):
+        """
+        Tests the day of creation.
+        """
+        self.assertEqual(self.photo.day, 18)
+
     @staticmethod
     def _test_meta(expected_dict, meta):
         keys_not_in = {k: v for k, v in expected_dict.items() if k not in meta.keys()}
