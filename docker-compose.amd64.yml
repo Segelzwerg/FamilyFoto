@@ -19,7 +19,7 @@ services:
   # Grafana for visualization
   grafana:
     image: grafana/grafana:7.3.6-ubuntu
-    user: "docker"
+    user: "1000"
     volumes:
       - /media/usb/grafana:/var/lib/grafana
     ports:

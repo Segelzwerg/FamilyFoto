@@ -15,14 +15,12 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.role import Role
 from family_foto.models.user import User
-from family_foto.services.upload_service import upload_file
+from family_foto.services.thumbnail_service import generate
+from family_foto.services.upload_service import UploadService
 from family_foto.utils.add_user import add_user
 from family_foto.utils.protected import is_active, guest_user
-from family_foto.utils.thumbnail_service import ThumbnailService
 
 web_bp = Blueprint('web', __name__)
-
-
 
 
 @web_bp.route('/')
@@ -94,16 +92,17 @@ def upload():
     """
     Uploads photo(s) or video(s) or with no passed on renders uploads view.
     """
-    errors = []
-    if 'file' in request.files:
-        for file in request.files.getlist('file'):
-            possible_error = upload_file(file)
-            if possible_error is not None:
-                errors.append(possible_error)
-
+    files = request.files.getlist('file')
+    # pylint: disable=protected-access
+    app = current_app._get_current_object()
+    uploader = UploadService(files, current_user.id, app)
+    upload_errors = uploader.upload()
+    status_code = 200
+    if len(upload_errors) == len(files):
+        status_code = 400
     form = UploadForm()
     return render_template('upload.html', form=form, user=current_user, title='Upload',
-                           e=errors)
+                           e=upload_errors), status_code
 
 
 @web_bp.route('/image/<file_hash>', methods=['GET', 'POST'])
@@ -141,7 +140,7 @@ def image_view(file_hash):
     public_form.public.render_kw = {'value': 'y' if file.protected else 'n'}
     if not file.has_read_permission(current_user):
         abort(401)
-    thumbnail = ThumbnailService.generate(file, 400, 400)
+    thumbnail = generate(file, 400, 400)
     return render_template('image.html', user=current_user, photo=file,
                            thumbnail=thumbnail, form=form, public_form=public_form)
 
@@ -190,7 +189,7 @@ def gallery():
     Shows all pictures requested
     """
     user_media = current_user.get_media()
-    thumbnails = [ThumbnailService.generate(file, 200, 200) for file in user_media]
+    thumbnails = [generate(file, 200, 200) for file in user_media]
     return render_template('gallery.html', user=current_user, media=zip(user_media, thumbnails),
                            link_type='preview')
 
@@ -203,7 +202,7 @@ def protected_gallery():
     Shows the protected gallery.
     """
     media = Photo.query.filter_by(protected=True)
-    thumbnails = [ThumbnailService.generate(file, 200, 200) for file in media]
+    thumbnails = [generate(file, 200, 200) for file in media]
     return render_template('gallery.html', user=current_user, media=zip(media, thumbnails),
                            link_type='direct')
 

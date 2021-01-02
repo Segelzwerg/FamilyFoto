@@ -23,7 +23,7 @@ class User(UserMixin, db.Model):  # lgtm [py/missing-equals]
 
     roles = relationship('Role', secondary=users_roles, uselist=True)
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
-                            back_populates='user', uselist=False)
+                            back_populates='user', uselist=False, lazy='subquery')
     files = relationship('File', foreign_keys='File.user')
     token = relationship('AuthToken', foreign_keys='AuthToken.user_id', uselist=False)
 
