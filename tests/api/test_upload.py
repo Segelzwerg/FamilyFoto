@@ -1,5 +1,7 @@
 import os
 from base64 import b64encode
+from sqlite3 import OperationalError
+from unittest.mock import patch, Mock
 
 from flask_api import status
 
@@ -118,3 +120,21 @@ class ApiUploadTestCase(BaseTestCase):
         file.close()
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
         self.assertEqual(0, len(File.query.all()))
+
+    @patch('sqlalchemy.orm.session.SessionTransaction.commit',
+           Mock(side_effect=OperationalError))
+    def test_operational_error(self):
+        """
+        Tests if an operation error is raised and caught.
+        """
+        photo_filename = 'example.jpg'
+        photo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data',
+                                  photo_filename)
+        file = open(photo_path, 'rb')
+        data = dict(files=[(file, photo_filename)])
+        self.client.post('/api/upload',
+                         headers={'Authorization': f'Bearer {self.user.token.token}',
+                                  'user_id': self.user.id},
+                         content_type='multipart/form-data',
+                         data=data)
+        self.assertEqual(len(File.query.all()), 0)

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_login import current_user
 
@@ -7,7 +7,7 @@ from family_foto.api.success import success_response
 from family_foto.logger import log
 from family_foto.models.auth_token import AuthToken
 from family_foto.models.user import User
-from family_foto.services.upload_service import upload_file
+from family_foto.services.upload_service import UploadService
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -83,11 +83,11 @@ def upload():
     """
     Uploads files via api.
     """
-    upload_errors = []
-    for file in request.files.getlist('files'):
-        if user_id := request.headers.get('USER_ID'):
-            user_id = int(user_id)
-        error = upload_file(file, user_id if user_id else None)
-        if error is not None:
-            upload_errors.append(error)
+    files = request.files.getlist('files')
+    if user_id := request.headers.get('USER_ID'):
+        user_id = int(user_id)
+    # pylint: disable=protected-access
+    app = current_app._get_current_object()
+    uploader = UploadService(files, user_id, app)
+    upload_errors = uploader.upload()
     return success_response(upload_errors)
