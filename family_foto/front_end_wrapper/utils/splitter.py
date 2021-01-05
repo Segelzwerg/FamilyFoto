@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Iterator, Tuple
 
 from family_foto.front_end_wrapper.month import Month
 from family_foto.front_end_wrapper.year import Year
@@ -28,3 +28,12 @@ class Splitter:
                 splits[file.year].add_file(file)
 
         return splits
+
+    def sorted_years(self):
+        """
+        Returns the split sorted.
+        """
+        splits = self.split()
+        # noinspection PyTypeChecker
+        sorted_splits: Iterator[Tuple[int, Year]] = sorted(splits.items(), reverse=True)
+        return [year[1] for year in sorted_splits]

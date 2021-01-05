@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List
 
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
     Blueprint, current_app
@@ -11,7 +11,6 @@ from family_foto.forms.public_form import PublicForm
 from family_foto.forms.register_form import RegisterForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.front_end_wrapper.utils.splitter import Splitter
-from family_foto.front_end_wrapper.year import Year
 from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.approval import Approval
@@ -194,9 +193,7 @@ def gallery():
     """
     user_media: List[File] = current_user.get_media()
     splitter = Splitter(user_media)
-    splits = splitter.split()
-    year: Tuple[int, Year]
-    years_sorted = [year[1] for year in sorted(splits.items(), reverse=True)]
+    years_sorted = splitter.sorted_years()
     return render_template('gallery.html', user=current_user, years=years_sorted,
                            link_type='preview')
 
