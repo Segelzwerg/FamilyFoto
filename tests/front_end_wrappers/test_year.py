@@ -15,3 +15,13 @@ class YearTestCase(BasePhotoTestCase):
         month = Month([self.photo], 8, 2020)
         year = Year([month], 2020)
         self.assertFalse(year == month)
+
+    def test_add_file_to_empty_year(self):
+        """
+        Tests if you can add a file to an empty year.
+        """
+        year = Year([], 2020)
+        year.add_file(self.photo)
+        expected_year = Year([Month([self.photo], self.photo.month, self.photo.year)],
+                             self.photo.year)
+        self.assertEqual(year, expected_year)
