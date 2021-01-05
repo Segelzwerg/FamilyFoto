@@ -9,6 +9,7 @@ from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_media_test_case import BaseMediaTestCase
 
 
+# pylint: disable=too-many-ancestors
 class SplitterTestCase(BaseLoginTestCase, BaseMediaTestCase):
     """
     Tests the file splitter.
