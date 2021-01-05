@@ -1,3 +1,4 @@
+from operator import attrgetter
 from typing import List
 
 from family_foto.front_end_wrapper.month import Month
@@ -12,11 +13,15 @@ class Year:
     def __init__(self, months: List[Month], year: int):
         self.months = months
         self.year = year
+        self._sort()
 
     def __eq__(self, other):
         if not isinstance(other, Year) or self.year != other.year:
             return False
         return self.months == other.months
+
+    def _sort(self):
+        self.months = sorted(self.months, key=attrgetter('month'), reverse=True)
 
     def add_file(self, file: File) -> None:
         """
@@ -29,3 +34,4 @@ class Year:
             self.months.append(Month([file], month_no, self.year))
         else:
             months[0].add_file(file)
+        self._sort()
