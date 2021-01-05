@@ -14,6 +14,9 @@ class Splitter:
         self._files = files
 
     def split(self) -> Dict[int, Year]:
+        """
+        Splits the files into years.
+        """
         splits = dict()
         for file in self._files:
             if file.year not in splits.keys():
