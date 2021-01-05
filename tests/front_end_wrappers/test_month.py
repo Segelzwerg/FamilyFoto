@@ -4,13 +4,13 @@ from tests.base_photo_test_case import BasePhotoTestCase
 
 
 class MonthTestCase(BasePhotoTestCase):
+    """
+    Tests the file wrapper for months.
+    """
+
     def setUp(self):
         super().setUp()
         self.month = Month([self.photo], 8, 2020)
-
-    """
-    Test the month wrapper.
-    """
 
     def test_not_equal(self):
         """
