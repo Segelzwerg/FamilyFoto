@@ -6,6 +6,7 @@ from family_foto.services.thumbnail_service import generate
 MONTH_NAMES = ['January', 'February', 'March', 'April', 'June', 'July', 'August', 'September',
                'October', 'November', 'December']
 
+
 class Month:
     """
     This contains all available files of that month
@@ -26,6 +27,8 @@ class Month:
         """
         Returns the name of the month.
         """
+        if self.month == -1:
+            return 'No month given'
         return MONTH_NAMES[self.month]
 
     def add_file(self, file: File):

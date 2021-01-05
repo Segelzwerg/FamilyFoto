@@ -3,7 +3,11 @@
 {% block content %}
     <h1>Gallery </h1>
     {% for year in years %}
-        <h2>{{ year.year }}</h2>
+        <h2>
+            {% if year.year != -1 %}
+                {{ year.year }}
+            {% endif %}
+        </h2>
         {% for month in year.months %}
             <h3>{{ month.month_name }}</h3>
             {% for medium, thumbnail in month.media(200,200) %}
