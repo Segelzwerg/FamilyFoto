@@ -1,7 +1,7 @@
 from flask_api import status
 from flask_login import current_user
 
-from family_foto import File
+from family_foto.models.file import File
 from tests.base_login_test_case import BaseLoginTestCase
 from tests.base_test_case import BaseTestCase
 from tests.test_utils.assertions import assertImageIsLoaded
