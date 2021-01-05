@@ -1,6 +1,6 @@
 from typing import List, Tuple, Iterator
 
-from family_foto import File
+from family_foto.models.file import File
 from family_foto.services.thumbnail_service import generate
 
 MONTH_NAMES = ['January', 'February', 'March', 'April', 'June', 'July', 'August', 'September',
