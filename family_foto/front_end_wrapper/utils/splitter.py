@@ -21,4 +21,7 @@ class Splitter:
                 year = Year([month], file.year)
                 splits.update({file.year: year})
 
+            else:
+                splits[file.year].add_file(file)
+
         return splits
