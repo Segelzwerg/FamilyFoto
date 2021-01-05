@@ -5,7 +5,7 @@
     {% for year in years %}
         <h2>{{ year.year }}</h2>
         {% for month in year.months %}
-            <h3>{{ month.month }}</h3>
+            <h3>{{ month.month_name }}</h3>
             {% for medium, thumbnail in month.media(200,200) %}
                 {% if link_type == 'preview' %}
                     <a href="{{ medium.image_view }}">
