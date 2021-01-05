@@ -77,6 +77,38 @@ class File(db.Model):
 
     @property
     @abstractmethod
+    def creation_datetime(self):
+        """
+        :return: a datetime object of creation date.
+        """
+        raise NotImplementedError('Each media type has type of storing the creation date.')
+
+    @property
+    @abstractmethod
+    def year(self):
+        """
+        :return: year of creation
+        """
+        raise NotImplementedError('Each media type has type of storing the creation date.')
+
+    @property
+    @abstractmethod
+    def month(self):
+        """
+        :return: month of creation
+        """
+        raise NotImplementedError('Each media type has type of storing the creation date.')
+
+    @property
+    @abstractmethod
+    def day(self):
+        """
+        :return: day of creation
+        """
+        raise NotImplementedError('Each media type has type of storing the creation date.')
+
+    @property
+    @abstractmethod
     def height(self):
         """
         Returns the image height.

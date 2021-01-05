@@ -2,14 +2,24 @@
 
 {% block content %}
     <h1>Gallery </h1>
-    {% for medium, thumbnail in media %}
-        {% if link_type == 'preview' %}
-            <a href="{{ medium.image_view }}">
-        {% else %}
-            <a href="{{ medium.url }}">
-        {% endif %}
-    <img src="{{ thumbnail }}" alt="File could not be loaded: {{ medium.filename }}"
-         class="img-thumbnail">
-    </a>
+    {% for year in years %}
+        <h2>
+            {% if year.year != -1 %}
+                {{ year.year }}
+            {% endif %}
+        </h2>
+        {% for month in year.months %}
+            <h3>{{ month.month_name }}</h3>
+            {% for medium, thumbnail in month.media(200,200) %}
+                {% if link_type == 'preview' %}
+                    <a href="{{ medium.image_view }}">
+                {% else %}
+                    <a href="{{ medium.url }}">
+                {% endif %}
+            <img src="{{ thumbnail }}" alt="File could not be loaded: {{ medium.filename }}"
+                 class="img-thumbnail">
+            </a>
+            {% endfor %}
+        {% endfor %}
     {% endfor %}
 {% endblock %}
