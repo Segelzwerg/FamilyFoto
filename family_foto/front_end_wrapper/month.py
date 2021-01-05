@@ -3,6 +3,8 @@ from typing import List, Tuple, Iterator
 from family_foto import File
 from family_foto.services.thumbnail_service import generate
 
+MONTH_NAMES = ['January', 'February', 'March', 'April', 'June', 'July', 'August', 'September',
+               'October', 'November', 'December']
 
 class Month:
     """
@@ -18,6 +20,13 @@ class Month:
         if not isinstance(other, Month) or self.month != other.month or self.year != other.year:
             return False
         return self._files == other._files
+
+    @property
+    def month_name(self) -> str:
+        """
+        Returns the name of the month.
+        """
+        return MONTH_NAMES[self.month]
 
     def add_file(self, file: File):
         """
