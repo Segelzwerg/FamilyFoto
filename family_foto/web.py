@@ -206,8 +206,9 @@ def protected_gallery():
     Shows the protected gallery.
     """
     media = Photo.query.filter_by(protected=True)
-    thumbnails = [generate(file, 200, 200) for file in media]
-    return render_template('gallery.html', user=current_user, media=zip(media, thumbnails),
+    splitter = Splitter(media)
+    years_sorted = splitter.sorted_years()
+    return render_template('gallery.html', user=current_user, years=years_sorted,
                            link_type='direct')
 
 
