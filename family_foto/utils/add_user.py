@@ -1,4 +1,5 @@
 from sqlite3 import OperationalError
+from typing import List
 from typing import Optional
 
 from family_foto.logger import log
@@ -9,7 +10,7 @@ from family_foto.models.user_settings import UserSettings
 
 
 # pylint: disable=unsubscriptable-object]
-def add_user(username: str, password: str, roles: [Role], active=False) -> Optional[User]:
+def add_user(username: str, password: str, roles: List[Role], active=False) -> Optional[User]:
     """
     This registers an user.
     :param username: name of the user
