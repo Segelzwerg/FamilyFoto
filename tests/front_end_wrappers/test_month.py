@@ -26,3 +26,10 @@ class MonthTestCase(BasePhotoTestCase):
         """
         expected_path = f'/photos/{self.photo.hash[:2]}/{self.photo.hash}/200_200_example.jpg'
         self.assertEqual(self.month.get_thumbnails(200, 200), [expected_path])
+
+    def test_month_not_given(self):
+        """
+        Tests the name for not given month.
+        """
+        month = Month([], -1, -1)
+        self.assertEqual(month.month_name, 'No month given')
