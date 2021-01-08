@@ -21,7 +21,7 @@ class User(UserMixin, db.Model):  # lgtm [py/missing-equals]
     email = db.Column(db.String(255), unique=True)
     active = db.Column(db.Boolean())
 
-    roles = relationship('Role', secondary=users_roles, uselist=True)
+    roles = relationship('Role', secondary=users_roles, uselist=True, lazy='subquery')
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
                             back_populates='user', uselist=False, lazy='subquery')
     files = relationship('File', foreign_keys='File.user')
