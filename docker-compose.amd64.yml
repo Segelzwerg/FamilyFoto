@@ -2,7 +2,7 @@ version: '3'
 services:
   web:
     container_name: family-foto
-    image: segelzwerg/family-foto:amd64
+    image: segelzwerg/family-foto:amd64-latest
     ports:
       - "5050:5000"
     volumes:
