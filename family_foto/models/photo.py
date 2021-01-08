@@ -5,6 +5,7 @@ from flask import current_app
 from sqlalchemy import ForeignKey
 
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE
+from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.file import File
 
@@ -41,7 +42,10 @@ class Photo(File):
         :return: a datetime object of creation date.
         """
         if len(self.meta) > 0:
-            return datetime.strptime(self.meta['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
+            try:
+                return datetime.strptime(self.meta['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
+            except KeyError:
+                log.warning(f'For {self.filename} there was no meta key: DateTimeOriginal')
         return None
 
     @property
