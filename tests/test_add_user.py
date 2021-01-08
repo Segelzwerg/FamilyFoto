@@ -1,3 +1,6 @@
+from sqlite3 import OperationalError
+from unittest.mock import patch, Mock
+
 from family_foto import add_user, Role
 from family_foto.models import db
 from family_foto.models.user import User
@@ -36,3 +39,13 @@ class AddUserTestCase(BaseTestCase):
             add_user('lea', '12345', [user_role])
             add_user('lea', '12345', [user_role])
             self.assertEqual(1, [user.username for user in User.query.all()].count('lea'))
+
+    @patch('family_foto.models.db.session.commit',
+           Mock(side_effect=OperationalError))
+    def test_opertional_error(self):
+        """
+        Tests if an operational error is thrown.
+        """
+        user_role = Role.query.filter_by(name='user').first()
+        user = add_user('test', 'test', [user_role])
+        self.assertIsNone(user)

@@ -39,7 +39,7 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
     app = Flask(__name__, instance_relative_config=True, instance_path=test_instance_path)
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY') or 'very-secret-key',
-        DATABASE_URL_TEMPLATE='sqlite:///{instance_path}/app.db',
+        DATABASE_URL_TEMPLATE=f'sqlite:///{app.instance_path}/app.db',
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         UPLOADED_PHOTOS_DEST_RELATIVE='photos',
         UPLOADED_VIDEOS_DEST_RELATIVE='videos',

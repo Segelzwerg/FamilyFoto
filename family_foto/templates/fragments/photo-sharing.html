@@ -1,16 +1,17 @@
-<div class="card" id="photo_sharing">
-    <div class="card-body">
-        <h2 class="card-title">Photo Sharing</h2>
-        <form action="" method="post">
-            <p class="align-self-lg-end">
-                {{ form.submit(class="btn btn-primary") }}
-            </p>
-            <div class="form-check-inline">
-                {{ form.hidden_tag() }}
-                {{ form.share_with.label }}<br>
-                {{ form.share_with(class="form-check-input") }}
-            </div>
-
-        </form>
+{% if user.has_at_least_role(1) %}
+    <div class="card" id="photo_sharing">
+        <div class="card-body">
+            <h2 class="card-title">Photo Sharing</h2>
+            <form action="" method="post">
+                <p class="align-self-lg-end">
+                    {{ form.submit(class="btn btn-primary") }}
+                </p>
+                <div class="form-check-inline">
+                    {{ form.hidden_tag() }}
+                    {{ form.share_with.label }}<br>
+                    {{ form.share_with(class="form-check-input") }}
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+{% endif %}

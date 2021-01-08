@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from PIL import Image, ExifTags
 from flask import current_app
 from sqlalchemy import ForeignKey
@@ -32,6 +34,42 @@ class Photo(File):
         with self.__open_image() as image:
             return image.width
         # return int(self.meta['ExifImageWidth'])
+
+    @property
+    def creation_datetime(self):
+        """
+        :return: a datetime object of creation date.
+        """
+        if len(self.meta) > 0:
+            return datetime.strptime(self.meta['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
+        return None
+
+    @property
+    def year(self):
+        """
+        :return: year of creation
+        """
+        if self.creation_datetime:
+            return self.creation_datetime.year
+        return -1
+
+    @property
+    def month(self):
+        """
+        :return: month of creation
+        """
+        if self.creation_datetime:
+            return self.creation_datetime.month
+        return -1
+
+    @property
+    def day(self):
+        """
+        :return: day of creation
+        """
+        if self.creation_datetime:
+            return self.creation_datetime.day
+        return -1
 
     @property
     def meta(self):

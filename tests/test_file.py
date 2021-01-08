@@ -40,3 +40,31 @@ class FileTestCase(BaseTestCase):
         """
         with raises(NotImplementedError):
             _ = self.file.width
+
+    def test_creation_data(self):
+        """
+        Test creation date is not implemented.
+        """
+        with raises(NotImplementedError):
+            _ = self.file.creation_datetime
+
+    def test_year(self):
+        """
+        Test year is not implemented.
+        """
+        with raises(NotImplementedError):
+            _ = self.file.year
+
+    def test_month(self):
+        """
+        Test month is not implemented.
+        """
+        with raises(NotImplementedError):
+            _ = self.file.month
+
+    def test_day(self):
+        """
+        Test day is not implemented.
+        """
+        with raises(NotImplementedError):
+            _ = self.file.day

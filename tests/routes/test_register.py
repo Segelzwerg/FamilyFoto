@@ -1,6 +1,6 @@
 from flask_api import status
 
-from family_foto import User
+from family_foto.models.user import User
 from tests.base_test_case import BaseTestCase
 from tests.test_utils.mocking import mock_user
 
