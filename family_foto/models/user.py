@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 import deprecation
 from flask_login import UserMixin
@@ -21,9 +21,9 @@ class User(UserMixin, db.Model):  # lgtm [py/missing-equals]
     email = db.Column(db.String(255), unique=True)
     active = db.Column(db.Boolean())
 
-    roles = relationship('Role', secondary=users_roles, uselist=True)
+    roles = relationship('Role', secondary=users_roles, uselist=True, lazy='subquery')
     settings = relationship('UserSettings', foreign_keys='UserSettings.user_id',
-                            back_populates='user', uselist=False)
+                            back_populates='user', uselist=False, lazy='subquery')
     files = relationship('File', foreign_keys='File.user')
     token = relationship('AuthToken', foreign_keys='AuthToken.user_id', uselist=False)
 
@@ -84,7 +84,7 @@ class User(UserMixin, db.Model):  # lgtm [py/missing-equals]
             user_photos.extend(User.query.filter_by(id=user.id).first().files)
         return user_photos
 
-    def share_all_with(self, other_users: ('User', List['User'])) -> None:
+    def share_all_with(self, other_users: Tuple['User', List['User']]) -> None:
         """
         Share all photos with users. It also revokes user privileges if not in list.
         :param other_users: the user/s all photos will be shared with

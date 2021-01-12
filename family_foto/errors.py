@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class FamilyFotoServerError(Exception):
     """
     Base exception for this server.
@@ -20,7 +23,10 @@ class UploadError(FamilyFotoServerError):
     Exception raised if something happens during upload.
     """
 
-    def __init__(self, filename: str, message):
+    # pylint: disable=unsubscriptable-object]
+    def __init__(self, filename: Optional[str], message):
+        if filename is None:
+            filename = "<Filename not given>"
         self.filename = filename
         super().__init__(message)
 

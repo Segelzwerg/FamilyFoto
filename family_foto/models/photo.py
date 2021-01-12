@@ -1,8 +1,11 @@
+from datetime import datetime
+
 from PIL import Image, ExifTags
 from flask import current_app
 from sqlalchemy import ForeignKey
 
 from family_foto.const import UPLOADED_PHOTOS_DEST_RELATIVE
+from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.file import File
 
@@ -32,6 +35,45 @@ class Photo(File):
         with self.__open_image() as image:
             return image.width
         # return int(self.meta['ExifImageWidth'])
+
+    @property
+    def creation_datetime(self):
+        """
+        :return: a datetime object of creation date.
+        """
+        if len(self.meta) > 0:
+            try:
+                return datetime.strptime(self.meta['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
+            except KeyError:
+                log.warning(f'For {self.filename} there was no meta key: DateTimeOriginal')
+        return None
+
+    @property
+    def year(self):
+        """
+        :return: year of creation
+        """
+        if self.creation_datetime:
+            return self.creation_datetime.year
+        return -1
+
+    @property
+    def month(self):
+        """
+        :return: month of creation
+        """
+        if self.creation_datetime:
+            return self.creation_datetime.month
+        return -1
+
+    @property
+    def day(self):
+        """
+        :return: day of creation
+        """
+        if self.creation_datetime:
+            return self.creation_datetime.day
+        return -1
 
     @property
     def meta(self):

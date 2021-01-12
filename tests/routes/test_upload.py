@@ -3,7 +3,8 @@ from io import BytesIO
 
 from flask_api import status
 
-from family_foto import File
+from family_foto.models import db
+from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.video import Video
 from tests.base_login_test_case import BaseLoginTestCase
@@ -19,22 +20,15 @@ class UploadTestCase(BaseLoginTestCase):
         """
         Tests if a jpg can be uploaded.
         """
-        with self.client:
-            file = dict(
-                file=(BytesIO(b'my file contents'), "foto.jpg"),
-            )
-            response = self.client.post('/upload',
-                                        content_type='multipart/form-data',
-                                        data=file)
-            self.assertEqual(status.HTTP_200_OK, response.status_code)
-            path = self.app.config['UPLOADED_PHOTOS_DEST']
-            dir_content = os.listdir(path)
-            path = path + '/' + dir_content[0]
-            dir_content = os.listdir(path)
-            dir_content = os.listdir(path + '/' + dir_content[0])
-
-            self.assertIn('foto.jpg', dir_content)
-            self.assertIn('foto.jpg', [photo.filename for photo in Photo.query.all()])
+        response = upload_test_file(self.client)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        path = self.app.config['UPLOADED_PHOTOS_DEST']
+        dir_content = os.listdir(path)
+        path = path + '/' + dir_content[0]
+        dir_content = os.listdir(path)
+        dir_content = os.listdir(path + '/' + dir_content[0])
+        self.assertIn('test.jpg', dir_content)
+        self.assertIn('test.jpg', [photo.filename for photo in Photo.query.all()])
 
     def test_upload_wrong_file_type(self):
         """
@@ -55,10 +49,9 @@ class UploadTestCase(BaseLoginTestCase):
         Tests if upload of a video works.
         """
         with self.client:
-            data = dict(file=(BytesIO(b'my file contents'), 'example.mp4'))
-            response = self.client.post('/upload',
-                                        content_type='multipart/form-data',
-                                        data=data)
+            response = upload_test_file(self.client,
+                                        filename='example.mp4',
+                                        original_filename='example.mp4')
 
             path = self.app.config['UPLOADED_VIDEOS_DEST']
             dir_content = os.listdir(path)
@@ -87,6 +80,7 @@ class UploadTestCase(BaseLoginTestCase):
         """
         Tests if a file with same name but different content can be uploaded.
         """
+        db.session.close()
         filename = 'test.jpg'
         upload_test_file(self.client, filename)
         upload_test_file(self.client, filename, 'example_1.jpg')

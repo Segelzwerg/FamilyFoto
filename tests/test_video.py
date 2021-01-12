@@ -4,7 +4,7 @@ from PIL import Image
 from flask import current_app
 
 from family_foto.models.video import Video
-from family_foto.utils.thumbnail_service import ThumbnailService
+from family_foto.services.thumbnail_service import generate
 from tests.base_video_test_case import BaseVideoTestCase
 
 
@@ -30,7 +30,7 @@ class VideoTestCase(BaseVideoTestCase):
         """
         Tests the rendering of the thumbnail of the video.
         """
-        path = ThumbnailService.generate(self.video, 200, 200)
+        path = generate(self.video, 200, 200)
         path = os.path.join(os.path.dirname(current_app.config['UPLOADED_VIDEOS_DEST']),
                             path.lstrip('/'))
         image = Image.open(path)
@@ -58,6 +58,24 @@ class VideoTestCase(BaseVideoTestCase):
         Tests the video height property.
         """
         self.assertEqual(1920, self.video.width)
+
+    def test_image_year(self):
+        """
+        Tests the year of creation.
+        """
+        self.assertEqual(self.video.year, 2015)
+
+    def test_image_month(self):
+        """
+        Tests the month of creation.
+        """
+        self.assertEqual(self.video.month, 8)
+
+    def test_image_day(self):
+        """
+        Tests the day of creation.
+        """
+        self.assertEqual(self.video.day, 7)
 
     def test_video_frame_count(self):
         """

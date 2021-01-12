@@ -4,7 +4,7 @@ from flask import current_app
 
 from family_foto import add_user, Role
 from family_foto.models.photo import Photo
-from family_foto.utils.thumbnail_service import ThumbnailService
+from family_foto.services.thumbnail_service import generate
 from tests.base_photo_test_case import BasePhotoTestCase
 
 
@@ -105,7 +105,7 @@ class PhotoTestCase(BasePhotoTestCase):
         """
         Tests if photos are correctly resized.
         """
-        resized_path = ThumbnailService.generate(self.photo)
+        resized_path = generate(self.photo)
         path = os.path.join(os.path.dirname(current_app.config['UPLOADED_PHOTOS_DEST']),
                             resized_path.lstrip('/'))
         self.assertTrue(os.path.isfile(path), msg=f'{path} does not exist.')
@@ -115,6 +115,24 @@ class PhotoTestCase(BasePhotoTestCase):
         Tests the image view path.
         """
         self.assertEqual(f'/image/{self.photo.hash}', self.photo.image_view)
+
+    def test_image_year(self):
+        """
+        Tests the year of creation.
+        """
+        self.assertEqual(self.photo.year, 2020)
+
+    def test_image_month(self):
+        """
+        Tests the month of creation.
+        """
+        self.assertEqual(self.photo.month, 8)
+
+    def test_image_day(self):
+        """
+        Tests the day of creation.
+        """
+        self.assertEqual(self.photo.day, 18)
 
     @staticmethod
     def _test_meta(expected_dict, meta):
