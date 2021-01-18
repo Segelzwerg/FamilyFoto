@@ -27,5 +27,5 @@ pylint-flask~=0.6
 pylint-flask-sqlalchemy~=0.2.0
 python-resize-image~=1.1.19
 pytest~=6.2.1
-pytest-cov~=2.10.1
+pytest-cov~=2.11.0
 lxml~=4.6.2
