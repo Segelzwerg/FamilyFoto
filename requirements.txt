@@ -1,4 +1,4 @@
-pip~=20.3
+pip~=21.0
 setuptools~=51.3.3
 celery~=5.0.5
 deprecation~=2.1.0
