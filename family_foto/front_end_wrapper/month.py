@@ -29,7 +29,7 @@ class Month:
         """
         if self.month == -1:
             return 'No month given'
-        elif self.month > 12 or self.month < 1:
+        if self.month > 12 or self.month < 1:
             raise ValueError(f'The month number must be in between 1 and 12, but was {self.month}')
         return MONTH_NAMES[self.month - 1]
 
