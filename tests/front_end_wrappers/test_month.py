@@ -33,3 +33,11 @@ class MonthTestCase(BasePhotoTestCase):
         """
         month = Month([], -1, -1)
         self.assertEqual(month.month_name, 'No month given')
+
+    def test_invalid_month(self):
+        """
+        Test if a error is raised for a 13th month.
+        """
+        month = Month([], 13, 2012)
+        with self.assertRaises(ValueError):
+            _ = month.month_name
