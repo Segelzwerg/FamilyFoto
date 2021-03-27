@@ -44,6 +44,18 @@ class RegisterTestCase(BaseTestCase):
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertIsNone(user)
 
+    def test_register_control_password_not_given(self):
+        """
+        Checks if the user is returned to the register page.
+        """
+        with self.client:
+            response = self.client.post('register',
+                                        data={'username': 'Lea',
+                                              'password': '1234'})
+            user = User.query.filter_by(username='Lea').first()
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertIsNone(user)
+
     def test_redirect_with_authenticated_user(self):
         """
         Checks if an authenticated user is redirected to index.
