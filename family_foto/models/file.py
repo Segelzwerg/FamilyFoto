@@ -68,6 +68,13 @@ class File(db.Model):
         return f'/image/{self.hash}'
 
     @property
+    def username(self):
+        """
+        Returns the name of the user how uploaded the file.
+        """
+        return User.query.get(self.user).username
+
+    @property
     @abstractmethod
     def meta(self):
         """
