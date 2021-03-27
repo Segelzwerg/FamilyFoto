@@ -27,10 +27,11 @@ def add_user(username: str, password: str, roles: List[Role], active=False, emai
         log.warning(f'{user.username} already exists.')
         return exists
 
-    exists = User.query.filter_by(email=email).first()
-    if exists:
-        log.warning(f'{email} already used.')
-        return exists
+    if email is not None:
+        exists = User.query.filter_by(email=email).first()
+        if exists:
+            log.warning(f'{email} already used.')
+            return exists
 
     user_settings = UserSettings(user_id=user.id)
     user.settings = user_settings
