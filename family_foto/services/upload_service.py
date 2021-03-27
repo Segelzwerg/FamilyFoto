@@ -30,7 +30,6 @@ class UploadService:
     Handles uploads of media files.
     """
 
-    # pylint: disable=unsubscriptable-object]
     def __init__(self, files: List[FileStorage], user_id: Optional[int], app):
         """
         :param files: is a list of files to be uploaded.
