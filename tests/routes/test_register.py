@@ -53,3 +53,17 @@ class RegisterTestCase(BaseTestCase):
             response = self.client.get('/register')
             self.patcher.stop()
             self.assertEqual(status.HTTP_302_FOUND, response.status_code)
+
+    def test_register_a_guest_user_with_email(self):
+        """
+        Checks if it is possible to register a new user with an email address.
+        """
+        with self.client:
+            response = self.client.post('register',
+                                        data={'username': 'Lea',
+                                              'email': 'lea@haas.com',
+                                              'password': '1234',
+                                              'password_control': '1234'})
+            user = User.query.filter_by(username='Lea').first()
+            self.assertEqual(status.HTTP_302_FOUND, response.status_code)
+            self.assertIsNotNone(user)
