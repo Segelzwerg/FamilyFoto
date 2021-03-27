@@ -8,6 +8,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from prometheus_flask_exporter import PrometheusMetrics
 
+from family_foto import const
 from family_foto.admin.admin import create_admin
 from family_foto.admin.admin_approval_view import AdminApprovalView
 from family_foto.admin.admin_index_view import AdminHomeView
