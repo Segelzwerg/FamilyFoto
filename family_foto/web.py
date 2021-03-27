@@ -74,6 +74,7 @@ def register():
         log.info(f'{user.username} successfully registered with roles: {user.roles}')
         return redirect(url_for('web.login'))
 
+    # pylint: disable=no-member
     form_errors = [RegistrationWarning(field, msg) for field, msg in form.errors.items()]
     for err in form_errors:
         log.warning(err.message)
