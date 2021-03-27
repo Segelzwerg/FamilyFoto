@@ -8,6 +8,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from prometheus_flask_exporter import PrometheusMetrics
 
+from family_foto import const
 from family_foto.admin.admin import create_admin
 from family_foto.admin.admin_approval_view import AdminApprovalView
 from family_foto.admin.admin_index_view import AdminHomeView
@@ -43,7 +44,8 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         UPLOADED_PHOTOS_DEST_RELATIVE='photos',
         UPLOADED_VIDEOS_DEST_RELATIVE='videos',
-        RESIZED_DEST_RELATIVE='resized-images'
+        RESIZED_DEST_RELATIVE='resized-images',
+        VERSION=const.VERSION
     )
 
     if test_config is None:
@@ -103,6 +105,8 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
         add_roles()
 
     add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()], active=True)
+
+    log.info(f'Version: {const.VERSION}')
 
     return app
 

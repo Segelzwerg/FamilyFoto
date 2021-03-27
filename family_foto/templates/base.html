@@ -37,5 +37,15 @@
     </div>
 {% endif %}
 {% block content %}{% endblock %}
+<div class="fixed-bottom">
+    {% block footer %}
+        {% if config.VERSION %}
+            Version: {{ config.VERSION }}
+        {% else %}
+            Version: unkown
+        {% endif %}
+    {% endblock %}
+</div>
+
 </body>
 </html>
