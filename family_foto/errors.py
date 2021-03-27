@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 
 class FamilyFotoServerError(Exception):
@@ -44,3 +44,17 @@ class PasswordError(FamilyFotoServerError):
     """
     Exception raised if some was wrong with the password.
     """
+
+
+class RegistrationWarning(Warning):
+    """
+    Exception raised during registration process.
+    """
+
+    def __init__(self, field: str, messages: List):
+        for index, msg in enumerate(messages):
+            if msg == 'This field is required.':
+                messages[index] = f'This field is required: {field}'
+        message = '\n'.join(messages)
+        self.message = message
+        super().__init__(message)
