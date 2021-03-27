@@ -65,3 +65,20 @@ class AddUserTestCase(BaseTestCase):
             email = 'lea@haas.com'
             add_user('lea', '12345', [user_role], email=email)
             self.assertEqual(1, len(User.query.filter_by(email=email).all()))
+
+    def test_add_unique_mail(self):
+        """
+        Test adding a user with email address.
+        """
+        with self.client:
+            if 'lea' in [user.username for user in User.query.all()]:
+                lea = User.query.filter_by(username='lea').first()
+                db.session.delete(lea)
+                db.session.commit()
+            self.assertNotIn('lea', [user.username for user in User.query.all()])
+            user_role = Role.query.filter_by(name='user').first()
+
+            email = 'lea@haas.com'
+            add_user('lea', '12345', [user_role], email=email)
+            add_user('email', '12345', [user_role], email=email)
+            self.assertEqual(1, len(User.query.filter_by(email=email).all()))
