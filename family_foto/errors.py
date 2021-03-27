@@ -46,15 +46,15 @@ class PasswordError(FamilyFotoServerError):
     """
 
 
-class RegistrationError(FamilyFotoServerError):
+class RegistrationWarning(Warning):
     """
     Exception raised during registration process.
     """
 
     def __init__(self, field: str, messages: List):
-
         for index, msg in enumerate(messages):
             if msg == 'This field is required.':
                 messages[index] = f'This field is required: {field}'
         message = '\n'.join(messages)
+        self.message = message
         super().__init__(message)
