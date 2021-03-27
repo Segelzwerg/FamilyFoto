@@ -43,7 +43,8 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         UPLOADED_PHOTOS_DEST_RELATIVE='photos',
         UPLOADED_VIDEOS_DEST_RELATIVE='videos',
-        RESIZED_DEST_RELATIVE='resized-images'
+        RESIZED_DEST_RELATIVE='resized-images',
+        VERSION=const.VERSION
     )
 
     if test_config is None:
