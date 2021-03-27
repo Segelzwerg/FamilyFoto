@@ -3,6 +3,8 @@ from pytest import raises
 from family_foto.models.file import File
 from tests.base_test_case import BaseTestCase
 
+USER_ID = 1
+
 
 class FileTestCase(BaseTestCase):
     """
@@ -11,7 +13,7 @@ class FileTestCase(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        self.file = File(filename='test.txt')
+        self.file = File(filename='test.txt', user=USER_ID)
 
     def test_path(self):
         """
@@ -68,3 +70,9 @@ class FileTestCase(BaseTestCase):
         """
         with raises(NotImplementedError):
             _ = self.file.day
+
+    def test_username(self):
+        """
+        Test the username property.
+        """
+        self.assertEqual(self.file.username, 'marcel')
