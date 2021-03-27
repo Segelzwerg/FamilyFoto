@@ -4,7 +4,7 @@ from flask import redirect, url_for, render_template, request, send_from_directo
     Blueprint, current_app
 from flask_login import current_user, login_user, logout_user, login_required
 
-from family_foto.errors import PasswordError, RegistrationError
+from family_foto.errors import PasswordError, RegistrationWarning
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.public_form import PublicForm
@@ -74,7 +74,9 @@ def register():
         log.info(f'{user.username} successfully registered with roles: {user.roles}')
         return redirect(url_for('web.login'))
 
-    form_errors = [RegistrationError(field, msg) for field, msg in form.errors.items()]
+    form_errors = [RegistrationWarning(field, msg) for field, msg in form.errors.items()]
+    for err in form_errors:
+        log.warning(err.message)
     return render_template('register.html', title='Register', form=form, e=form_errors)
 
 
