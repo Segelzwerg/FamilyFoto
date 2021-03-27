@@ -10,19 +10,26 @@ from family_foto.models.user_settings import UserSettings
 
 
 # pylint: disable=unsubscriptable-object]
-def add_user(username: str, password: str, roles: List[Role], active=False) -> Optional[User]:
+def add_user(username: str, password: str, roles: List[Role], active=False, email=None) -> Optional[
+    User]:
     """
     This registers an user.
     :param username: name of the user
     :param password: plain text password
     :param roles: list of the roles the user has
     :param active: if the user is already activated
+    :param email: Optional string of the user's email address
     """
-    user = User(username=username)
+    user = User(username=username, email=email)
     user.set_password(password)
     exists = User.query.filter_by(username=username).first()
     if exists:
         log.warning(f'{user.username} already exists.')
+        return exists
+
+    exists = User.query.filter_by(email=email).first()
+    if exists:
+        log.warning(f'{email} already used.')
         return exists
 
     user_settings = UserSettings(user_id=user.id)
