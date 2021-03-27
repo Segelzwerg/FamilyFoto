@@ -105,6 +105,8 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
 
     add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()], active=True)
 
+    log.info(f'Version: {const.VERSION}')
+
     return app
 
 
