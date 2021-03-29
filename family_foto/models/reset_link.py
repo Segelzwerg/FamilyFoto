@@ -10,9 +10,22 @@ class ResetLink(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True)
     link_hash = db.Column(db.String(32), index=True, unique=True)
+    active = db.Column(db.Boolean, default=False)
     expiration = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
     user = db.relationship('User', foreign_keys=[user_id], uselist=False)
+
+    def set_active(self):
+        """
+        Sets the link active. Now user are allowed to change their password.
+        """
+        self.active = True
+
+    def is_active(self):
+        """
+        If true user change their password.
+        """
+        return self.active
 
     @staticmethod
     def generate_link(user, expires_in: int = 3600) -> 'ResetLink':
