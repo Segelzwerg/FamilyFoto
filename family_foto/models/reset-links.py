@@ -1,3 +1,5 @@
+from secrets import token_urlsafe
+
 from family_foto.models import db
 
 
@@ -10,3 +12,9 @@ class ResetLink(db.Model):
     expiration = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
     user = db.relationship('User', foreign_keys=[user_id], uselist=False)
+
+    def generate_link(self) -> None:
+        """
+        Generates a hash for the password reset url.
+        """
+        self.link_hash = token_urlsafe(32)
