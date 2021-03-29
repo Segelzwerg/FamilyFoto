@@ -3,6 +3,7 @@ from typing import List
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
     Blueprint, current_app
 from flask_login import current_user, login_user, logout_user, login_required
+from flask_mail import Message
 
 from family_foto.errors import PasswordError, RegistrationWarning
 from family_foto.forms.login_form import LoginForm
@@ -18,6 +19,7 @@ from family_foto.models.file import File
 from family_foto.models.photo import Photo
 from family_foto.models.role import Role
 from family_foto.models.user import User
+from family_foto.services.mail_service import mail
 from family_foto.services.thumbnail_service import generate
 from family_foto.services.upload_service import UploadService
 from family_foto.utils.add_user import add_user
@@ -252,3 +254,18 @@ def settings():
                            user=current_user,
                            form=form,
                            e=[error] if error else [])
+
+
+@web_bp.route('/reset-pwd', methods=['POST'])
+def reset_password():
+    username = request.form.get('username')
+    user = User.query.filter_by(username=username).first()
+    link = ''  # TO BE GENERATED
+    email = Message(subject='FamilyFoto password reset',
+                    sender=current_app.config['MAIL_USERNAME'],
+                    recipients=[user.email],
+                    body=link)
+    with mail.connect() as conn:
+        conn.send(email)
+    form = LoginForm()
+    return render_template('login.html', title='Sign In', form=form)
