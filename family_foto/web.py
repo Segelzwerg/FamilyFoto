@@ -258,13 +258,13 @@ def settings():
                            e=[error] if error else [])
 
 
-@web_bp.route('/reset-pwd', methods=['GET', 'POST'])
-def reset_password(link_hash: str):
+@web_bp.route('/reset-pwd', methods=['POST'])
+def request_reset_password():
     username = request.form.get('username')
     user = User.query.filter_by(username=username).first()
-    if request.method == 'POST':
+    if user is not None:
         link = ResetLink.generate_link(user)
-        reset_url = url_for('web.reset-pwd', link_hash=link.link_hash)
+        reset_url = url_for('web.reset_password', user_id=user.id, link_hash=link.link_hash)
         email = Message(subject='FamilyFoto password reset',
                         sender=current_app.config['MAIL_USERNAME'],
                         recipients=[user.email],
@@ -274,9 +274,12 @@ def reset_password(link_hash: str):
         form = LoginForm()
         return render_template('login.html', title='Sign In', form=form)
 
+
+@web_bp.route('/reset-pwd/<user_id>/<link_hash>')
+def reset_password(user_id: int, link_hash: str):
     if link_hash is not None:
         link: ResetLink = ResetLink.query.filter_by(link_hash=link_hash).first()
-        if user.id != link.user_id:
+        if int(user_id) != link.user_id:
             return redirect(url_for('web.index'))
         form = ResetPasswordForm()
         return render_template('reset-pwd.html', user=current_user,
