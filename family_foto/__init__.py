@@ -5,7 +5,6 @@ import flask_uploads
 from flask import Flask, request
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
-from flask_mail import Mail
 from flask_migrate import Migrate
 from prometheus_flask_exporter import PrometheusMetrics
 
@@ -24,10 +23,10 @@ from family_foto.models.file import File
 from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
+from family_foto.services.mail_service import mail
 from family_foto.utils.add_user import add_user
 
 login_manager = LoginManager()
-mail = Mail()
 
 
 # pylint: disable=import-outside-toplevel
