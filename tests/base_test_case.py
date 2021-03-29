@@ -33,7 +33,13 @@ class BaseTestCase(TestCase):
             # Since we want our unit tests to run quickly
             # we turn this down - the hashing is still done
             # but the time-consuming part is left out.
-            'HASH_ROUNDS': 1
+            'HASH_ROUNDS': 1,
+            # Fake Mail Server.
+            'MAIL_SERVER': 'localhost',
+            'MAIL_PORT': 465,
+            'MAIL_USERNAME': 'noreply@ff.de',
+            'MAIL_PASSWORD': '1234',
+            'MAIL_SUPPRESS_SEND': True
         }, instance_path)
         return app
 
