@@ -10,6 +10,7 @@ from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.public_form import PublicForm
 from family_foto.forms.register_form import RegisterForm
+from family_foto.forms.reset_pwd_form import ResetPasswordForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.front_end_wrapper.utils.splitter import Splitter
 from family_foto.logger import log
@@ -17,6 +18,7 @@ from family_foto.models import db
 from family_foto.models.approval import Approval
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
+from family_foto.models.reset_link import ResetLink
 from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.services.mail_service import mail
@@ -256,16 +258,26 @@ def settings():
                            e=[error] if error else [])
 
 
-@web_bp.route('/reset-pwd', methods=['POST'])
-def reset_password():
+@web_bp.route('/reset-pwd', methods=['GET', 'POST'])
+def reset_password(link_hash: str):
     username = request.form.get('username')
     user = User.query.filter_by(username=username).first()
-    link = ''  # TO BE GENERATED
-    email = Message(subject='FamilyFoto password reset',
-                    sender=current_app.config['MAIL_USERNAME'],
-                    recipients=[user.email],
-                    body=link)
-    with mail.connect() as conn:
-        conn.send(email)
-    form = LoginForm()
-    return render_template('login.html', title='Sign In', form=form)
+    if request.method == 'POST':
+        link = ResetLink.generate_link(user)
+        reset_url = url_for('web.reset-pwd', link_hash=link.link_hash)
+        email = Message(subject='FamilyFoto password reset',
+                        sender=current_app.config['MAIL_USERNAME'],
+                        recipients=[user.email],
+                        body=reset_url)
+        with mail.connect() as conn:
+            conn.send(email)
+        form = LoginForm()
+        return render_template('login.html', title='Sign In', form=form)
+
+    if link_hash is not None:
+        link: ResetLink = ResetLink.query.filter_by(link_hash=link_hash).first()
+        if user.id != link.user_id:
+            return redirect(url_for('web.index'))
+        form = ResetPasswordForm()
+        return render_template('reset-pwd.html', user=current_user,
+                               form=form)
