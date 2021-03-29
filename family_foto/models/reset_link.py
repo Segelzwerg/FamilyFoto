@@ -18,7 +18,7 @@ class ResetLink(db.Model):
     def generate_link(user, expires_in: int = 3600) -> 'ResetLink':
         """
         Generates a hash for the password reset url.
-        :param user: the id of the user how requested a reset
+        :param user: the object of the user how requested a reset
         :param expires_in: the time until the link expires. Default 6h.
         """
         now = datetime.utcnow()
