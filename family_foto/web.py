@@ -275,12 +275,24 @@ def request_reset_password():
         return render_template('login.html', title='Sign In', form=form)
 
 
-@web_bp.route('/reset-pwd/<user_id>/<link_hash>')
+@web_bp.route('/reset-pwd/<user_id>/<link_hash>', methods=['GET', 'POST'])
 def reset_password(user_id: int, link_hash: str):
+    form = ResetPasswordForm()
+
     if link_hash is not None:
         link: ResetLink = ResetLink.query.filter_by(link_hash=link_hash).first()
         if int(user_id) != link.user_id:
             return redirect(url_for('web.index'))
-        form = ResetPasswordForm()
+
+        if form.validate_on_submit() and link.is_active():
+            user = User.query.get(int(user_id))
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('web.login'))
+
+        link.set_active()
+        db.session.add(link)
+        db.session.commit()
         return render_template('reset-pwd.html', user=current_user,
                                form=form)
