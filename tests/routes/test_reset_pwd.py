@@ -1,7 +1,10 @@
 from flask_api import status
 
-from family_foto import add_user, Role
+from family_foto import add_user
+from family_foto.models import db
 from family_foto.models.reset_link import ResetLink
+from family_foto.models.role import Role
+from family_foto.models.user import User
 from family_foto.services.mail_service import mail
 from tests.base_test_case import BaseTestCase
 
@@ -17,6 +20,10 @@ class ResetPasswordTestCase(BaseTestCase):
 
         self.user = add_user('reseter', '123', [self.user_role])
 
+        self.link = ResetLink.generate_link(user=self.user)
+        self.reset_url = f'/reset-pwd/{self.user.id}/{self.link.link_hash}'
+        db.session.commit()
+
     def test_reset_mail(self):
         """
         Tests if the mail with the reset link is in the outbox.
@@ -31,8 +38,24 @@ class ResetPasswordTestCase(BaseTestCase):
         """
         Test if the link opens the reset form.
         """
-        link = ResetLink.generate_link(user=self.user)
         with self.client:
-            reset_url = f'/reset-pwd/{self.user.id}/{link.link_hash}'
-            response = self.client.get(reset_url)
+            response = self.client.get(self.reset_url)
+            link: ResetLink = ResetLink.query.get(self.link.id)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertTrue(link.is_active())
+
+    def test_reset_password(self):
+        """
+        Checks if the password can be changed.
+        """
+        with self.client:
+            _ = self.client.get(self.reset_url)
+
+            new_password = '1234'
+            response = self.client.post(self.reset_url, data={'password': new_password,
+                                                              'password_control': new_password},
+                                        follow_redirects=True)
+            user = User.query.get(self.user.id)
+
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertTrue(user.check_password(new_password))
