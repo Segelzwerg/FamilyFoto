@@ -21,3 +21,4 @@ class ResetLinkTestCase(BaseTestCase):
         link = ResetLink.generate_link(user=self.user)
         self.assertIsNotNone(link)
         self.assertIsNotNone(ResetLink.query.all()[0])
+        self.assertIsNotNone(link.link_hash)
