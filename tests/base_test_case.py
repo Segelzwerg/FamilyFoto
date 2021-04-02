@@ -54,7 +54,7 @@ class BaseTestCase(TestCase):
 
         family_foto.add_roles()
         user_role = Role.query.filter_by(name='user').first()
-        add_user('marcel', '1234', [user_role])
+        add_user('marcel', '1234', [user_role], email='marcel@family-foto.com')
 
     def tearDown(self):
         db.session.close()
