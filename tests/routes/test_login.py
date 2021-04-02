@@ -1,6 +1,7 @@
 from flask_api import status
 from flask_login import current_user
 
+from family_foto.services.mail_service import mail
 from tests.base_test_case import BaseTestCase
 
 
@@ -58,3 +59,13 @@ class LoginTestCase(BaseTestCase):
                                               'password': '12345',
                                               'submit': True})
             self.assertEqual(status.HTTP_302_FOUND, response.status_code)
+
+    def test_reset_mail(self):
+        """
+        Tests if the mail with the reset link is in the outbox.
+        """
+        with self.client, mail.record_messages() as outbox:
+            response = self.client.post('/login', data={'username': 'marcel', 'reset': True},
+                                        follow_redirects=True)
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(1, len(outbox))

@@ -5,7 +5,6 @@ from family_foto.models import db
 from family_foto.models.reset_link import ResetLink
 from family_foto.models.role import Role
 from family_foto.models.user import User
-from family_foto.services.mail_service import mail
 from tests.base_test_case import BaseTestCase
 
 
@@ -23,16 +22,6 @@ class ResetPasswordTestCase(BaseTestCase):
         self.link = ResetLink.generate_link(user=self.user)
         self.reset_url = f'/reset-pwd/{self.user.id}/{self.link.link_hash}'
         db.session.commit()
-
-    def test_reset_mail(self):
-        """
-        Tests if the mail with the reset link is in the outbox.
-        """
-        with self.client, mail.record_messages() as outbox:
-            response = self.client.post('/reset-pwd', data={'username': 'marcel'},
-                                        follow_redirects=True)
-            self.assertEqual(status.HTTP_200_OK, response.status_code)
-            self.assertEqual(1, len(outbox))
 
     def test_reset_link(self):
         """

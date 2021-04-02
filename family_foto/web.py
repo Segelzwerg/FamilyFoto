@@ -58,9 +58,8 @@ def login():
         log.info(f'{user.username} logged in successfully')
         return redirect(url_for('web.index'))
     if form.reset.data:
-        reset_form = ResetLinkForm()
-        reset_form.username = form.username
-        return redirect(url_for('web.request_reset_password'), code=307)
+        username = request.form.get('username')
+        return _request_reset_password(username)
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -262,34 +261,6 @@ def settings():
                            e=[error] if error else [])
 
 
-@web_bp.route('/reset-pwd', methods=['POST'])
-def request_reset_password():
-    """
-    User requested a link in order to reset their password. It will check if the username is valid
-    and if the user chosen to give an email address.
-    """
-    username = request.form.get('username')
-    user = User.query.filter_by(username=username).first()
-    if user is not None:
-        if user.email is None:
-            log.warning(f'{username} request new password, but did not provide any email.')
-            return redirect(url_for('web.login'))
-        link = ResetLink.generate_link(user)
-        reset_url = url_for('web.reset_password', user_id=user.id, link_hash=link.link_hash)
-        email = Message(subject='FamilyFoto password reset',
-                        sender=current_app.config['MAIL_USERNAME'],
-                        recipients=[user.email],
-                        body=reset_url)
-        with current_app.mail.connect() as conn:
-            log.info(f'Password reset link sent to {username}')
-            conn.send(email)
-        form = LoginForm()
-        reset_form = ResetLinkForm()
-        return render_template('login.html', title='Sign In', form=form, reset_form=reset_form)
-    log.warning(f'User for username "{username}" could not be found.')
-    return redirect(url_for('web.login'))
-
-
 @web_bp.route('/reset-pwd/<user_id>/<link_hash>', methods=['GET', 'POST'])
 def reset_password(user_id: int, link_hash: str):
     """
@@ -318,3 +289,29 @@ def reset_password(user_id: int, link_hash: str):
                                form=form)
 
     return redirect(url_for('web.index'))
+
+
+def _request_reset_password(username: str):
+    """
+    User requested a link in order to reset their password. It will check if the username is valid
+    and if the user chosen to give an email address.
+    """
+    user = User.query.filter_by(username=username).first()
+    if user is not None:
+        if user.email is None:
+            log.warning(f'{username} request new password, but did not provide any email.')
+            return redirect(url_for('web.login'))
+        link = ResetLink.generate_link(user)
+        reset_url = url_for('web.reset_password', user_id=user.id, link_hash=link.link_hash)
+        email = Message(subject='FamilyFoto password reset',
+                        sender=current_app.config['MAIL_USERNAME'],
+                        recipients=[user.email],
+                        body=reset_url)
+        with current_app.mail.connect() as conn:
+            log.info(f'Password reset link sent to {username}')
+            conn.send(email)
+        form = LoginForm()
+        reset_form = ResetLinkForm()
+        return render_template('login.html', title='Sign In', form=form, reset_form=reset_form)
+    log.warning(f'User for username "{username}" could not be found.')
+    return redirect(url_for('web.login'))
