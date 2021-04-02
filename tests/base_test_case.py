@@ -39,7 +39,8 @@ class BaseTestCase(TestCase):
             'MAIL_PORT': 465,
             'MAIL_USERNAME': 'noreply@ff.de',
             'MAIL_PASSWORD': '1234',
-            'MAIL_SUPPRESS_SEND': True
+            'MAIL_SUPPRESS_SEND': True,
+            'ADMIN_MAIL': 'admin@family-foto.com'
         }, instance_path)
         return app
 
