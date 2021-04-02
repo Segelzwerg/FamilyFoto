@@ -316,3 +316,5 @@ def reset_password(user_id: int, link_hash: str):
         db.session.commit()
         return render_template('reset-pwd.html', user=current_user,
                                form=form)
+
+    return redirect(url_for('web.index'))
