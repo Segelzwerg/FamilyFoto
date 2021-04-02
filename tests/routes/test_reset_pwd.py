@@ -28,7 +28,7 @@ class ResetPasswordTestCase(BaseTestCase):
         """
         Tests if the mail with the reset link is in the outbox.
         """
-        with mail.record_messages() as outbox, self.client:
+        with self.client, mail.record_messages() as outbox:
             response = self.client.post('/reset-pwd', data={'username': 'marcel'},
                                         follow_redirects=True)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
