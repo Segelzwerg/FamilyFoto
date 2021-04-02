@@ -6,11 +6,11 @@ from flask_login import current_user, login_user, logout_user, login_required
 from flask_mail import Message
 
 from family_foto.errors import PasswordError, RegistrationWarning
-from family_foto.forms.ResetLinkForm import ResetLinkForm
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.public_form import PublicForm
 from family_foto.forms.register_form import RegisterForm
+from family_foto.forms.reset_link_form import ResetLinkForm
 from family_foto.forms.reset_pwd_form import ResetPasswordForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.front_end_wrapper.utils.splitter import Splitter
