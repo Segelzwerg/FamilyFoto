@@ -24,7 +24,8 @@ class LoginTestCase(BaseTestCase):
         with self.client:
             response = self.client.post('/login',
                                         data={'username': 'marcel',
-                                              'password': '1234'},
+                                              'password': '1234',
+                                              'submit': True},
                                         follow_redirects=True)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertEqual(current_user.username, 'marcel')
@@ -37,7 +38,8 @@ class LoginTestCase(BaseTestCase):
         with self.client:
             response = self.client.post('/login',
                                         data={'username': 'marcel',
-                                              'password': '12345'},
+                                              'password': '12345',
+                                              'submit': True},
                                         follow_redirects=True)
             self.assertTrue(status.is_success(response.status_code))
             self.assertTrue(current_user.is_anonymous)
@@ -53,5 +55,6 @@ class LoginTestCase(BaseTestCase):
                              follow_redirects=True)
             response = self.client.post('/login',
                                         data={'username': 'marcel',
-                                              'password': '12345'})
+                                              'password': '12345',
+                                              'submit': True})
             self.assertEqual(status.HTTP_302_FOUND, response.status_code)
