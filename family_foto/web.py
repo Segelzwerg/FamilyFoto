@@ -264,6 +264,10 @@ def settings():
 
 @web_bp.route('/reset-pwd', methods=['POST'])
 def request_reset_password():
+    """
+    User requested a link in order to reset their password. It will check if the username is valid
+    and if the user chosen to give an email address.
+    """
     username = request.form.get('username')
     user = User.query.filter_by(username=username).first()
     if user is not None:
@@ -288,6 +292,11 @@ def request_reset_password():
 
 @web_bp.route('/reset-pwd/<user_id>/<link_hash>', methods=['GET', 'POST'])
 def reset_password(user_id: int, link_hash: str):
+    """
+    Resets the password to a new given one.
+    :param user_id: the user id for which the password should be reset
+    :param link_hash: the hash which will enable the password reset
+    """
     form = ResetPasswordForm()
 
     if link_hash is not None:
