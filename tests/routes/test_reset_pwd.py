@@ -48,3 +48,19 @@ class ResetPasswordTestCase(BaseTestCase):
 
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertTrue(user.check_password(new_password))
+
+    def test_reset_wrong_id(self):
+        """
+        Tests if the password cannot be resetted with the wrong user id.
+        """
+        with self.client:
+            _ = self.client.get(self.reset_url)
+
+            new_password = '1234'
+            _ = self.client.post(f'/reset-pwd/{self.user.id + 1}/{self.link.link_hash}',
+                                 data={'password': new_password,
+                                       'password_control': new_password},
+                                 follow_redirects=True)
+            user = User.query.get(self.user.id)
+
+            self.assertFalse(user.check_password(new_password))
