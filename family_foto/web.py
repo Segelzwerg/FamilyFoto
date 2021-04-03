@@ -3,12 +3,15 @@ from typing import List
 from flask import redirect, url_for, render_template, request, send_from_directory, abort, \
     Blueprint, current_app
 from flask_login import current_user, login_user, logout_user, login_required
+from flask_mail import Message
 
 from family_foto.errors import PasswordError, RegistrationWarning
 from family_foto.forms.login_form import LoginForm
 from family_foto.forms.photo_sharing_form import PhotoSharingForm
 from family_foto.forms.public_form import PublicForm
 from family_foto.forms.register_form import RegisterForm
+from family_foto.forms.reset_link_form import ResetLinkForm
+from family_foto.forms.reset_pwd_form import ResetPasswordForm
 from family_foto.forms.upload_form import UploadForm
 from family_foto.front_end_wrapper.utils.splitter import Splitter
 from family_foto.logger import log
@@ -16,6 +19,7 @@ from family_foto.models import db
 from family_foto.models.approval import Approval
 from family_foto.models.file import File
 from family_foto.models.photo import Photo
+from family_foto.models.reset_link import ResetLink
 from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.services.thumbnail_service import generate
@@ -45,7 +49,7 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('web.index'))
     form = LoginForm()
-    if form.validate_on_submit():
+    if form.submit.data and form.validate():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             log.warning(f'{form.username.data} failed to log in')
@@ -53,6 +57,9 @@ def login():
         login_user(user, remember=form.remember_me.data)
         log.info(f'{user.username} logged in successfully')
         return redirect(url_for('web.index'))
+    if form.reset.data:
+        username = request.form.get('username')
+        return _request_reset_password(username)
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -252,3 +259,55 @@ def settings():
                            user=current_user,
                            form=form,
                            e=[error] if error else [])
+
+
+@web_bp.route('/reset-pwd/<user_id>/<link_hash>', methods=['GET', 'POST'])
+def reset_password(user_id: int, link_hash: str):
+    """
+    Resets the password to a new given one.
+    :param user_id: the user id for which the password should be reset
+    :param link_hash: the hash which will enable the password reset
+    """
+    form = ResetPasswordForm()
+
+    link: ResetLink = ResetLink.query.filter_by(link_hash=link_hash).first()
+    if int(user_id) != link.user_id:
+        return redirect(url_for('web.index'))
+
+    if form.validate_on_submit() and link.is_active():
+        user = User.query.get(int(user_id))
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('web.login'))
+
+    link.set_active()
+    db.session.add(link)
+    db.session.commit()
+    return render_template('reset-pwd.html', user=current_user, form=form)
+
+
+def _request_reset_password(username: str):
+    """
+    User requested a link in order to reset their password. It will check if the username is valid
+    and if the user chosen to give an email address.
+    """
+    user = User.query.filter_by(username=username).first()
+    if user is not None:
+        if user.email is None:
+            log.warning(f'{username} request new password, but did not provide any email.')
+            return redirect(url_for('web.login'))
+        link = ResetLink.generate_link(user)
+        reset_url = url_for('web.reset_password', user_id=user.id, link_hash=link.link_hash)
+        email = Message(subject='FamilyFoto password reset',
+                        sender=current_app.config['MAIL_USERNAME'],
+                        recipients=[user.email],
+                        body=reset_url)
+        with current_app.mail.connect() as conn:
+            log.info(f'Password reset link sent to {username}')
+            conn.send(email)
+        form = LoginForm()
+        reset_form = ResetLinkForm()
+        return render_template('login.html', title='Sign In', form=form, reset_form=reset_form)
+    log.warning(f'User for username "{username}" could not be found.')
+    return redirect(url_for('web.login'))

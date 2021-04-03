@@ -1,6 +1,8 @@
 from flask_api import status
 from flask_login import current_user
 
+from family_foto import add_user, Role
+from family_foto.services.mail_service import mail
 from tests.base_test_case import BaseTestCase
 
 
@@ -24,7 +26,8 @@ class LoginTestCase(BaseTestCase):
         with self.client:
             response = self.client.post('/login',
                                         data={'username': 'marcel',
-                                              'password': '1234'},
+                                              'password': '1234',
+                                              'submit': True},
                                         follow_redirects=True)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertEqual(current_user.username, 'marcel')
@@ -37,7 +40,8 @@ class LoginTestCase(BaseTestCase):
         with self.client:
             response = self.client.post('/login',
                                         data={'username': 'marcel',
-                                              'password': '12345'},
+                                              'password': '12345',
+                                              'submit': True},
                                         follow_redirects=True)
             self.assertTrue(status.is_success(response.status_code))
             self.assertTrue(current_user.is_anonymous)
@@ -53,5 +57,39 @@ class LoginTestCase(BaseTestCase):
                              follow_redirects=True)
             response = self.client.post('/login',
                                         data={'username': 'marcel',
-                                              'password': '12345'})
+                                              'password': '12345',
+                                              'submit': True})
             self.assertEqual(status.HTTP_302_FOUND, response.status_code)
+
+    def test_reset_mail(self):
+        """
+        Tests if the mail with the reset link is in the outbox.
+        """
+        with self.client, mail.record_messages() as outbox:
+            response = self.client.post('/login', data={'username': 'marcel', 'reset': True},
+                                        follow_redirects=True)
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(1, len(outbox))
+
+    def test_wrong_username_reset(self):
+        """
+        Test username does not match db entries during reset request.
+        """
+        with self.client, mail.record_messages() as outbox:
+            response = self.client.post('/login', data={'username': 'nobody', 'reset': True},
+                                        follow_redirects=True)
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(0, len(outbox))
+
+    def test_email_not_given_reset(self):
+        """
+        Test that the email is not given for a user.
+        """
+        user_role = Role.query.filter_by(name='user').first()
+        username = 'reset'
+        add_user(username=username, password='1234', roles=[user_role])
+        with self.client, mail.record_messages() as outbox:
+            response = self.client.post('/login', data={'username': username, 'reset': True},
+                                        follow_redirects=True)
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(0, len(outbox))

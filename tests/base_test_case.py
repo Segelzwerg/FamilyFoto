@@ -33,7 +33,14 @@ class BaseTestCase(TestCase):
             # Since we want our unit tests to run quickly
             # we turn this down - the hashing is still done
             # but the time-consuming part is left out.
-            'HASH_ROUNDS': 1
+            'HASH_ROUNDS': 1,
+            # Fake Mail Server.
+            'MAIL_SERVER': 'localhost',
+            'MAIL_PORT': 465,
+            'MAIL_USERNAME': 'noreply@ff.de',
+            'MAIL_PASSWORD': '1234',
+            'MAIL_SUPPRESS_SEND': True,
+            'ADMIN_MAIL': 'admin@family-foto.com'
         }, instance_path)
         return app
 
@@ -47,7 +54,7 @@ class BaseTestCase(TestCase):
 
         family_foto.add_roles()
         user_role = Role.query.filter_by(name='user').first()
-        add_user('marcel', '1234', [user_role])
+        add_user('marcel', '1234', [user_role], email='marcel@family-foto.com')
 
     def tearDown(self):
         db.session.close()
