@@ -69,3 +69,13 @@ class LoginTestCase(BaseTestCase):
                                         follow_redirects=True)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertEqual(1, len(outbox))
+
+    def test_wrong_username_reset(self):
+        """
+        Test username does not match db entries during reset request.
+        """
+        with self.client, mail.record_messages() as outbox:
+            response = self.client.post('/login', data={'username': 'nobody', 'reset': True},
+                                        follow_redirects=True)
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(0, len(outbox))
