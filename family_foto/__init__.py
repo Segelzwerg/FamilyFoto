@@ -52,7 +52,8 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
         MAIL_USERNAME=os.getenv('MAIL_USERNAME'),
         MAIL_PASSWORD=os.getenv('MAIL_PASSWORD'),
         MAIL_USE_TLS=False,
-        MAIL_USE_SSL=True
+        MAIL_USE_SSL=True,
+        ADMIN_LEVEL=const.ADMIN_LEVEL
     )
 
     if test_config is None:

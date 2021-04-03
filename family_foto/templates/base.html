@@ -19,6 +19,9 @@
     <a href="/upload">Upload</a>
     {% if user is defined and user.is_authenticated %}
         <a href="/settings">Settings</a>
+        {% if user.has_at_least_role(config.ADMIN_LEVEL) %}
+            <a href="/admin">Admin</a>
+        {% endif %}
         <a href="/logout">Logout</a>
         User:{{ user.username }}
     {% endif %}
@@ -26,9 +29,9 @@
 <hr>
 {% if e %}
     {% for error in e %}
-    <div class="alert alert-danger" role="alert">
-        {{ error.message }}
-    </div>
+        <div class="alert alert-danger" role="alert">
+            {{ error.message }}
+        </div>
     {% endfor %}
 {% endif %}
 {% if w %}
