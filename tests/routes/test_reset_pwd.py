@@ -64,3 +64,11 @@ class ResetPasswordTestCase(BaseTestCase):
             user = User.query.get(self.user.id)
 
             self.assertFalse(user.check_password(new_password))
+
+    def test_empty_hash(self):
+        """
+        Test that the hash link must be given.
+        """
+        with self.client:
+            response = self.client.get(f'/reset-pwd/{self.user.id + 1}/')
+            self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
