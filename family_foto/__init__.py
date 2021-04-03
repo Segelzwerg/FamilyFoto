@@ -8,6 +8,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from prometheus_flask_exporter import PrometheusMetrics
 
+from family_foto import const
 from family_foto.admin.admin import create_admin
 from family_foto.admin.admin_approval_view import AdminApprovalView
 from family_foto.admin.admin_index_view import AdminHomeView
@@ -22,6 +23,7 @@ from family_foto.models.file import File
 from family_foto.models.role import Role
 from family_foto.models.user import User
 from family_foto.models.user_settings import UserSettings
+from family_foto.services.mail_service import mail
 from family_foto.utils.add_user import add_user
 
 login_manager = LoginManager()
@@ -43,7 +45,15 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         UPLOADED_PHOTOS_DEST_RELATIVE='photos',
         UPLOADED_VIDEOS_DEST_RELATIVE='videos',
-        RESIZED_DEST_RELATIVE='resized-images'
+        RESIZED_DEST_RELATIVE='resized-images',
+        VERSION=const.VERSION,
+        MAIL_SERVER=os.getenv('MAIL_SERVER'),
+        MAIL_PORT=os.getenv('MAIL_PORT'),
+        MAIL_USERNAME=os.getenv('MAIL_USERNAME'),
+        MAIL_PASSWORD=os.getenv('MAIL_PASSWORD'),
+        MAIL_USE_TLS=False,
+        MAIL_USE_SSL=True,
+        ADMIN_LEVEL=const.ADMIN_LEVEL
     )
 
     if test_config is None:
@@ -96,13 +106,18 @@ def create_app(test_config: dict[str, Any] = None, test_instance_path: str = Non
 
     login_manager.init_app(app)
 
+    app.mail = mail.init_app(app)
+
     from family_foto.services.upload_service import photos, videos
     flask_uploads.configure_uploads(app, (photos, videos))
 
     with app.app_context():
         add_roles()
 
-    add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()], active=True)
+    add_user('admin', 'admin', [Role.query.filter_by(name='admin').first()], active=True,
+             email=os.getenv('ADMIN_MAIL'))
+
+    log.info(f'Version: {const.VERSION}')
 
     return app
 

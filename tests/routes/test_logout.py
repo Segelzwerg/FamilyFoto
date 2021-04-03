@@ -15,7 +15,8 @@ class LogoutTestCase(BaseTestCase):
         """
 
         with self.client:
-            self.client.post('/login', data={'username': 'marcel', 'password': '1234'},
+            self.client.post('/login', data={'username': 'marcel', 'password': '1234',
+                                             'submit': True},
                              follow_redirects=True)
             response = self.client.get('/logout')
 

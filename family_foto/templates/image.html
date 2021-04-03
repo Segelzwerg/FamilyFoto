@@ -6,6 +6,7 @@
         <div class="col-auto">
             <div class="card">
                 {% if photo is not none %}
+                    <h2>by {{ photo.username }}</h2>
                     <a href="{{ photo.url }}">
                         <img src="{{ thumbnail }}"
                              alt="File could not be loaded: {{ photo.filename }}">
