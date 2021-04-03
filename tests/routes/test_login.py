@@ -1,6 +1,7 @@
 from flask_api import status
 from flask_login import current_user
 
+from family_foto import add_user, Role
 from family_foto.services.mail_service import mail
 from tests.base_test_case import BaseTestCase
 
@@ -76,6 +77,19 @@ class LoginTestCase(BaseTestCase):
         """
         with self.client, mail.record_messages() as outbox:
             response = self.client.post('/login', data={'username': 'nobody', 'reset': True},
+                                        follow_redirects=True)
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(0, len(outbox))
+
+    def test_email_not_given_reset(self):
+        """
+        Test that the email is not given for a user.
+        """
+        user_role = Role.query.filter_by(name='user').first()
+        username = 'reset'
+        add_user(username=username, password='1234', roles=[user_role])
+        with self.client, mail.record_messages() as outbox:
+            response = self.client.post('/login', data={'username': username, 'reset': True},
                                         follow_redirects=True)
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertEqual(0, len(outbox))
