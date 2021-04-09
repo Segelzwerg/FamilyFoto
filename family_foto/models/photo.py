@@ -9,6 +9,8 @@ from family_foto.logger import log
 from family_foto.models import db
 from family_foto.models.file import File
 
+EXIF_IFD = 0x8769
+
 
 class Photo(File):
     """
@@ -81,7 +83,8 @@ class Photo(File):
         Meta data of the photo.
         """
         with self.__open_image() as image:
-            exif = {ExifTags.TAGS[k]: v for k, v in image.getexif().items() if k in
+            tags = image.getexif().get_ifd(EXIF_IFD) | dict(image.getexif())
+            exif = {ExifTags.TAGS[k]: v for k, v in tags.items() if k in
                     ExifTags.TAGS}
             exif = {k: self._replace_empty(v) for k, v in exif.items()}
 
