@@ -1,5 +1,4 @@
 import os
-import unittest
 
 from flask import current_app
 
@@ -72,7 +71,6 @@ class PhotoTestCase(BasePhotoTestCase):
         self.assertFalse(self.photo.has_read_permission(self.other_user),
                          msg=f'{self.other_user} has permission for this photo by {self.user}.')
 
-    @unittest.skip('Since PILLOW 8.1 same tags seem buggy or being removed.')
     def test_meta(self):
         """
         Test the meta data property.
