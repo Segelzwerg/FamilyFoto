@@ -46,10 +46,6 @@ class Photo(File):
                 return datetime.strptime(self.meta['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
             except KeyError:
                 log.warning(f'For {self.filename} there was no meta key: DateTimeOriginal')
-            try:
-                return datetime.strptime(self.meta['DateTime'], '%Y:%m:%d %H:%M:%S')
-            except KeyError:
-                log.warning(f'For {self.filename} there was no meta key: DateTime')
         return None
 
     @property
