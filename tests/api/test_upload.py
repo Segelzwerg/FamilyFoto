@@ -49,19 +49,19 @@ class ApiUploadTestCase(BaseTestCase):
         Test upload of a photo from API.
         """
 
-        file = open(self.photo_path, 'rb')
-        response = self.upload(file, self.photo_filename)
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(File.query.all()))
+        with open(self.photo_path, 'rb') as file:
+            response = self.upload(file, self.photo_filename)
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(1, len(File.query.all()))
 
     def test_upload_video(self):
         """
         Test upload of a video from API.
         """
-        file = open(self.video_path, 'rb')
-        response = self.upload(file, self.video_filename)
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(File.query.all()))
+        with open(self.video_path, 'rb') as file:
+            response = self.upload(file, self.video_filename)
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual(1, len(File.query.all()))
 
     def test_duplicate_upload(self):
         """
@@ -77,16 +77,13 @@ class ApiUploadTestCase(BaseTestCase):
         """
         Tests if a uploading multiple files at once works.
         """
-        photo = open(self.photo_path, 'rb')
-        video = open(self.video_path, 'rb')
-        data = dict(files=[(photo, self.photo_filename), (video, self.video_filename)])
-        response = self.client.post('/api/upload',
-                                    headers={'Authorization': f'Bearer {self.user.token.token}',
-                                             'user_id': self.user.id},
-                                    content_type='multipart/form-data',
-                                    data=data)
-        photo.close()
-        video.close()
+        with open(self.photo_path, 'rb') as photo, open(self.video_path, 'rb') as video:
+            data = dict(files=[(photo, self.photo_filename), (video, self.video_filename)])
+            response = self.client.post('/api/upload',
+                                        headers={'Authorization': f'Bearer {self.user.token.token}',
+                                                 'user_id': self.user.id},
+                                        content_type='multipart/form-data',
+                                        data=data)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(2, len(File.query.all()))
 
@@ -95,14 +92,13 @@ class ApiUploadTestCase(BaseTestCase):
         Test with invalid token.
         """
 
-        file = open(self.photo_path, 'rb')
-        data = dict(files=[(file, self.photo_filename)])
-        response = self.client.post('/api/upload',
-                                    headers={'Authorization': 'Bearer abcd',
-                                             'user_id': self.user.id},
-                                    content_type='multipart/form-data',
-                                    data=data)
-        file.close()
+        with open(self.photo_path, 'rb') as file:
+            data = dict(files=[(file, self.photo_filename)])
+            response = self.client.post('/api/upload',
+                                        headers={'Authorization': 'Bearer abcd',
+                                                 'user_id': self.user.id},
+                                        content_type='multipart/form-data',
+                                        data=data)
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
         self.assertEqual(0, len(File.query.all()))
 
@@ -111,13 +107,12 @@ class ApiUploadTestCase(BaseTestCase):
         Test with invalid token.
         """
 
-        file = open(self.photo_path, 'rb')
-        data = dict(files=[(file, self.photo_filename)])
-        response = self.client.post('/api/upload',
-                                    headers={'Authorization': 'Bearer abcd'},
-                                    content_type='multipart/form-data',
-                                    data=data)
-        file.close()
+        with open(self.photo_path, 'rb') as file:
+            data = dict(files=[(file, self.photo_filename)])
+            response = self.client.post('/api/upload',
+                                        headers={'Authorization': 'Bearer abcd'},
+                                        content_type='multipart/form-data',
+                                        data=data)
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
         self.assertEqual(0, len(File.query.all()))
 
@@ -130,11 +125,11 @@ class ApiUploadTestCase(BaseTestCase):
         photo_filename = 'example.jpg'
         photo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data',
                                   photo_filename)
-        file = open(photo_path, 'rb')
-        data = dict(files=[(file, photo_filename)])
-        self.client.post('/api/upload',
-                         headers={'Authorization': f'Bearer {self.user.token.token}',
-                                  'user_id': self.user.id},
-                         content_type='multipart/form-data',
-                         data=data)
+        with open(photo_path, 'rb') as file:
+            data = dict(files=[(file, photo_filename)])
+            self.client.post('/api/upload',
+                             headers={'Authorization': f'Bearer {self.user.token.token}',
+                                      'user_id': self.user.id},
+                             content_type='multipart/form-data',
+                             data=data)
         self.assertEqual(len(File.query.all()), 0)

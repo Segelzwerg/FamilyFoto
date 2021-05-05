@@ -54,12 +54,11 @@ class SplitterTestCase(BaseLoginTestCase, BaseMediaTestCase):
         with self.client:
             filename = 'example.jpg'
             photo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', filename)
-            photo = open(photo_path, 'rb')
-            data = dict(file=[(photo, filename)])
-            self.client.post('/upload',
-                             content_type='multipart/form-data',
-                             data=data)
-            photo.close()
+            with open(photo_path, 'rb') as photo:
+                data = dict(file=[(photo, filename)])
+                self.client.post('/upload',
+                                 content_type='multipart/form-data',
+                                 data=data)
             other_photo = Photo.query.filter_by(filename=filename).first()
             splitter = Splitter([self.photo, other_photo])
             splits = splitter.split()
