@@ -97,13 +97,11 @@ class UploadTestCase(BaseLoginTestCase):
                                   photo_filename)
         video_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data',
                                   video_filename)
-        photo = open(photo_path, 'rb')
-        video = open(video_path, 'rb')
-        data = dict(file=[(photo, photo_filename), (video, video_filename)])
-        self.client.post('/upload',
-                         content_type='multipart/form-data',
-                         data=data)
-        photo.close()
-        video.close()
+        with open(photo_path, 'rb') as photo, open(video_path, 'rb') as video:
+            data = dict(file=[(photo, photo_filename), (video, video_filename)])
+            self.client.post('/upload',
+                             content_type='multipart/form-data',
+                             data=data)
+
         files = File.query.all()
         self.assertEqual(2, len(files))
