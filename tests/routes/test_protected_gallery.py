@@ -54,6 +54,8 @@ class GuestUserProtectedGalleryTestCase(BaseTestCase):
         """
         Tests if a user can view it.
         """
+        # https://github.com/PyCQA/pylint/issues/3793
+        # pylint: disable=E0237
         current_user.active = True
         response = self.client.get('/public')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
