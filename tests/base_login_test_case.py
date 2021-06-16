@@ -12,6 +12,8 @@ class BaseLoginTestCase(BaseTestCase):
     def setUp(self):
         super().setUp()
         mock_user(self, 'marcel', 'user')
+        # https://github.com/PyCQA/pylint/issues/3793
+        # pylint: disable=E0237
         current_user.active = True
 
     def tearDown(self):
