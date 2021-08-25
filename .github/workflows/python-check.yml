@@ -47,7 +47,7 @@ jobs:
           python3 -m pytest --cov=../family_foto --cov-report=xml
           cd ..
       - name: Upload to codecoverage
-        uses: codecov/codecov-action@v2.0.2
+        uses: codecov/codecov-action@v2.0.3
         with:
           file: ./tests/coverage.xml
           fail_ci_if_error: true
