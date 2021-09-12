@@ -4,7 +4,7 @@ FROM arm64v8/python:3.9-bullseye
 COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
 COPY ./requirements.txt requirements.txt
 RUN apt-get update
-RUN apt-get install ffmpeg
+RUN apt-get install ffmpeg -y
 RUN pip install --default-timeout=1000 -r requirements.txt
 WORKDIR /app
 ENV FLASK_APP family_foto
