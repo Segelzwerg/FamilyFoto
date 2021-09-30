@@ -1,11 +1,10 @@
 FROM multiarch/qemu-user-static:x86_64-aarch64 as qemu
 
-FROM arm64v8/python:3.9-slim
+FROM arm64v8/python:3.9-buster
 COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
 COPY ./requirements.txt requirements.txt
-RUN uname -a
-RUN apt-get update -qq
-RUN apt-get install build-essential ffmpeg -yq
+RUN apt-get update
+RUN apt-get install ffmpeg -y
 RUN pip install --default-timeout=1000 -r requirements.txt
 WORKDIR /app
 ENV FLASK_APP family_foto
