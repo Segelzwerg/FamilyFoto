@@ -17,7 +17,7 @@ class Splitter:
         """
         Splits the files into years.
         """
-        splits = dict()
+        splits = {}
         for file in self._files:
             if file.year not in splits.keys():
                 month = Month([file], file.month, file.year)
