@@ -1,6 +1,6 @@
 pip~=21.3
 setuptools~=59.0.1
-celery~=5.2.0
+celery~=5.2.1
 deprecation~=2.1.0
 Email-Validator~=1.1.3
 ffmpeg-python~=0.2.0
