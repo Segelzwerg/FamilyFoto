@@ -63,6 +63,7 @@ class ApiUploadTestCase(BaseTestCase):
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertEqual(1, len(File.query.all()))
 
+    # pylint: disable: consider-using-with
     def test_duplicate_upload(self):
         """
         Tests error is no longer thrown for duplicate uploads.

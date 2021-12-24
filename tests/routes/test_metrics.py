@@ -39,8 +39,9 @@ class AdminMetricsTestCase(BaseMetricsTestCase, BaseAdminTestCase):
         """
         username = 'admin'
         password = '1234'
+        # pylint: disable=consider-using-f-string
         headers = {
-            'Authorization': 'Basic {0}'.format(base64.b64encode(bytes(
+            'Authorization': f'Basic {0}'.format(base64.b64encode(bytes(
                 f"{username}:{password}", 'utf-8')).decode('utf-8'))
         }
         response = self.client.get('/metrics', headers=headers)
