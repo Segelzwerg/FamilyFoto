@@ -1,5 +1,5 @@
 pip~=21.3
-setuptools~=60.0.4
+setuptools~=60.0.5
 celery~=5.2.1
 deprecation~=2.1.0
 Email-Validator~=1.1.3
