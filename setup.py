@@ -16,7 +16,7 @@ setup(
         'Operating System :: OS Independent',
     ],
     install_requires=requirements,
-    extras_required={
+    extras_require={
         'testing': [
             "pytest==6.2.5"
             "pytest-cov==3.0.0"
