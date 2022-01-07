@@ -35,21 +35,41 @@ docker-compose -f docker-compose.ARCHITECTURE.yml up
 with `ARCHITECTURE` being one of `{"amd64", "arm64"}`.
 
 :warning: This will use the latest version of Family Foto, if you want to use a specific version
- change the image tag in the docker-compose file to
- 
+change the image tag in the docker-compose file to
+
  ```dockerfile
     image: segelzwerg/family-foto:ARCH-X.X.X
 ```
+
 However this is only supported for up from `v0.3.1`. All tags can be found
 [here](https://hub.docker.com/r/segelzwerg/family-foto/tags).
 
+### Development Setup
+
+```
+# Create venv
+python3 -m venv venv
+source venv/bin/activate
+pip install -U pip setuptools wheel
+
+# Install with 'testing' extras
+pip install -e .[testing]
+
+# Run tests
+python -m pytest
+```
+
 ## Trouble Shooting
+
 ### Grafana
+
 #### Permission
+
 ```shell script
 GF_PATHS_DATA='/var/lib/grafana' is not writable.
 You may have issues with file permissions, more information here: http://docs.grafana.org/installation/docker/#migration-from-a-previous-version-of-the-docker-container-to-5-1-or-later
 mkdir: cannot create directory '/var/lib/grafana/plugins': Permission denied
 ```
+
 The you try to run `docker-compose` with `sudo`. If that does not work, add folder permission to
  `/media/usb/grafana`.
