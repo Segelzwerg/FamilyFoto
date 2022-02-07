@@ -18,7 +18,7 @@ setup(
     install_requires=requirements,
     extras_require={
         'testing': [
-            "pytest==6.2.5",
+            "pytest==7.0.0",
             "pytest-cov==3.0.0"
         ]
     }
