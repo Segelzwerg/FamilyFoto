@@ -15,7 +15,7 @@ jobs:
       max-parallel: 4
     runs-on: ${{matrix.os}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/cache@v2
         with:
           path: ~/.cache/pip
