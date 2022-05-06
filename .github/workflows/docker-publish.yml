@@ -47,7 +47,7 @@ jobs:
           echo ::set-output name=docker_tags::${VERSION}
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: true
           file: ./${{ matrix.arch }}.dockerfile
