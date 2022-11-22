@@ -5,6 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='familyfoto',
+    packages=['family_foto'],
     version='0.5.3',
     author='Marcel Haas',
     python_required='>=3.9',
